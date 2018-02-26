@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+    <script src="/js/socket-comm.js"></script>
+    <script src="/js/data.js"></script>
+    <script src="/js/init.js"></script>
+</head>
+<body>
+<div class="section">
+    <div class="container">
+        <div class="row">
+           <div class="col s12">
+               <ul class="collapsible" data-collapsible="accordion">
+                   <li>
+                       <div class="collapsible-header">
+                           <img src="img/559_sunset.png" width="260px" height="160px">
+                           <span>559 Sunset Ave NW</span>
+                       </div>
+                       <div class="collapsible-body" id="cb-464313241">
+                           <div class="row">
+                               <div class="col s12">
+                                   <p>Reported Violations</p>
+                                   <ul class="collection 464313241">
+                                       <!--Code violation List items will be generated dynamically-->
+                                   </ul>
+                               </div>
+                           </div>
+                           <div class="row">
+                               <div class="col s12">
+                                   <a onclick="showViolation('cb-464313241')" class="btn addViolation">Add Code Violation</a>
+                               </div>
+                           </div>
+                           <div class="row grey lighten-3 hide selectRow">
+                               <div class="input-field col s6">
+                                   <select class="464313241">
+                                       <option value="default" disabled selected>Choose a code violation</option>
+                                       <option value="Open & Vacant Structure">Open & Vacant Structure</option>
+                                       <option value="Overgrowth">Overgrowth (grass, weeds, kudz)</option>
+                                       <option value="Junk vehicle">Junk vehicle</option>
+                                       <option value="Junk, debris, trash">Junk, debris, trash</option>
+                                       <option value="Vacant Lot">Vacant Lot</option>
+                                       <option value="Leaking/ inoperable plumbing">Leaking/ inoperable plumbing</option>
+                                       <option value="No water (hot/cold)">No water (hot/cold)</option>
+                                       <option value="No heat">No heat</option>
+                                       <option value="Junk Tires">Junk Tires</option>
+                                   </select>
+                                   <label>Code Violations</label>
+                               </div>
+                               <div class="col s6">
+                                   <a onclick="saveViolation(464313241, 'cb-464313241')" class="btn saveViolation">Save</a>
+                               </div>
+                           </div>
+                       </div>
+                   </li>
+                   <li>
+                       <div class="collapsible-header"><i class="material-icons">place</i>Second</div>
+                       <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
+                   </li>
+                   <li>
+                       <div class="collapsible-header"><i class="material-icons">whatshot</i>Third</div>
+                       <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
+                   </li>
+               </ul>
+           </div>
+        </div>
+    </div>
+</div>
+<!--<h1>Hello</h1>-->
+<!--<form>-->
+
+    <!--<input type="text" id="message" />-->
+    <!--<input id="submit" type="button" value="Send data to Server">-->
+    <!--<div id="content"></div>-->
+
+<!--</form>-->
+</body>
+</html>
