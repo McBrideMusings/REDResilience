@@ -1,0 +1,124 @@
+{
+  "meta": {
+    "state": "Good"
+  },
+  "results": [
+    {
+      "name": "houses",
+      "id": "1ljjaljsfljas22",
+      "sheets": [
+        {
+          "name": "houses",
+          "id": "1ljjaljsfljas22",
+          "timestamp": "Sat Feb 24 2018 14:35:26 GMT-0500 (Eastern Standard Time)",
+          "lat": 33.769958,
+          "long": -84.413658,
+          "number": "562",
+          "street": "English Ave NW",
+          "city": "Atlanta",
+          "state": {
+            "short": "GA",
+            "long": "Georgia"
+          },
+          "zip": "30318",
+          "fulladdress": "562 English Ave NW Atlanta, GA 30318",
+          "codeviolations": [
+            {
+              "timestamp": "Sat Feb 24 2018 14:35:26 GMT-0500 (Eastern Standard Time)",
+              "codeviolation": "Overgrowth",
+              "codenumber": "5"
+            },
+            {
+              "timestamp": "Sat Feb 24 2018 14:35:26 GMT-0500 (Eastern Standard Time)",
+              "codeviolation": "Junk, debris, trash",
+              "codenumber": "8"
+            }
+          ],
+          "notes": ""
+        },
+        {
+          "name": "houses",
+          "id": "1ljjaljsfljas22",
+          "timestamp": "Sat Feb 24 2018 14:35:26 GMT-0500 (Eastern Standard Time)",
+          "lat": 33.770469,
+          "long": -84.413347,
+          "number": "577",
+          "street": "English Ave NW",
+          "city": "Atlanta",
+          "state": {
+            "short": "GA",
+            "long": "Georgia"
+          },
+          "zip": "30318",
+          "fulladdress": "577 English Ave NW Atlanta, GA 30318",
+          "codeviolations": [
+            {
+              "timestamp": "Sat Feb 24 2018 14:35:26 GMT-0500 (Eastern Standard Time)",
+              "codeviolation": "Overgrowth",
+              "codenumber": "5"
+            },
+            {
+              "timestamp": "Sat Feb 24 2018 14:35:26 GMT-0500 (Eastern Standard Time)",
+              "codeviolation": "Junk, debris, trash",
+              "codenumber": "8"
+            }
+          ],
+          "notes": ""
+        },
+        {
+          "name": "houses",
+          "id": "1ljjaljsfljas22",
+          "timestamp": "Sat Feb 24 2018 14:35:26 GMT-0500 (Eastern Standard Time)",
+          "lat": 33.770220,
+          "long": -84.413582,
+          "number": "566",
+          "street": "English Ave NW",
+          "city": "Atlanta",
+          "state": {
+            "short": "GA",
+            "long": "Georgia"
+          },
+          "zip": "30318",
+          "fulladdress": "566 English Ave NW Atlanta, GA 30318",
+          "codeviolations": [
+            {
+              "timestamp": "Sat Feb 24 2018 14:35:26 GMT-0500 (Eastern Standard Time)",
+              "codeviolation": "Open & Vacent Structure",
+              "codenumber": "5"
+            },
+            {
+              "timestamp": "Sat Feb 24 2018 14:35:26 GMT-0500 (Eastern Standard Time)",
+              "codeviolation": "Vacent Lot",
+              "codenumber": "8"
+            }
+          ],
+          "notes": ""
+        },
+        {
+          "name": "houses",
+          "id": "1ljjaljsfljas22",
+          "timestamp": "Sat Feb 24 2018 14:35:26 GMT-0500 (Eastern Standard Time)",
+          "lat": 33.771244,
+          "long": -84.413590,
+          "number": "606",
+          "street": "English Ave NW",
+          "city": "Atlanta",
+          "state": {
+            "short": "GA",
+            "long": "Georgia"
+          },
+          "zip": "30318",
+          "fulladdress": "606 English Ave NW Atlanta, GA 30318",
+          "codeviolations": [
+            {
+              "timestamp": "Sat Feb 24 2018 14:35:26 GMT-0500 (Eastern Standard Time)",
+              "codeviolation": "Vacent Lot",
+              "codenumber": "8"
+            }
+          ],
+          "notes": ""
+        } 
+      ]
+    }
+  ]
+}
