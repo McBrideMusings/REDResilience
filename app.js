@@ -1,10 +1,12 @@
 /**
  * Created by Brendan on 2/21/2018.
  */
+"use strict";
 var express = require("express");
 var bodyParser = require("body-parser");
 var http = require('http');
 var io = require('socket.io');
+var dateFormat = require('dateformat');
 var GoogleSpreadsheet = require('google-spreadsheet');
 var doc = new GoogleSpreadsheet('13CzpEoPA2bxh6w-heRgog5pejYQ_uttE1qVtI3TWwIc');
 var sheet;
@@ -35,10 +37,12 @@ function setAuth() {
 function getInfoAndWorksheets() {
     doc.getInfo(function(err, info) {
         console.log('Loaded doc: '+info.title+' by '+info.author.email);
-        sheet = info.worksheets[0];
-        console.log('sheet 1: '+sheet.title+' '+sheet.rowCount+'x'+sheet.colCount);
+        sheet = info.worksheets[3];
+        //console.log(info);
+        console.log('sheet 1: '+sheet.title+' '+sheet.id);
     });
 }
+
 //From NPM example
 function workingWithRows() {
     sheet.getRows({
@@ -82,7 +86,32 @@ io.sockets.on("connection",function(socket){
     //Right now, only captures an isolated codeviolation object
     socket.on("newViolation", function (data) {
         data = JSON.parse(data);
-        console.log(data.codeviolation);
+        doc.getInfo(function (err, info) {
+
+            //Your IDE might give you crap about this next line, but it should compile and work
+            let mySheet = info.worksheets.find(x => x.id === data.id);
+
+            var ts = dateFormat(data.newData.timestamp, "dddd, mmmm dS, yyyy, h:MM:ss TT");
+            mySheet.addRow({
+                Timestamp: ts,
+                Code_violation: data.newData.codeviolation,
+                Code_number: data.newData.codenumber
+            }, function () {
+                console.log("done");
+            });
+            /*mySheet.getCells({
+                'min-row':1,
+                'max-row':8,
+                'max-col': 2,
+                'min-col': 2,
+                'return-empty': true
+            }, function (err, cells) {
+               for(var i=0; i<cells.length; i++){
+                   console.log(cells[i]);
+                   socket.emit("console", JSON.stringify(cells[i]));
+               }
+            });*/
+        });
     });
 
     //Legacy example code from old form

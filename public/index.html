@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>RED API Prototype</title>
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
@@ -21,26 +21,26 @@
                <ul class="collapsible" data-collapsible="accordion">
                    <li>
                        <div class="collapsible-header">
-                           <img src="img/559_sunset.png" width="260px" height="160px">
-                           <span>559 Sunset Ave NW</span>
+                           <img src="img/559_sunset.png" width="260px" height="160px" style="margin-right: 20px">
+                           <h5>559 Sunset Ave NW</h5>
                        </div>
-                       <div class="collapsible-body" id="cb-464313241">
+                       <div class="collapsible-body" id="cb-o7ofu4j">
                            <div class="row">
                                <div class="col s12">
                                    <p>Reported Violations</p>
-                                   <ul class="collection 464313241">
+                                   <ul class="collection o7ofu4j">
                                        <!--Code violation List items will be generated dynamically-->
                                    </ul>
                                </div>
                            </div>
                            <div class="row">
                                <div class="col s12">
-                                   <a onclick="showViolation('cb-464313241')" class="btn addViolation">Add Code Violation</a>
+                                   <a onclick="showViolation('cb-o7ofu4j')" class="btn addViolation">Add Code Violation</a>
                                </div>
                            </div>
                            <div class="row grey lighten-3 hide selectRow">
                                <div class="input-field col s6">
-                                   <select class="464313241">
+                                   <select class="o7ofu4j">
                                        <option value="default" disabled selected>Choose a code violation</option>
                                        <option value="Open & Vacant Structure">Open & Vacant Structure</option>
                                        <option value="Overgrowth">Overgrowth (grass, weeds, kudz)</option>
@@ -55,31 +55,98 @@
                                    <label>Code Violations</label>
                                </div>
                                <div class="col s6">
-                                   <a onclick="saveViolation(464313241, 'cb-464313241')" class="btn saveViolation">Save</a>
+                                   <a onclick="saveViolation('o7ofu4j', 'cb-o7ofu4j')" class="btn saveViolation">Save</a>
                                </div>
                            </div>
                        </div>
                    </li>
                    <li>
-                       <div class="collapsible-header"><i class="material-icons">place</i>Second</div>
-                       <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
+                       <div class="collapsible-header">
+                           <img src="img/683_dalvigney.png" width="260px" height="160px" style="margin-right: 20px">
+                           <h5>559 Sunset Ave NW</h5>
+                       </div>
+                       <div class="collapsible-body" id="cb-onlvr1w">
+                           <div class="row">
+                               <div class="col s12">
+                                   <p>Reported Violations</p>
+                                   <ul class="collection onlvr1w">
+                                       <!--Code violation List items will be generated dynamically-->
+                                   </ul>
+                               </div>
+                           </div>
+                           <div class="row">
+                               <div class="col s12">
+                                   <a onclick="showViolation('cb-onlvr1w')" class="btn addViolation">Add Code Violation</a>
+                               </div>
+                           </div>
+                           <div class="row grey lighten-3 hide selectRow">
+                               <div class="input-field col s6">
+                                   <select class="onlvr1w">
+                                       <option value="default" disabled selected>Choose a code violation</option>
+                                       <option value="Open & Vacant Structure">Open & Vacant Structure</option>
+                                       <option value="Overgrowth">Overgrowth (grass, weeds, kudz)</option>
+                                       <option value="Junk vehicle">Junk vehicle</option>
+                                       <option value="Junk, debris, trash">Junk, debris, trash</option>
+                                       <option value="Vacant Lot">Vacant Lot</option>
+                                       <option value="Leaking/ inoperable plumbing">Leaking/ inoperable plumbing</option>
+                                       <option value="No water (hot/cold)">No water (hot/cold)</option>
+                                       <option value="No heat">No heat</option>
+                                       <option value="Junk Tires">Junk Tires</option>
+                                   </select>
+                                   <label>Code Violations</label>
+                               </div>
+                               <div class="col s6">
+                                   <a onclick="saveViolation('onlvr1w', 'cb-onlvr1w')" class="btn saveViolation">Save</a>
+                               </div>
+                           </div>
+                       </div>
                    </li>
                    <li>
-                       <div class="collapsible-header"><i class="material-icons">whatshot</i>Third</div>
-                       <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
+                       <div class="collapsible-header">
+                           <img src="img/696_fox.png" width="260px" height="160px" style="margin-right: 20px">
+                           <h5>552 Sunset Ave NW</h5>
+                       </div>
+                       <div class="collapsible-body" id="cb-o4zm5jc">
+                           <div class="row">
+                               <div class="col s12">
+                                   <p>Reported Violations</p>
+                                   <ul class="collection o4zm5jc">
+                                       <!--Code violation List items will be generated dynamically-->
+                                   </ul>
+                               </div>
+                           </div>
+                           <div class="row">
+                               <div class="col s12">
+                                   <a onclick="showViolation('cb-o4zm5jc')" class="btn addViolation">Add Code Violation</a>
+                               </div>
+                           </div>
+                           <div class="row grey lighten-3 hide selectRow">
+                               <div class="input-field col s6">
+                                   <select class="o4zm5jc">
+                                       <option value="default" disabled selected>Choose a code violation</option>
+                                       <option value="Open & Vacant Structure">Open & Vacant Structure</option>
+                                       <option value="Overgrowth">Overgrowth (grass, weeds, kudz)</option>
+                                       <option value="Junk vehicle">Junk vehicle</option>
+                                       <option value="Junk, debris, trash">Junk, debris, trash</option>
+                                       <option value="Vacant Lot">Vacant Lot</option>
+                                       <option value="Leaking/ inoperable plumbing">Leaking/ inoperable plumbing</option>
+                                       <option value="No water (hot/cold)">No water (hot/cold)</option>
+                                       <option value="No heat">No heat</option>
+                                       <option value="Junk Tires">Junk Tires</option>
+                                   </select>
+                                   <label>Code Violations</label>
+                               </div>
+                               <div class="col s6">
+                                   <a onclick="saveViolation('o4zm5jc', 'cb-o4zm5jc')" class="btn saveViolation">Save</a>
+                               </div>
+                           </div>
+                       </div>
                    </li>
+
                </ul>
            </div>
         </div>
     </div>
 </div>
-<!--<h1>Hello</h1>-->
-<!--<form>-->
-
-    <!--<input type="text" id="message" />-->
-    <!--<input id="submit" type="button" value="Send data to Server">-->
-    <!--<div id="content"></div>-->
-
-<!--</form>-->
 </body>
 </html>

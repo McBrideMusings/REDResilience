@@ -23,6 +23,12 @@ socket.on("message",function(message){
     $('#content').append('<div >'+message.data+'</div>'); /*appending the data on the page using Jquery */
 });
 
+// B/c looking at objects in the browser console is easier
+socket.on("console", function (data) {
+    data = JSON.parse(data);
+    console.log(data);
+});
+
 //Legacy example code
 $(function(){
     $('#submit').click(function(){
@@ -67,8 +73,7 @@ function saveViolation(sheetId, id) {
             var newViolationObj = {"timestamp": getTimestamp(), "codeviolation": $('select.'+sheetId).val(), "codenumber" : 5};
             n.codeviolations.push(newViolationObj);
             addViolation(newViolationObj, n.id);
-            socket.emit('newViolation', JSON.stringify(newViolationObj));
-            console.log(n.codeviolations);
+            socket.emit('newViolation', JSON.stringify({id: n.id, newData: newViolationObj}));
         }
     });
 

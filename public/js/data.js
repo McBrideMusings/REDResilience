@@ -14,7 +14,7 @@ data = {
             "sheets": [
                 {
                     "name": "houses",
-                    "id": "464313241",
+                    "id": "o7ofu4j",
                     "timestamp": "Sat Feb 24 2018 14:35:26 GMT-0500 (Eastern Standard Time)",
                     "lat": "33.769955",
                     "long": "-84.409703",
@@ -32,10 +32,29 @@ data = {
                             "timestamp": "Sat Feb 24 2018 14:35:26 GMT-0500 (Eastern Standard Time)",
                             "codeviolation": "Overgrowth",
                             "codenumber": "5"
-                        },
+                        }
+                    ],
+                    "notes": ""
+                },
+                {
+                    "name": "houses",
+                    "id": "onlvr1w",
+                    "timestamp": "Sat Feb 24 2018 14:35:26 GMT-0500 (Eastern Standard Time)",
+                    "lat": "33.769844",
+                    "long": "-84.410024",
+                    "number": "554",
+                    "street": "Sunset Ave NW",
+                    "city": "Atlanta",
+                    "state": {
+                        "short": "GA",
+                        "long": "Georgia"
+                    },
+                    "zip": "30318",
+                    "fulladdress": "554 Sunset Ave NW Atlanta, GA 30318",
+                    "codeviolations": [
                         {
                             "timestamp": "Sat Feb 24 2018 14:35:26 GMT-0500 (Eastern Standard Time)",
-                            "codeviolation": "Junk Debris",
+                            "codeviolation": "Overgrowth",
                             "codenumber": "5"
                         }
                     ],
@@ -43,57 +62,23 @@ data = {
                 },
                 {
                     "name": "houses",
-                    "id": "1ljjaljsfljas22",
+                    "id": "o4zm5jc",
                     "timestamp": "Sat Feb 24 2018 14:35:26 GMT-0500 (Eastern Standard Time)",
-                    "lat": "33.770659",
-                    "long": " -84.409675",
-                    "number": "683",
-                    "street": "Dalvigney St NW",
+                    "lat": "33.769732",
+                    "long": "-84.409998",
+                    "number": "552",
+                    "street": "Sunset Ave NW",
                     "city": "Atlanta",
                     "state": {
                         "short": "GA",
                         "long": "Georgia"
                     },
                     "zip": "30318",
-                    "fulladdress": "683 Dalvigney St NW Atlanta, GA 30318",
+                    "fulladdress": "552 Sunset Ave NW Atlanta, GA 30318",
                     "codeviolations": [
                         {
                             "timestamp": "Sat Feb 24 2018 14:35:26 GMT-0500 (Eastern Standard Time)",
                             "codeviolation": "Overgrowth",
-                            "codenumber": "5"
-                        },
-                        {
-                            "timestamp": "Sat Feb 24 2018 14:35:26 GMT-0500 (Eastern Standard Time)",
-                            "codeviolation": "Junk Debris",
-                            "codenumber": "5"
-                        }
-                    ],
-                    "notes": ""
-                },
-                {
-                    "name": "houses",
-                    "id": "1ljjaljsfljas22",
-                    "timestamp": "Sat Feb 24 2018 14:35:26 GMT-0500 (Eastern Standard Time)",
-                    "lat": "33.771829",
-                    "long": "-84.410068",
-                    "number": "696",
-                    "street": "Fox St NW",
-                    "city": "Atlanta",
-                    "state": {
-                        "short": "GA",
-                        "long": "Georgia"
-                    },
-                    "zip": "30318",
-                    "fulladdress": "696 Fox St NW Atlanta, GA 30318",
-                    "codeviolations": [
-                        {
-                            "timestamp": "Sat Feb 24 2018 14:35:26 GMT-0500 (Eastern Standard Time)",
-                            "codeviolation": "Overgrowth",
-                            "codenumber": "5"
-                        },
-                        {
-                            "timestamp": "Sat Feb 24 2018 14:35:26 GMT-0500 (Eastern Standard Time)",
-                            "codeviolation": "Junk Debris",
                             "codenumber": "5"
                         }
                     ],
