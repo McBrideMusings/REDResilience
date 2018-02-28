@@ -58,5 +58,9 @@ typings/
 # dotenv environment variables file
 .env
 
+<<<<<<< HEAD:.gitignore
 master-creds.json
 *.code-workspace
+=======
+master-creds.json
+>>>>>>> d82a05917ac76961a697f394e656d2c06956ef94:.gitignore
