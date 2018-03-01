@@ -1,0 +1,85 @@
+{
+  "meta": {
+      "state": "Good"
+  },
+  "results": [
+    {
+      "name": "houses",
+      "id": "13CzpEoPA2bxh6w-heRgog5pejYQ_uttE1qVtI3TWwIc",
+      "sheets": [
+        {
+          "name": "houses",
+          "id": "o7ofu4j",
+          "timestamp": "Sat Feb 24 2018 14:35:26 GMT-0500 (Eastern Standard Time)",
+          "lat": "33.769955",
+          "long": "-84.409703",
+          "number": "559",
+          "street": "Sunset Ave NW",
+          "city": "Atlanta",
+          "state": {
+            "short": "GA",
+            "long": "Georgia"
+          },
+          "zip": "30318",
+          "fulladdress": "559 Sunset Ave NW Atlanta, GA 30318",
+          "codeviolations": [
+            {
+              "timestamp": "Sat Feb 24 2018 14:35:26 GMT-0500 (Eastern Standard Time)",
+              "codeviolation": "Overgrowth",
+              "codenumber": "5"
+            }
+          ],
+          "notes": ""
+        },
+        {
+          "name": "houses",
+          "id": "onlvr1w",
+          "timestamp": "Sat Feb 24 2018 14:35:26 GMT-0500 (Eastern Standard Time)",
+          "lat": "33.769844",
+          "long": "-84.410024",
+          "number": "554",
+          "street": "Sunset Ave NW",
+          "city": "Atlanta",
+          "state": {
+            "short": "GA",
+            "long": "Georgia"
+          },
+          "zip": "30318",
+          "fulladdress": "554 Sunset Ave NW Atlanta, GA 30318",
+          "codeviolations": [
+            {
+              "timestamp": "Sat Feb 24 2018 14:35:26 GMT-0500 (Eastern Standard Time)",
+              "codeviolation": "Overgrowth",
+              "codenumber": "5"
+            }
+          ],
+          "notes": ""
+        },
+        {
+          "name": "houses",
+          "id": "o4zm5jc",
+          "timestamp": "Sat Feb 24 2018 14:35:26 GMT-0500 (Eastern Standard Time)",
+          "lat": "33.769732",
+          "long": "-84.409998",
+          "number": "552",
+          "street": "Sunset Ave NW",
+          "city": "Atlanta",
+          "state": {
+            "short": "GA",
+            "long": "Georgia"
+          },
+          "zip": "30318",
+          "fulladdress": "552 Sunset Ave NW Atlanta, GA 30318",
+          "codeviolations": [
+            {
+              "timestamp": "Sat Feb 24 2018 14:35:26 GMT-0500 (Eastern Standard Time)",
+              "codeviolation": "Overgrowth",
+              "codenumber": "5"
+            }
+          ],
+          "notes": ""
+        }
+      ]
+    }
+  ]
+}

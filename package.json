@@ -1,20 +1,4 @@
 {
-<<<<<<< HEAD
-  "name": "maps",
-  "version": "1.0.0",
-  "description": "",
-  "main": "client.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "body-parser": "^1.18.2",
-    "express": "^4.16.2"
-  }
-=======
   "name": "block-by-block-app",
   "version": "1.0.0",
   "description": "Web interface that talks to Google Sheets API",
@@ -23,13 +7,16 @@
     "body-parser": "^1.15.2",
     "dateformat": "^3.0.3",
     "express": "^4.14.0",
+    "fs": "0.0.1-security",
     "google-spreadsheet": "^2.0.0",
     "socket.io": "^2.0.0"
   },
   "scripts": {
-    "start": "node app.js"
+    "start": "concurrently \"nodemon server.js\" \"cd client && npm start\""
   },
   "author": "Brendan Cecere",
-  "license": "ISC"
->>>>>>> d82a05917ac76961a697f394e656d2c06956ef94
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^3.5.1"
+  }
 }
