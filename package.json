@@ -12,11 +12,13 @@
     "socket.io": "^2.0.0"
   },
   "scripts": {
-    "start": "concurrently \"nodemon server.js\" \"cd client && npm start\""
+    "start": "concurrently \"nodemon server.js\" \"cd client && npm start\"",
+    "install": "\"npm install\" && \"cd client && npm install\""
   },
   "author": "Brendan Cecere",
   "license": "ISC",
   "devDependencies": {
-    "concurrently": "^3.5.1"
+    "concurrently": "^3.5.1",
+    "nodemon": "^1.17.1"
   }
 }

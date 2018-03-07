@@ -1,7 +1,9 @@
-const express     = require("express");
-const fs 	        = require("fs");
-const path        = require('path');
+const express           = require("express");
+const fs 	              = require("fs");
+const path              = require('path');
+const GoogleSpreadsheet = require('google-spreadsheet');
 
+const doc = new GoogleSpreadsheet('13CzpEoPA2bxh6w-heRgog5pejYQ_uttE1qVtI3TWwIc');
 const data    = require(__dirname + "/data.json");
 
 const app = express();
@@ -27,8 +29,28 @@ app.post("/", (req, res) => {
   res.json(data);
 });
 
+app.get("/data", (req, res) => {
+  setAuth();
+  doc.getInfo(function (err, info) {
+    mySheet.getCells( {
+      'min-row':1,
+      'max-row':8,
+      'max-col': 2,
+      'min-col': 2,
+      'return-empty': true
+    }, function (err, cells) {
+      res.json(data);
+    });
+  });
+});
+
 app.listen(app.get("port"), () => {
   console.log(`Find the server at: http://localhost:${app.get("port")}/`); // eslint-disable-line no-console
 });
 
 console.log("Server Initialized");
+
+function setAuth() {
+  var creds = require('./master-creds.json');
+  doc.useServiceAccountAuth(creds, getInfoAndWorksheets);
+}
