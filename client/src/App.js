@@ -1,41 +1,26 @@
 import React, { Component } from 'react';
-import GetData from "./GetData"; // We can actually have something like an structure to react files this way
-import Header from './components/header/header'
-import './App.css'; // Also is import a JS thing? Or react?
+import { Switch, Route } from 'react-router-dom'
+import Home from './pages/home/Home';
+import MapView from './pages/mapview/Mapview';
+import Form from './pages/form/Form';
+import Header from './components/header/Header'
+import Footer from './components/footer/Footer'
+import './App.css';
 
 class App extends Component {
-  state = {
-    screen: 0,
-    test: null
-  }
-
-  componentDidMount() {
-    fetch('/', {
-      method: 'POST' 
-    })
-    .then(res => res.json())
-    .then(data => {
-      console.log(data);
-      this.setState({test: data});
-    });
-  }
 
   render() {
     return (
-      <div className="App"> 
-        <Header State="This"></Header>
-        {this.checkState().map(sheet => 
-          <div key={sheet.id}>{sheet.fulladdress}</div>
-        )}
+      <div className="container"> 
+        <Header State="BlockByBlock"></Header>
+        <Switch>
+          <Route exact path='/' component={Home}/>
+          <Route path='/map' component={MapView}/>
+          <Route path='/form' component={Form}/>
+        </Switch>
+        <Footer></Footer>
       </div>
     );
-  }
-
-  checkState() { // This is hyper-specific and bad and assumes the data never fails to be passed
-    if (this.state.test === null) {
-      return [];
-    }
-    return this.state.test.results[0].sheets;
   }
 }
 
