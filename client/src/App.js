@@ -11,8 +11,8 @@ class App extends Component {
 
   render() {
     return (
-      <div className="container"> 
-        <Header State="BlockByBlock"></Header>
+      <div>
+        <Header useContainer="true"></Header>
         <Switch>
           <Route exact path='/' component={Home}/>
           <Route path='/map' component={MapView}/>

@@ -1,10 +1,13 @@
+"use strict";
 const express           = require("express");
 const fs 	              = require("fs");
 const path              = require('path');
 const GoogleSpreadsheet = require('google-spreadsheet');
 
-const doc = new GoogleSpreadsheet('13CzpEoPA2bxh6w-heRgog5pejYQ_uttE1qVtI3TWwIc');
-const data    = require(__dirname + "/data.json");
+const doc               = new GoogleSpreadsheet('1AEvI_VAcKss93_angVXQowdvnjL8u0diIjLsO3vnlJs');
+const data              = require(__dirname + "/data.json");
+const creds             = require('./master-creds.json');
+var sheet;
 
 const app = express();
 
@@ -30,27 +33,24 @@ app.post("/", (req, res) => {
 });
 
 app.get("/data", (req, res) => {
-  setAuth();
-  doc.getInfo(function (err, info) {
-    mySheet.getCells( {
-      'min-row':1,
-      'max-row':8,
-      'max-col': 2,
-      'min-col': 2,
-      'return-empty': true
-    }, function (err, cells) {
-      res.json(data);
+  setAuth(function(){
+    console.log("authenticated");
+    doc.getInfo(function(err, info) {
+      console.log("info got");
+      res.send(err);
     });
   });
+  /*
+  getInfoAndWorksheets(function(data) {
+    res.json(data);
+  });
+  */
 });
 
 app.listen(app.get("port"), () => {
   console.log(`Find the server at: http://localhost:${app.get("port")}/`); // eslint-disable-line no-console
 });
 
-console.log("Server Initialized");
-
-function setAuth() {
-  var creds = require('./master-creds.json');
-  doc.useServiceAccountAuth(creds, getInfoAndWorksheets);
+function setAuth(callback) {
+  doc.useServiceAccountAuth(creds, callback);
 }

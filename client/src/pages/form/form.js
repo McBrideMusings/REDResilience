@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import tempData from '../../tempData.json';
 
 class Form extends Component {
   state = {
@@ -7,6 +8,8 @@ class Form extends Component {
   }
 
   componentDidMount() {
+    console.log(tempData);
+    /*
     fetch('/', {
       method: 'POST' 
     })
@@ -15,14 +18,30 @@ class Form extends Component {
       console.log(data);
       this.setState({test: data});
     });
+    */
   }
 
   render() {
     return (
-      <div className="App"> 
-        {this.checkState().map(sheet => 
-          <div key={sheet.id}>{sheet.fulladdress}</div>
-        )}
+      <div className="row">
+        <div className="col s6 blue flex flex-column">
+          <div>
+            {tempData.houses[0].address}
+          </div>
+          <div>
+            {tempData.houses[0].address}
+          </div>
+          <div>
+            {tempData.houses[0].address}
+          </div>
+          <div>
+            {tempData.houses[0].address}
+          </div>
+          <div>
+            {tempData.houses[0].address}
+          </div>
+        </div>
+        <div className="col s6 red">asdas</div>
       </div>
     );
   }
