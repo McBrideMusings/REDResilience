@@ -35,29 +35,33 @@ app.post("/", (req, res) => {
 app.get("/data", (req, res) => {
   setAuth(function(){
     console.log("authenticated");
-    doc.getInfo(function(err, data) {
+    // It's probably bad to do this many nested callbacks? Should we construct this a different way?
+    doc.getInfo(function(err, data) { 
       if (data === undefined) {
         res.send(err);
       } else {
-        let sheetList = [];
-        //res.send(data.worksheets);
-        /*
-        for (let index = 0; index < data.worksheets.length; index++) {
-          const element = array[index];
-          sheetList.push(element.id);
+        let sheetList = {};
+        const sheetZero = data.worksheets[0];
+        sheetZero.getRows({
+          offset: 1,
+        }, function( err, rows ) {
+          let metaData = [];
+          for (let index = 0; index < rows.length; index++) {
+            const cell = rows[index];
+            metaData[index] = {};
+            metaData[index].id = index;
+            metaData[index].streetNumber = cell.streetnumber;
+            metaData[index].streetName = cell.streetname;
+            metaData[index].city = cell.city;
+            metaData[index].state = cell.state;
+            metaData[index].zip = cell.zip;
+            metaData[index].fullAddress = formatFullAddress(cell.streetnumber,cell.streetname,cell.city,cell.state,cell.zip);
+          }
+          res.send(metaData);
+        });
         }
-        console.log(sheetList);
-        res.send(sheetList);
-        */
-       data.worksheets[0].GetRow("A")
-      }
     });
   });
-  /*
-  getInfoAndWorksheets(function(data) {
-    res.json(data);
-  });
-  */
 });
 
 app.listen(app.get("port"), () => {
@@ -66,4 +70,7 @@ app.listen(app.get("port"), () => {
 
 function setAuth(callback) {
   doc.useServiceAccountAuth(creds, callback);
+}
+function formatFullAddress(streetNumber,streetName,city,state,zip) {
+  return streetNumber+" "+streetName+" "+city+", "+state+" "+zip;
 }
