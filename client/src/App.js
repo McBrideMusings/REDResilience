@@ -11,7 +11,7 @@ class App extends Component {
 
   render() {
     return (
-      <div className="container"> 
+      <div className="content-wrap">
         <Header State="BlockByBlock"></Header>
         <Switch>
           <Route exact path='/' component={Home}/>

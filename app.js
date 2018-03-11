@@ -99,18 +99,6 @@ io.sockets.on("connection",function(socket){
             }, function () {
                 console.log("done");
             });
-            /*mySheet.getCells({
-                'min-row':1,
-                'max-row':8,
-                'max-col': 2,
-                'min-col': 2,
-                'return-empty': true
-            }, function (err, cells) {
-               for(var i=0; i<cells.length; i++){
-                   console.log(cells[i]);
-                   socket.emit("console", JSON.stringify(cells[i]));
-               }
-            });*/
         });
     });
 

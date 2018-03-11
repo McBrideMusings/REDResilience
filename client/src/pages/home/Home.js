@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 class Home extends Component {
   render() {
     return (
+     <div className="container">
       <div className="row">
         <div className="col">
           <h5>Hello, we're Block by Block</h5>
@@ -13,6 +14,7 @@ class Home extends Component {
           </p>
         </div>
       </div>
+       </div>
     );
   }
 }
