@@ -35,9 +35,22 @@ app.post("/", (req, res) => {
 app.get("/data", (req, res) => {
   setAuth(function(){
     console.log("authenticated");
-    doc.getInfo(function(err, info) {
-      console.log("info got");
-      res.send(err);
+    doc.getInfo(function(err, data) {
+      if (data === undefined) {
+        res.send(err);
+      } else {
+        let sheetList = [];
+        //res.send(data.worksheets);
+        /*
+        for (let index = 0; index < data.worksheets.length; index++) {
+          const element = array[index];
+          sheetList.push(element.id);
+        }
+        console.log(sheetList);
+        res.send(sheetList);
+        */
+       data.worksheets[0].GetRow("A")
+      }
     });
   });
   /*
