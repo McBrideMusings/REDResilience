@@ -35,7 +35,7 @@ class Form extends Component {
       tiresChecked: false
     });
   }
-  
+
   setHouse(obj){
     this.currHouse = obj;
     // var result = this.state.test.results[0].sheets.find((n) => {
