@@ -1,19 +1,32 @@
-*{
+* {
   font-family: 'Lato', sans-serif;
+}
+html {
+  background-color: #fafafa;
 }
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   font-weight: 300;
   color: #303338;
+  min-height: 100vh;
 }
 a {
   color: #25AB50;
 }
+.root {
+  min-height: 100vh;
+}
 .flex {
   display: flex;
 }
+.flex-column {
+  flex-direction: column;
+}
 .flex-right {
   justify-content: flex-end;
+}
+.flex-center {
+  justify-content: space-between;
 }
 .text-basic {
   color: #303338 !important;

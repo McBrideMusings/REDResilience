@@ -1,13 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom'
 
-const Header = ({State}) => (
+const Header = ({useContainer}) => (
   <div className="container">
-  <div className="row" role="navigation">
-    <div className="col s6">
-      <h3 className="valign-wrapper"><Link to='/'>{State}</Link></h3>
+    <div className="row" role="navigation">
+      <div className="col s6">
+        <h3 className="valign-wrapper"><Link to='/'>BlockByBlock</Link></h3>
+      </div>
     </div>
-  </div>
   </div>
 );
 

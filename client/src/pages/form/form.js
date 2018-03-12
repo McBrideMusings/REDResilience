@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import tempData from '../../tempData.json';
 
 class Form extends Component {
   constructor(props) {
@@ -101,6 +102,8 @@ class Form extends Component {
   }
 
   componentDidMount() {
+    console.log(tempData);
+    /*
     fetch('/', {
       method: 'POST' 
     })
@@ -109,6 +112,7 @@ class Form extends Component {
       console.log(data);
       this.setState({test: data});
     });
+    */
   }
 
   render() {
