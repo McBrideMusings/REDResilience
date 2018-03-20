@@ -1,5 +1,8 @@
 "use strict";
 const express           = require("express");
+const bodyParser        = require('body-parser');
+const fileUpload        = require('express-fileupload');
+const cors              = require('cors');
 const fs 	              = require("fs");
 const path              = require('path');
 const GoogleSpreadsheet = require('google-spreadsheet');
@@ -12,7 +15,10 @@ var sheet;
 const app = express();
 
 app.set("port", process.env.PORT || 3001);
-
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(fileUpload());
 // Express only serves static assets in production
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
@@ -61,6 +67,17 @@ app.get("/data", (req, res) => {
         });
         }
     });
+  });
+});
+
+app.post(('/upload'), (req, res) => {
+  console.log('upload endpoint hit');
+  let imageFile = req.files.file;
+  imageFile.mv(`${__dirname}/public/${req.body.filename}`, function(err) {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.json({file: `${req.body.filename}`});
   });
 });
 

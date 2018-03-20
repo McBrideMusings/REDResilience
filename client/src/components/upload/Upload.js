@@ -2,6 +2,8 @@
 import React from 'react';
 
 class Upload extends React.Component {
+
+  /*
   constructor(props) {
     super(props);
 
@@ -27,10 +29,12 @@ class Upload extends React.Component {
         this.setState({ imageURL: `http://localhost:8000/${body.file}` });
       });
     });
-  }
+  }*/
 
   render() {
     return (
+      <div>asdsaa</div>
+      /*
       <form onSubmit={this.handleUploadImage}>
         <div>
           <input ref={(ref) => { this.uploadInput = ref; }} type="file" />
@@ -44,8 +48,9 @@ class Upload extends React.Component {
         </div>
         <img src={this.state.imageURL} alt="img" />
       </form>
+      */
     );
   }
 }
 
-export default Main;
+export default Upload;
