@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Switch, Route } from 'react-router-dom'
+import { Switch, Route } from 'react-router-dom';
 import Home from './pages/home/Home';
 import MapView from './pages/mapview/Mapview';
 import Form from './pages/form/Form';

@@ -82,3 +82,6 @@ a {
 .no-margin-top{
   margin-top: 0;
 }
+h5.heading{
+  line-height: 34px;
+}
