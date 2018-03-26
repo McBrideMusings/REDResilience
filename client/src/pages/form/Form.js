@@ -21,6 +21,7 @@ class Form extends Component {
     picRow3Data: {},
     currHouse: {},
     currImg: null,
+    images: [],
     test: undefined,
     openChecked: false,
     overgrowthChecked: false,
@@ -51,8 +52,18 @@ class Form extends Component {
           console.log(data);
           this.setState({test: data});
         });
+    fetch('/images', {
+      method: 'GET'
+    })
+        .then(res => res.json())
+        .then(data => {
+          console.log(data);
+          this.setState({images: data});
+        });
   }
-  
+  getImages() {
+
+  }
   resetCheckboxes(){
     this.setState({
       openChecked: false,
@@ -157,8 +168,18 @@ class Form extends Component {
                               <option dataValue={JSON.stringify(element)}>{element.streetNumber} {element.streetName}</option>
                           )}
                         </ReactMaterialSelect>
-                        <div class="row no-margin">
-                          <div class="col s6">
+                        <div className="row no-margin">
+                          <div className="col s6">
+                            {this.state.images.map((element) =>
+                              <a href="javascript:void(0)" onClick={() => this.setAddressRow1(element)}>
+                                <div className="card">
+                                  <div className="card-image">
+                                    <img src={element} width="50%"/>
+                                  </div>
+                                </div>
+                              </a>
+
+                            )}
                             <a href="javascript:void(0)" onClick={() => this.setAddressRow1("/img/559_sunset.png")}>
                               <div className="card">
                                 <div className="card-image">
@@ -167,7 +188,7 @@ class Form extends Component {
                               </div>
                             </a>
                           </div>
-                          <div class="col s6">
+                          <div className="col s6">
                             <a href="javascript:void(0)" onClick={() => this.setAddressRow1("/img/559_sunset_2.png")}>
                               <div className="card">
                                 <div className="card-image">
@@ -186,8 +207,8 @@ class Form extends Component {
                               <option dataValue={JSON.stringify(element)}>{element.streetNumber} {element.streetName}</option>
                           )}
                         </ReactMaterialSelect>
-                        <div class="row no-margin-bottom">
-                          <div class="col s6">
+                        <div className="row no-margin-bottom">
+                          <div className="col s6">
                             <a href="javascript:void(0)" onClick={() => this.setAddressRow2("/img/683_dalvigney.png")}>
                               <div className="card">
                                 <div className="card-image">
@@ -207,8 +228,8 @@ class Form extends Component {
                               <option dataValue={JSON.stringify(element)}>{element.streetNumber} {element.streetName}</option>
                           )}
                         </ReactMaterialSelect>
-                        <div class="row">
-                          <div class="col s6">
+                        <div className="row">
+                          <div className="col s6">
                             <a href="javascript:void(0)" onClick={() => this.setAddressRow3("/img/696_fox.png")}>
                               <div className="card">
                                 <div className="card-image">

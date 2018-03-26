@@ -1,6 +1,5 @@
 "use strict";
 const express           = require("express");
-const bodyParser        = require('body-parser');
 const fileUpload        = require('express-fileupload');
 const cors              = require('cors');
 const fs 	              = require("fs");
@@ -11,6 +10,7 @@ const dateFormat = require('dateformat');
 const doc               = new GoogleSpreadsheet('1AEvI_VAcKss93_angVXQowdvnjL8u0diIjLsO3vnlJs');
 const dataDoc           = new GoogleSpreadsheet('13CzpEoPA2bxh6w-heRgog5pejYQ_uttE1qVtI3TWwIc');
 const data              = require(__dirname + "/data.json");
+// const imgPath           = require(__dirname + "/public/img/");
 const creds             = require('./master-creds.json');
 var sheet;
 
@@ -48,6 +48,18 @@ app.get("/test", function (req, res) {
 
 app.post("/", (req, res) => {
   res.json(data);
+});
+
+app.get('/images', function (req, res) {
+  var imgArray = [];
+  fs.readdir(`${__dirname}/client/public/img/`, (err, files) => {
+    files.forEach(file => {
+      var str = "/img/"+file;
+      // var str = `${__dirname}/client/public/img/`+file;
+      imgArray.push(str);
+    });
+    res.send(imgArray);
+  });
 });
 
 app.get("/data", (req, res) => {
@@ -108,7 +120,7 @@ app.post("/addViolations", (req, res) =>{
 app.post(('/upload'), (req, res) => {
   console.log('upload endpoint hit');
   let imageFile = req.files.file;
-  imageFile.mv(`${__dirname}/public/${req.body.filename}`, function(err) {
+  imageFile.mv(`${__dirname}/client/public/img/${req.body.filename}`, function(err) {
     if (err) {
       return res.status(500).send(err);
     }

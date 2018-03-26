@@ -14,6 +14,7 @@ class Upload extends Component {
     const data = new FormData();
     data.append('file', this.uploadInput.files[0]);
     data.append('filename', this.uploadInput.files[0].name);
+    console.log(this.uploadInput.files[0]);
     fetch('/upload', { // Your POST endpoint
       method: 'POST',
       body: data,
