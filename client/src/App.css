@@ -73,6 +73,9 @@ a {
 .border-right-light{
   border-right: solid 1px rgba(0,0,0,0.22);
 }
+.border-left-light{
+  border-left: solid 1px rgba(0,0,0,0.22);
+}
 .no-margin{
   margin: 0;
 }
@@ -84,4 +87,32 @@ a {
 }
 h5.heading{
   line-height: 34px;
+}
+.null{
+  display: flex;
+}
+.null-state{
+  align-self: center;
+  border: 1px solid rgba(0,0,0,0.22);
+  padding: 40px;
+}
+.monthsLabel{
+  padding-left: 23px !important;
+  padding-right: 10px !important;
+}
+.input-field.col{
+  margin: 0;
+  margin-left: 11px !important;
+  background: white;
+  padding: 0px;
+  height: 25px;
+  padding-right: 10px;
+  border: 1px solid rgba(0,0,0,0.22);
+}
+.input-field.col > input{
+  height: 100% !important;
+  padding-left: 10px !important;
+}
+.row.comment{
+  margin-bottom: 1em !important;
 }
