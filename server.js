@@ -9,19 +9,39 @@ const cors              = require('cors');
 const fs 	              = require("fs");
 const path              = require('path');
 const GoogleSpreadsheet = require('google-spreadsheet');
-
+const {google}            = require('googleapis');
+const drive             = google.drive('v3');
+const DriveUpload      = require('./driveupload');
 
 // config
 const maxFileSize = 10000000000; // Might be total across all uploaded files
 const maxNumFiles = 10;
 
-
 // setup
 var sheet;
-const creds = require('./master-creds.json');
+const creds = require('./master-creds-pierce.json');
 const data = require(__dirname + "/data.json");
 const doc = new GoogleSpreadsheet('1AEvI_VAcKss93_angVXQowdvnjL8u0diIjLsO3vnlJs');
+const client = new DriveUpload(creds);
 
+/*
+// configure a JWT auth client
+let jwtClient = new google.auth.JWT (
+  creds.client_email,
+  null,
+  creds.private_key,
+  ['https://www.googleapis.com/auth/spreadsheets',
+   'https://www.googleapis.com/auth/drive']);
+  //authenticate request
+  jwtClient.authorize(function (err, tokens) {
+  if (err) {
+  console.log(err);
+  return;
+  } else {
+  console.log("Successfully connected!");
+  }
+});
+*/
 // configure storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -82,7 +102,44 @@ app.post('/upload', (req, res) => {
   });
 });
 
+app.get('/testing', (req, res) => {
+  client.Upload('./pic1.png', "559_Sunset", true)
+  .then((fulfilled) => {
+    res.json(fulfilled);
+  }).catch((error) => {
+    res.send(error);
+  });
+});
+
+
 app.listen(port, () => console.log(`Server listening on port ${port}`));
+
+/*
+function runSamples () {
+  var folderId = '1KKSuuouIc6pkLQKsJ13PkH99P2PbnPUv';
+  var fileMetadata = {
+    'name': 'photo.jpg',
+    parents: [folderId]
+  };
+  var media = {
+    mimeType: 'image/jpeg',
+    body: fs.createReadStream('./photo.jpg')
+  };
+  drive.files.create({
+    resource: fileMetadata,
+    media: media,
+    fields: 'id',
+    auth: jwtClient
+  }, function (err, file) {
+    if (err) {
+      // Handle error
+      throw (err);
+    } else {
+      return ('File Id: ', file.id);
+    }
+  });
+};
+*/
 /*
 
 app.get("/data", (req, res) => {
