@@ -90,6 +90,7 @@ h5.heading{
 }
 .null{
   display: flex;
+  padding-left: 50px !important;
 }
 .null-state{
   align-self: center;
@@ -115,4 +116,7 @@ h5.heading{
 }
 .row.comment{
   margin-bottom: 1em !important;
+}
+.resCol{
+  padding-left: 35px !important;
 }

@@ -8,12 +8,14 @@ class Form extends Component {
     super(props);
 
     this.violations = [];
-    this.violationList = ["Open & Vacant Structure", "Overgrowth (grass, weeds, kudz)", "Junk vehicle", "Junk, debris, trash", "Vacant Lot", "Leaking/ inoperable plumbing", "No water (hot/cold)", "No heat", "Junk Tires"];
-    this.picRow1Callback = this.picRow1Callback.bind(this);
-    this.picRow2Callback = this.picRow2Callback.bind(this);
-    this.picRow3Callback = this.picRow3Callback.bind(this);
-    this.picRow3Callback = this.picRow3Callback.bind(this);
+    // this.violationList = ["Open & Vacant Structure", "Overgrowth (grass, weeds, kudz)", "Junk vehicle", "Junk, debris, trash", "Vacant Lot", "Leaking/ inoperable plumbing", "No water (hot/cold)", "No heat", "Junk Tires"];
+    // this.picRow1Callback = this.picRow1Callback.bind(this);
+    // this.picRow2Callback = this.picRow2Callback.bind(this);
+    // this.picRow3Callback = this.picRow3Callback.bind(this);
+    // this.picRow3Callback = this.picRow3Callback.bind(this);
     this.localSelectCallback = this.localSelectCallback.bind(this);
+    this.commentCallback = this.commentCallback.bind(this);
+    this.resolvedCallback = this.resolvedCallback.bind(this);
   }
 
   state = {
@@ -116,6 +118,8 @@ class Form extends Component {
     otherCheckedcomments: null
   };
 
+
+
   localSelectCallback(selected){
     console.log(selected);
     var id = this.state.currId;
@@ -123,10 +127,7 @@ class Form extends Component {
       this.state.images[id].houseData = JSON.parse(selected.value);
       this.setState({images : this.state.images});
       console.log(selected);
-    }catch(e){
-
-    };
-
+    }catch(e){}
   }
 
   resetDropdown(){
@@ -134,162 +135,284 @@ class Form extends Component {
       this.refs.localSelect.handleSetSelect("Select An Address", "None");
     }
   }
-  picRow1Callback(selected) {
-    this.setState({picRow1Data: selected});
-    console.log(this.state.picRow1Data);
-  }
-  picRow2Callback(selected) {
-    this.setState({picRow2Data: selected})
-  }
-  picRow3Callback(selected) {
-    this.setState({picRow3Data: selected})
-  }
+  // picRow1Callback(selected) {
+  //   this.setState({picRow1Data: selected});
+  //   console.log(this.state.picRow1Data);
+  // }
+  // picRow2Callback(selected) {
+  //   this.setState({picRow2Data: selected})
+  // }
+  // picRow3Callback(selected) {
+  //   this.setState({picRow3Data: selected})
+  // }
 
   componentDidMount() {
     fetch('/data', {
       method: 'GET'
     })
-        .then(res => res.json())
-        .then(data => {
-          console.log(data);
-          this.setState({test: data});
-        });
+    .then(res => res.json())
+    .then(data => {
+      console.log(data);
+      this.setState({test: data});
+    });
     fetch('/images', {
       method: 'GET'
     })
     .then(res => res.json())
     .then(data => {
-      console.log(data);
       var obj = {};
       for(var i = 0; i < data.length; i++){
         obj[i] = {
           id: i,
           url: data[i],
           openChecked: false,
+          openResolved: false,
           openCheckedmonthsOne: false,
           openCheckedmonthsFour: false,
           openCheckedmonthsSix: false,
           openCheckedfront: false,
           openCheckedback: false,
           openCheckedside: false,
-          openCheckedcomments: null,
+          openCheckedcomments: "",
           overgrowthChecked: false,
+          overgrowthResolved: false,
           overgrowthCheckedmonthsOne: false,
           overgrowthCheckedmonthsFour: false,
           overgrowthCheckedmonthsSix: false,
           overgrowthCheckedfront: false,
           overgrowthCheckedback: false,
           overgrowthCheckedside: false,
-          overgrowthCheckedcomments: null,
+          overgrowthCheckedcomments: "",
           junkVehicleChecked: false,
+          junkVehicleResolved: false,
           junkVehicleCheckedmonthsOne: false,
           junkVehicleCheckedmonthsFour: false,
           junkVehicleCheckedmonthsSix: false,
           junkVehicleCheckedfront: false,
           junkVehicleCheckedback: false,
           junkVehicleCheckedside: false,
-          junkVehicleCheckedcomments: null,
+          junkVehicleCheckedcomments: "",
           junkChecked: false,
+          junkResolved: false,
           junkCheckedmonthsOne: false,
           junkCheckedmonthsFour: false,
           junkCheckedmonthsSix: false,
           junkCheckedfront: false,
           junkCheckedback: false,
           junkCheckedside: false,
-          junkCheckedcomments: null,
+          junkCheckedcomments: "",
           vacantChecked: false,
+          vacantResolved: false,
           vacantCheckedmonthsOne: false,
           vacantCheckedmonthsFour: false,
           vacantCheckedmonthsSix: false,
           vacantCheckedfront: false,
           vacantCheckedback: false,
           vacantCheckedside: false,
-          vacantCheckedcomments: null,
+          vacantCheckedcomments: "",
           leakingChecked: false,
+          leakingResolved: false,
           leakingCheckedmonthsOne: false,
           leakingCheckedmonthsFour: false,
           leakingCheckedmonthsSix: false,
           leakingCheckedfront: false,
           leakingCheckedback: false,
           leakingCheckedside: false,
-          leakingCheckedcomments: null,
+          leakingCheckedcomments: "",
           waterChecked: false,
+          waterResolved: false,
           waterCheckedmonthsOne: false,
           waterCheckedmonthsFour: false,
           waterCheckedmonthsSix: false,
           waterCheckedfront: false,
           waterCheckedback: false,
           waterCheckedside: false,
-          waterCheckedcomments: null,
+          waterCheckedcomments: "",
           squattersChecked: false,
+          squattersResolved: false,
           squattersCheckedmonthsOne: false,
           squattersCheckedmonthsFour: false,
           squattersCheckedmonthsSix: false,
           squattersCheckedfront: false,
           squattersCheckedback: false,
           squattersCheckedside: false,
-          squattersCheckedcomments: null,
+          squattersCheckedcomments: "",
           boardedChecked: false,
+          boardedResolved: false,
           boardedCheckedmonthsOne: false,
           boardedCheckedmonthsFour: false,
           boardedCheckedmonthsSix: false,
           boardedCheckedfront: false,
           boardedCheckedback: false,
           boardedCheckedside: false,
-          boardedCheckedcomments: null,
+          boardedCheckedcomments: "",
           rodentChecked: false,
+          rodentResolved: false,
           rodentCheckedmonthsOne: false,
           rodentCheckedmonthsFour: false,
           rodentCheckedmonthsSix: false,
           rodentCheckedfront: false,
           rodentCheckedback: false,
           rodentCheckedside: false,
-          rodentCheckedcomments: null,
+          rodentCheckedcomments: "",
           floodedChecked: false,
+          floodedCResolved: false,
           floodedCheckedmonthsOne: false,
           floodedCheckedmonthsFour: false,
           floodedCheckedmonthsSix: false,
           floodedCheckedfront: false,
           floodedCheckedback: false,
           floodedCheckedside: false,
-          floodedCheckedcomments: null,
+          floodedCheckedcomments: "",
           otherChecked: false,
+          otherResolved: false,
           otherCheckedmonthsOne: false,
           otherCheckedmonthsFour: false,
           otherCheckedmonthsSix: false,
           otherCheckedfront: false,
           otherCheckedback: false,
           otherCheckedside: false,
-          otherCheckedcomments: null,
+          otherCheckedcomments: "",
           houseData: {},
           violations: []
         }
       }
       this.setState({images: obj});
-      console.log(this.state.images[0]);
     });
-
   }
 
-
-  resetCheckboxes(){
-    this.setState({
+  addNewEntry(){
+    var tempImg = this.state.images;
+    var l = Object.keys(this.state.images).length;
+    var obj = {
+      id: l,
+      url: "/img/placeholder.jpg",
       openChecked: false,
+      openResolved: false,
+      openCheckedmonthsOne: false,
+      openCheckedmonthsFour: false,
+      openCheckedmonthsSix: false,
+      openCheckedfront: false,
+      openCheckedback: false,
+      openCheckedside: false,
+      openCheckedcomments: "",
       overgrowthChecked: false,
+      overgrowthResolved: false,
+      overgrowthCheckedmonthsOne: false,
+      overgrowthCheckedmonthsFour: false,
+      overgrowthCheckedmonthsSix: false,
+      overgrowthCheckedfront: false,
+      overgrowthCheckedback: false,
+      overgrowthCheckedside: false,
+      overgrowthCheckedcomments: "",
       junkVehicleChecked: false,
+      junkVehicleResolved: false,
+      junkVehicleCheckedmonthsOne: false,
+      junkVehicleCheckedmonthsFour: false,
+      junkVehicleCheckedmonthsSix: false,
+      junkVehicleCheckedfront: false,
+      junkVehicleCheckedback: false,
+      junkVehicleCheckedside: false,
+      junkVehicleCheckedcomments: "",
       junkChecked: false,
+      junkResolved: false,
+      junkCheckedmonthsOne: false,
+      junkCheckedmonthsFour: false,
+      junkCheckedmonthsSix: false,
+      junkCheckedfront: false,
+      junkCheckedback: false,
+      junkCheckedside: false,
+      junkCheckedcomments: "",
       vacantChecked: false,
+      vacantResolved: false,
+      vacantCheckedmonthsOne: false,
+      vacantCheckedmonthsFour: false,
+      vacantCheckedmonthsSix: false,
+      vacantCheckedfront: false,
+      vacantCheckedback: false,
+      vacantCheckedside: false,
+      vacantCheckedcomments: "",
       leakingChecked: false,
+      leakingResolved: false,
+      leakingCheckedmonthsOne: false,
+      leakingCheckedmonthsFour: false,
+      leakingCheckedmonthsSix: false,
+      leakingCheckedfront: false,
+      leakingCheckedback: false,
+      leakingCheckedside: false,
+      leakingCheckedcomments: "",
       waterChecked: false,
-      heatChecked: false,
-      tiresChecked: false
-    });
+      waterResolved: false,
+      waterCheckedmonthsOne: false,
+      waterCheckedmonthsFour: false,
+      waterCheckedmonthsSix: false,
+      waterCheckedfront: false,
+      waterCheckedback: false,
+      waterCheckedside: false,
+      waterCheckedcomments: "",
+      squattersChecked: false,
+      squattersResolved: false,
+      squattersCheckedmonthsOne: false,
+      squattersCheckedmonthsFour: false,
+      squattersCheckedmonthsSix: false,
+      squattersCheckedfront: false,
+      squattersCheckedback: false,
+      squattersCheckedside: false,
+      squattersCheckedcomments: "",
+      boardedChecked: false,
+      boardedResolved: false,
+      boardedCheckedmonthsOne: false,
+      boardedCheckedmonthsFour: false,
+      boardedCheckedmonthsSix: false,
+      boardedCheckedfront: false,
+      boardedCheckedback: false,
+      boardedCheckedside: false,
+      boardedCheckedcomments: "",
+      rodentChecked: false,
+      rodentResolved: false,
+      rodentCheckedmonthsOne: false,
+      rodentCheckedmonthsFour: false,
+      rodentCheckedmonthsSix: false,
+      rodentCheckedfront: false,
+      rodentCheckedback: false,
+      rodentCheckedside: false,
+      rodentCheckedcomments: "",
+      floodedChecked: false,
+      floodedCResolved: false,
+      floodedCheckedmonthsOne: false,
+      floodedCheckedmonthsFour: false,
+      floodedCheckedmonthsSix: false,
+      floodedCheckedfront: false,
+      floodedCheckedback: false,
+      floodedCheckedside: false,
+      floodedCheckedcomments: "",
+      otherChecked: false,
+      otherResolved: false,
+      otherCheckedmonthsOne: false,
+      otherCheckedmonthsFour: false,
+      otherCheckedmonthsSix: false,
+      otherCheckedfront: false,
+      otherCheckedback: false,
+      otherCheckedside: false,
+      otherCheckedcomments: "",
+      houseData: {},
+      violations: [],
+      isPlaceholder: true
+    };
+    tempImg[l] = obj;
+    console.log(tempImg);
+    this.setState({images: tempImg});
+    this.selectImage(this.state.images[obj.id]);
   }
+
+
 
   selectImage(obj){
     this.setState({
       currId: obj.id,
+      isResolved: obj.isResolved,
       openChecked: obj.openChecked,
+      openResolved: obj.openResolved,
       openCheckedmonthsOne: obj.openCheckedmonthsOne,
       openCheckedmonthsFour: obj.openCheckedmonthsFour,
       openCheckedmonthsSix: obj.openCheckedmonthsSix,
@@ -298,6 +421,7 @@ class Form extends Component {
       openCheckedside: obj.openCheckedside,
       openCheckedcomments: obj.openCheckedcomments,
       overgrowthChecked: obj.overgrowthChecked,
+      overgrowthResolved: obj.overgrowthResolved,
       overgrowthCheckedmonthsOne: obj.overgrowthCheckedmonthsOne,
       overgrowthCheckedmonthsFour: obj.overgrowthCheckedmonthsFour,
       overgrowthCheckedmonthsSix: obj.overgrowthCheckedmonthsSix,
@@ -306,6 +430,7 @@ class Form extends Component {
       overgrowthCheckedside: obj.overgrowthCheckedside,
       overgrowthCheckedcomments: obj.overgrowthCheckedcomments,
       junkVehicleChecked: obj.junkVehicleChecked,
+      junkVehicleResolved: obj.junkVehicleResolved,
       junkVehicleCheckedmonthsOne: obj.junkVehicleCheckedmonthsOne,
       junkVehicleCheckedmonthsFour: obj.junkVehicleCheckedmonthsFour,
       junkVehicleCheckedmonthsSix: obj.junkVehicleCheckedmonthsSix,
@@ -314,6 +439,7 @@ class Form extends Component {
       junkVehicleCheckedside: obj.junkVehicleCheckedside,
       junkVehicleCheckedcomments: obj.junkVehicleCheckedcomments,
       junkChecked: obj.junkChecked,
+      junkResolved: obj.junkResolved,
       junkCheckedmonthsOne: obj.junkCheckedmonthsOne,
       junkCheckedmonthsFour: obj.junkCheckedmonthsFour,
       junkCheckedmonthsSix: obj.junkCheckedmonthsSix,
@@ -322,6 +448,7 @@ class Form extends Component {
       junkCheckedside: obj.junkCheckedside,
       junkCheckedcomments: obj.junkCheckedcomments,
       leakingChecked: obj.leakingChecked,
+      leakingResolved: obj.leakingResolved,
       leakingCheckedmonthsOne: obj.leakingCheckedmonthsOne,
       leakingCheckedmonthsFour: obj.leakingCheckedmonthsFour,
       leakingCheckedmonthsSix: obj.leakingCheckedmonthsSix,
@@ -330,6 +457,7 @@ class Form extends Component {
       leakingCheckedside: obj.leakingCheckedside,
       leakingCheckedcomments: obj.leakingCheckedcomments,
       waterChecked: obj.waterChecked,
+      waterResolved: obj.waterResolved,
       waterCheckedmonthsOne: obj.waterCheckedmonthsOne,
       waterCheckedmonthsFour: obj.waterCheckedmonthsFour,
       waterCheckedmonthsSix: obj.waterCheckedmonthsSix,
@@ -338,6 +466,7 @@ class Form extends Component {
       waterCheckedside: obj.waterCheckedside,
       waterCheckedcomments: obj.waterCheckedcomments,
       squattersChecked: obj.squattersChecked,
+      squattersResolved: obj.squattersResolved,
       squattersCheckedmonthsOne: obj.squattersCheckedmonthsOne,
       squattersCheckedmonthsFour: obj.squattersCheckedmonthsFour,
       squattersCheckedmonthsSix: obj.squattersCheckedmonthsSix,
@@ -346,6 +475,7 @@ class Form extends Component {
       squattersCheckedside: obj.squattersCheckedside,
       squattersCheckedcomments: obj.squattersCheckedcomments,
       boardedChecked: obj.boardedChecked,
+      boardedResolved: obj.boardedResolved,
       boardedCheckedmonthsOne: obj.boardedCheckedmonthsOne,
       boardedCheckedmonthsFour: obj.boardedCheckedmonthsFour,
       boardedCheckedmonthsSix: obj.boardedCheckedmonthsSix,
@@ -353,7 +483,8 @@ class Form extends Component {
       boardedCheckedback: obj.boardedCheckedback,
       boardedCheckedside: obj.boardedCheckedside,
       boardedCheckedcomments: obj.boardedCheckedcomments,
-      rodentChecked: obj.rodentChecked.state,
+      rodentChecked: obj.rodentChecked,
+      rodentResolved: obj.rodentResolved,
       rodentCheckedmonthsOne: obj.rodentCheckedmonthsOne,
       rodentCheckedmonthsFour: obj.rodentCheckedmonthsFour,
       rodentCheckedmonthsSix: obj.rodentCheckedmonthsSix,
@@ -362,6 +493,7 @@ class Form extends Component {
       rodentCheckedside: obj.rodentCheckedside,
       rodentCheckedcomments: obj.rodentCheckedcomments,
       floodedChecked: obj.floodedChecked,
+      floodedResolved: obj.floodedResolved,
       floodedCheckedmonthsOne: obj.floodedCheckedmonthsOne,
       floodedCheckedmonthsFour: obj.floodedCheckedmonthsFour,
       floodedCheckedmonthsSix: obj.floodedCheckedmonthsSix,
@@ -370,6 +502,7 @@ class Form extends Component {
       floodedCheckedside: obj.floodedCheckedside,
       floodedCheckedcomments: obj.floodedCheckedcomments,
       otherChecked: obj.otherChecked,
+      otherResolved: obj.otherResolved,
       otherCheckedmonthsOne: obj.otherCheckedmonthsOne,
       otherCheckedmonthsFour: obj.otherCheckedmonthsFour,
       otherCheckedmonthsSix: obj.otherCheckedmonthsSix,
@@ -379,55 +512,45 @@ class Form extends Component {
       otherCheckedcomments: obj.otherCheckedcomments,
       currImg: obj.url
     },function(){
-          //console.log(this.state.images[this.state.currId]);
       this.resetDropdown();
-         // if(this.refs.localSelect.getValue) this.refs.localSelect.handleSetSelect("Select An Address", "None");
-     if(this.state.images[this.state.currId].houseData.streetName != null) {
-       // var obj = this.state.images[this.state.currId].houseData;
-       // console.log(obj);
-       // var str = obj.fullAddress;
-       // this.refs.localSelect.handleSetSelect(str, obj);
-     }
-      else{
-       //this.refs.localSelect.handleResetSelect();
-     }
-    }
-    );
-    // if(this.refs.row1Select.getValue() != "Choose An Address..."){
-    //   this.setState({currHouse: JSON.parse(this.refs.row1Select.getValue())});
-    //   this.state.images[obj.id].houseData = JSON.parse(this.refs.row1Select.getValue());
-    // }
-    //if(this.refs.localSelect) this.refs.localSelect.handleResetSelect();
-    //this.state.images[obj.id].houseData = {};
-
+    });
     console.log(this.state.images[obj.id]);
+  }
+
+  resolvedCallback(event){
+    var id  = this.state.currId;
+    this.setState({ [event.target.id] : !this.state[event.target.id] });
+    this.state.images[id][event.target.id] = !this.state.images[id][event.target.id];
+  }
+
+  commentCallback(event){
+    var id  = this.state.currId;
+    this.setState({ [event.target.id] : event.target.value});
+    this.state.images[id][event.target.id] = event.target.value;
   }
 
   updateViolations(v, c){
     var id  = this.state.currId;
     this.setState({ [c]: !this.state[c] });
     this.state.images[id][c] = !this.state.images[id][c];
-    //console.log(this.state.images[id]);
-   var result = this.state.images[id].violations.find((n) => {
+    var result = this.state.images[id].violations.find((n) => {
      return n === v;
     });
     if(result == null){
       this.state.images[id].violations.push(v);
       this.state.images[id][c] = true;
-      console.log(this.state.images[id]);
     }
     else{
       var index = this.state.images[id].violations.indexOf(v);
       this.state.images[id][c] = false;
       this.state.images[id].violations.splice(index, 1);
-      console.log(this.state.images[id]);
     }
   }
 
   saveViolations(){
     for(var i=0; i< Object.keys(this.state.images).length; i++){
       var postData = {houseData: {}, violationData: {}};
-      let newViolations = this.reconstructViolations(this.state.images[i].violations);
+      let newViolations = this.reconstructViolations(this.state.images[i]);
       postData.houseData = this.state.images[i].houseData;
       Object.keys(newViolations[0]).forEach(function(key, idx) {
         if(Object.keys(newViolations[0][key]).length){
@@ -441,16 +564,19 @@ class Form extends Component {
               houseData: postData.houseData,
               violationData: newViolations[0][key]
             })
-          });
+          }).then(function(res){
+              console.log(res);
+            }
+          );
         }
       });
     }
-    this.violations = [];
   }
 
-  reconstructViolations(v){
+  reconstructViolations(img){
     var newViolations = [];
     var obj = {open: {}, overgrowth: {}, squatters: {}, leaking: {}, water: {}, boarded: {}, rodent: {}, flooded: {}, trash: {}, junkVehicle: {}, other: {}};
+    var v = img.violations;
     for(var i=0; i<v.length; i++){
       if(v[i].includes("Open/Vacant")){
         obj.open.name = "Open/Vacant";
@@ -472,6 +598,7 @@ class Form extends Component {
         if(v[i].includes("side")){
           obj.open.side = true;
         }
+        if(img.openResolved) obj.open.isResolved = true;
       }
       if(v[i].includes("Overgrown")){
         obj.overgrowth.name = "Overgrown";
@@ -493,6 +620,7 @@ class Form extends Component {
         if(v[i].includes("side")){
           obj.overgrowth.side = true;
         }
+        if(img.overgrowthResolved) obj.overgrowth.isResolved = true;
       }
       if(v[i].includes("Squatters")) {
         obj.squatters.name = "Housing Squatters";
@@ -514,6 +642,7 @@ class Form extends Component {
         if (v[i].includes("side")) {
           obj.squatters.side = true;
         }
+        if(img.squattersResolved) obj.squatters.isResolved = true;
       }
       if(v[i].includes("Damaged/Leaking")) {
         obj.leaking.name = "Damaged/Leaking";
@@ -535,9 +664,10 @@ class Form extends Component {
         if (v[i].includes("side")) {
           obj.leaking.side = true;
         }
+        if(img.leakingResolved) obj.leaking.isResolved = true;
       }
-      if(v[i].includes("Water")) {
-        obj.leaking.name = "No Power/Water";
+      if(v[i].includes("No Power/Water")) {
+        obj.water.name = "No Power/Water";
         if (v[i].includes("1-3")) {
           obj.water.monthsOne = true;
         }
@@ -556,6 +686,7 @@ class Form extends Component {
         if (v[i].includes("side")) {
           obj.water.side = true;
         }
+        if(img.waterResolved) obj.water.isResolved = true;
       }
       if(v[i].includes("Boarded Up")) {
         obj.boarded.name = "Boarded Up";
@@ -577,6 +708,7 @@ class Form extends Component {
         if (v[i].includes("side")) {
           obj.boarded.side = true;
         }
+        if(img.boardedResolved) obj.boarded.isResolved = true;
       }
       if(v[i].includes("Rodent")) {
         obj.rodent.name = "Rodent Infested";
@@ -598,6 +730,7 @@ class Form extends Component {
         if (v[i].includes("side")) {
           obj.rodent.side = true;
         }
+        if(img.rodentResolved) obj.rodent.isResolved = true;
       }
       if(v[i].includes("Flooded")) {
         obj.flooded.name = "Flooded";
@@ -619,6 +752,7 @@ class Form extends Component {
         if (v[i].includes("side")) {
           obj.flooded.side = true;
         }
+        if(img.floodedResolved) obj.flooded.isResolved = true;
       }
       if(v[i].includes("Excessive Trash")) {
         obj.trash.name = "Excessive Trash";
@@ -640,6 +774,7 @@ class Form extends Component {
         if (v[i].includes("side")) {
           obj.trash.side = true;
         }
+        if(img.junkResolved) obj.trash.isResolved = true;
       }
       if(v[i].includes("Vehicle")) {
         obj.junkVehicle.name = "Junk Vehicle";
@@ -661,6 +796,7 @@ class Form extends Component {
         if (v[i].includes("side")) {
           obj.junkVehicle.side = true;
         }
+        if(img.junkVehicleResolved) obj.junkVehicle.isResolved = true;
       }
       if(v[i].includes("Other")) {
         obj.other.name = "Other";
@@ -682,8 +818,21 @@ class Form extends Component {
         if (v[i].includes("side")) {
           obj.other.side = true;
         }
+        if(img.otherResolved) obj.other.isResolved = true;
       }
     }
+    if(img.openCheckedcomments.length) obj.open.comments = img.openCheckedcomments;
+    if(img.overgrowthCheckedcomments.length) obj.overgrowth.comments = img.overgrowthCheckedcomments;
+    if(img.squattersCheckedcomments.length) obj.squatters.comments = img.squattersCheckedcomments;
+    if(img.leakingCheckedcomments.length) obj.leaking.comments = img.leakingCheckedcomments;
+    if(img.waterCheckedcomments.length) obj.water.comments = img.waterCheckedcomments;
+    if(img.boardedCheckedcomments.length) obj.boarded.comments = img.boardedCheckedcomments;
+    if(img.rodentCheckedcomments.length) obj.rodent.comments = img.rodentCheckedcomments;
+    if(img.floodedCheckedcomments.length) obj.flooded.comments = img.floodedCheckedcomments;
+    if(img.junkCheckedcomments.length) obj.trash.comments = img.junkCheckedcomments;
+    if(img.junkVehicleCheckedcomments.length) obj.junkVehicle.comments = img.junkVehicleCheckedcomments;
+    if(img.otherCheckedcomments.length) obj.other.comments = img.otherCheckedcomments;
+
     newViolations.push(obj);
     return newViolations;
   }
@@ -707,7 +856,7 @@ class Form extends Component {
                   </div>
                 </div>
                 <div className="row">
-                  <div className="col s12 l3">
+                  <div className="col s12 l2">
                     <h5><b>1. Select A Photo</b></h5>
                   </div>
                   <div className="col s12 l8">
@@ -715,7 +864,7 @@ class Form extends Component {
                   </div>
                 </div>
                 <div className="row">
-                  <div className="col s12 l3">
+                  <div className="col s12 l2">
                     <div className="row">
                       <div className="col s12">
                         {/*<ReactMaterialSelect ref="row1Select" label="Assign address to picture(s) below" resetLabel="None" defaultValue="Choose An Address..." onChange={this.picRow1Callback.bind(this)}>
@@ -725,11 +874,11 @@ class Form extends Component {
                         </ReactMaterialSelect>*/}
                         <div className="row">
                           { Object.keys(this.state.images).map((element, i) =>
-                          <div className="col s6">
+                          <div className="col s12" key={element}>
                               <a href="javascript:void(0)" onClick={() => this.selectImage(this.state.images[element])}>
                                 <div className="card">
                                   <div className="card-image">
-                                    <img src={this.state.images[element].url} width="50%"/>
+                                    <img src={this.state.images[element].url} width="20%"/>
                                   </div>
                                 </div>
                               </a>
@@ -738,20 +887,20 @@ class Form extends Component {
                         </div>
                         <div className="row">
                           <div className="col s12">
-                            <a className="btn btn-large green darken-1">Create Entry w/o Photo</a>
+                            <a className="btn btn-large green darken-1" onClick={() => this.addNewEntry()}>Create Entry w/o Photo</a>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
                   {this.state.currId != null ? (
-                  <div className="col s12 l9 border-left-light">
+                  <div className="col s12 l10 border-left-light">
                     <div className="row image">
 
                       <div className="col s12 m8">
                         <ReactMaterialSelect ref="localSelect" label="Select An Address" resetLabel="None" defaultValue="None" onChange={this.localSelectCallback.bind(this)}>
                           {this.state.test.map((element) =>
-                              <option dataValue={JSON.stringify(element)}>{element.streetNumber} {element.streetName}</option>
+                              <option dataValue={JSON.stringify(element)} key={element}>{element.streetNumber} {element.streetName}</option>
                           )}
                         </ReactMaterialSelect>
                         <p></p>
@@ -776,64 +925,64 @@ class Form extends Component {
                     </div>
 
                     <div className="row issues">
-                      <div className="col s12 m3">
+                      <div className="col s12 m2">
                         <p className="">Select Code Violation(s)</p>
                         <form action="#">
                         <p>
                           <input type="checkbox" id="open-struct" checked={this.state.openChecked}
                                  onChange={() => this.updateViolations("Open/Vacant", "openChecked")}/>
-                          <label for="open-struct">Open/Vacant</label>
+                          <label htmlFor="open-struct">Open/Vacan t</label>
                         </p>
                         <p>
                           <input type="checkbox" id="overgrowth" checked={this.state.overgrowthChecked}
                                  onChange={() => this.updateViolations("Overgrown", "overgrowthChecked")}/>
-                          <label for="overgrowth">Overgrown</label>
+                          <label htmlFor="overgrowth">Overgrown</label>
                         </p>
                         <p>
                           <input type="checkbox" id="squatters" checked={this.state.squattersChecked}
                                  onChange={() => this.updateViolations("Housing Squatters", "squattersChecked")}/>
-                          <label for="squatters">Housing Squatters</label>
+                          <label htmlFor="squatters">Housing Squatters</label>
                         </p>
                         <p>
                           <input type="checkbox" id="leaking" checked={this.state.leakingChecked}
                                  onChange={() => this.updateViolations("Damaged/Leaking", "leakingChecked")}/>
-                          <label for="leaking">Damaged/Leaking</label>
+                          <label htmlFor="leaking">Damaged/Leaking</label>
                         </p>
                         <p>
                           <input type="checkbox" id="no-water" checked={this.state.waterChecked}
                                  onChange={() => this.updateViolations("No Power/Water", "waterChecked")}/>
-                          <label for="no-water">No Power/Water</label>
+                          <label htmlFor="no-water">No Power/Water</label>
                         </p>
                         <p>
                           <input type="checkbox" id="boarded" checked={this.state.boardedChecked}
                                  onChange={() => this.updateViolations("Boarded Up", "boardedChecked")}/>
-                          <label for="boarded">Boarded Up</label>
+                          <label htmlFor="boarded">Boarded Up</label>
                         </p>
                         <p>
                           <input type="checkbox" id="rodent" checked={this.state.rodentChecked}
                                  onChange={() => this.updateViolations("Rodent Infested", "rodentChecked")}/>
-                          <label for="rodent">Rodent Infested</label>
+                          <label htmlFor="rodent">Rodent Infested</label>
                         </p>
                         <p>
                           <input type="checkbox" id="flooded" checked={this.state.floodedChecked}
                                  onChange={() => this.updateViolations("Flooded", "floodedChecked")}/>
-                          <label for="flooded">Flooded</label>
+                          <label htmlFor="flooded">Flooded</label>
                         </p>
                         <p>
                           <input type="checkbox" id="trash" checked={this.state.junkChecked}
                                  onChange={() => this.updateViolations("Excessive Trash", "junkChecked")}/>
-                          <label for="trash">Excessive Trash</label>
+                          <label htmlFor="trash">Excessive Trash</label>
                         </p>
                         <p>
                           <input type="checkbox" id="junk-vehicle" checked={this.state.junkVehicleChecked}
                                  onChange={() => this.updateViolations("Junk Vehicle", "junkVehicleChecked")}/>
-                          <label for="junk-vehicle">Junk Vehicle/Tires</label>
+                          <label htmlFor="junk-vehicle">Junk Vehicle/Tires</label>
                         </p>
 
                         <p>
                           <input type="checkbox" id="other" checked={this.state.otherChecked}
                                  onChange={() => this.updateViolations("Other", "otherChecked")}/>
-                          <label for="other">Other</label>
+                          <label htmlFor="other">Other</label>
                         </p>
                         </form>
                       </div>
@@ -843,123 +992,123 @@ class Form extends Component {
                         <p>
                           <input type="checkbox" id="open-months-one" checked={this.state.openCheckedmonthsOne}
                                  onChange={() => this.updateViolations("Open/Vacant 1-3", "openCheckedmonthsOne")}/>
-                          <label for="open-months-one" className="monthsLabel">1-3</label>
+                          <label htmlFor="open-months-one" className="monthsLabel">1-3</label>
                           <input type="checkbox" id="open-months-four" checked={this.state.openCheckedmonthsFour}
                                  onChange={() => this.updateViolations("Open/Vacant 4-6", "openCheckedmonthsFour")}/>
-                          <label for="open-months-four" className="monthsLabel">4-6</label>
+                          <label htmlFor="open-months-four" className="monthsLabel">4-6</label>
                           <input type="checkbox" id="open-months-six" checked={this.state.openCheckedmonthsSix}
                                  onChange={() => this.updateViolations("Open/Vacant 6+", "openCheckedmonthsSix")}/>
-                          <label for="open-months-six" className="monthsLabel">6+</label>
+                          <label htmlFor="open-months-six" className="monthsLabel">6+</label>
                         </p>
                         <p>
                           <input type="checkbox" id="overgrowth-months-one" checked={this.state.overgrowthCheckedmonthsOne}
                                  onChange={() => this.updateViolations("Overgrown 1-3", "overgrowthCheckedmonthsOne")}/>
-                          <label for="overgrowth-months-one" className="monthsLabel">1-3</label>
+                          <label htmlFor="overgrowth-months-one" className="monthsLabel">1-3</label>
                           <input type="checkbox" id="overgrowth-months-four" checked={this.state.overgrowthCheckedmonthsFour}
                                  onChange={() => this.updateViolations("Overgrown 4-6", "overgrowthCheckedmonthsFour")}/>
-                          <label for="overgrowth-months-four" className="monthsLabel">4-6</label>
+                          <label htmlFor="overgrowth-months-four" className="monthsLabel">4-6</label>
                           <input type="checkbox" id="overgrowth-months-six" checked={this.state.overgrowthCheckedmonthsSix}
                                  onChange={() => this.updateViolations("Overgrown 6+", "overgrowthCheckedmonthsSix")}/>
-                          <label for="overgrowth-months-six" className="monthsLabel">6+</label>
+                          <label htmlFor="overgrowth-months-six" className="monthsLabel">6+</label>
                         </p>
                         <p>
                           <input type="checkbox" id="squatters-months-one" checked={this.state.squattersCheckedmonthsOne}
                                  onChange={() => this.updateViolations("Housing Squatters 1-3", "squattersCheckedmonthsOne")}/>
-                          <label for="squatters-months-one" className="monthsLabel">1-3</label>
+                          <label htmlFor="squatters-months-one" className="monthsLabel">1-3</label>
                           <input type="checkbox" id="squatters-months-four" checked={this.state.squattersCheckedmonthsFour}
                                  onChange={() => this.updateViolations("Housing Squatters 4-6", "squattersCheckedmonthsFour")}/>
-                          <label for="squatters-months-four" className="monthsLabel">4-6</label>
+                          <label htmlFor="squatters-months-four" className="monthsLabel">4-6</label>
                           <input type="checkbox" id="squatters-months-six" checked={this.state.squattersCheckedmonthsSix}
                                  onChange={() => this.updateViolations("Housing Squatters 6+", "squattersCheckedmonthsSix")}/>
-                          <label for="squatters-months-six" className="monthsLabel">6+</label>
+                          <label htmlFor="squatters-months-six" className="monthsLabel">6+</label>
                         </p>
                         <p>
                           <input type="checkbox" id="leaking-months-one" checked={this.state.leakingCheckedmonthsOne}
                                  onChange={() => this.updateViolations("Damaged/Leaking 1-3", "leakingCheckedmonthsOne")}/>
-                          <label for="leaking-months-one" className="monthsLabel">1-3</label>
+                          <label htmlFor="leaking-months-one" className="monthsLabel">1-3</label>
                           <input type="checkbox" id="leaking-months-four" checked={this.state.leakingCheckedmonthsFour}
                                  onChange={() => this.updateViolations("Damaged/Leaking 4-6", "leakingCheckedmonthsFour")}/>
-                          <label for="leaking-months-four" className="monthsLabel">4-6</label>
+                          <label htmlFor="leaking-months-four" className="monthsLabel">4-6</label>
                           <input type="checkbox" id="leaking-months-six" checked={this.state.leakingCheckedmonthsSix}
                                  onChange={() => this.updateViolations("Damaged/Leaking 6+", "leakingCheckedmonthsSix")}/>
-                          <label for="leaking-months-six" className="monthsLabel">6+</label>
+                          <label htmlFor="leaking-months-six" className="monthsLabel">6+</label>
                         </p>
                         <p>
                           <input type="checkbox" id="water-months-one" checked={this.state.waterCheckedmonthsOne}
                                  onChange={() => this.updateViolations("No Power/Water 1-3", "waterCheckedmonthsOne")}/>
-                          <label for="water-months-one" className="monthsLabel">1-3</label>
+                          <label htmlFor="water-months-one" className="monthsLabel">1-3</label>
                           <input type="checkbox" id="water-months-four" checked={this.state.waterCheckedmonthsFour}
                                  onChange={() => this.updateViolations("No Power/Water 4-6", "waterCheckedmonthsFour")}/>
-                          <label for="water-months-four" className="monthsLabel">4-6</label>
+                          <label htmlFor="water-months-four" className="monthsLabel">4-6</label>
                           <input type="checkbox" id="water-months-six" checked={this.state.waterCheckedmonthsSix}
                                  onChange={() => this.updateViolations("No Power/Water 6+", "waterCheckedmonthsSix")}/>
-                          <label for="water-months-six" className="monthsLabel">6+</label>
+                          <label htmlFor="water-months-six" className="monthsLabel">6+</label>
                         </p>
                         <p>
                           <input type="checkbox" id="boarded-months-one" checked={this.state.boardedCheckedmonthsOne}
                                  onChange={() => this.updateViolations("Boarded Up 1-3", "boardedCheckedmonthsOne")}/>
-                          <label for="boarded-months-one" className="monthsLabel">1-3</label>
+                          <label htmlFor="boarded-months-one" className="monthsLabel">1-3</label>
                           <input type="checkbox" id="boarded-months-four" checked={this.state.boardedCheckedmonthsFour}
                                  onChange={() => this.updateViolations("Boarded Up 4-6", "boardedCheckedmonthsFour")}/>
-                          <label for="boarded-months-four" className="monthsLabel">4-6</label>
+                          <label htmlFor="boarded-months-four" className="monthsLabel">4-6</label>
                           <input type="checkbox" id="boarded-months-six" checked={this.state.boardedCheckedmonthsSix}
                                  onChange={() => this.updateViolations("Boarded Up 6+", "boardedCheckedmonthsSix")}/>
-                          <label for="boarded-months-six" className="monthsLabel">6+</label>
+                          <label htmlFor="boarded-months-six" className="monthsLabel">6+</label>
                         </p>
                         <p>
                           <input type="checkbox" id="rodent-months-one" checked={this.state.rodentCheckedmonthsOne}
                                  onChange={() => this.updateViolations("Rodent Infested 1-3", "rodentCheckedmonthsOne")}/>
-                          <label for="rodent-months-one" className="monthsLabel">1-3</label>
+                          <label htmlFor="rodent-months-one" className="monthsLabel">1-3</label>
                           <input type="checkbox" id="rodent-months-four" checked={this.state.rodentCheckedmonthsFour}
                                  onChange={() => this.updateViolations("Rodent Infested 4-6", "rodentCheckedmonthsFour")}/>
-                          <label for="rodent-months-four" className="monthsLabel">4-6</label>
+                          <label htmlFor="rodent-months-four" className="monthsLabel">4-6</label>
                           <input type="checkbox" id="rodent-months-six" checked={this.state.rodentCheckedmonthsSix}
                                  onChange={() => this.updateViolations("Rodent Infested 6+", "rodentCheckedmonthsSix")}/>
-                          <label for="rodent-months-six" className="monthsLabel">6+</label>
+                          <label htmlFor="rodent-months-six" className="monthsLabel">6+</label>
                         </p>
                         <p>
                           <input type="checkbox" id="flooded-months-one" checked={this.state.floodedCheckedmonthsOne}
                                  onChange={() => this.updateViolations("Flooded 1-3", "floodedCheckedmonthsOne")}/>
-                          <label for="flooded-months-one" className="monthsLabel">1-3</label>
+                          <label htmlFor="flooded-months-one" className="monthsLabel">1-3</label>
                           <input type="checkbox" id="flooded-months-four" checked={this.state.floodedCheckedmonthsFour}
                                  onChange={() => this.updateViolations("Flooded 4-6", "floodedCheckedmonthsFour")}/>
-                          <label for="flooded-months-four" className="monthsLabel">4-6</label>
+                          <label htmlFor="flooded-months-four" className="monthsLabel">4-6</label>
                           <input type="checkbox" id="flooded-months-six" checked={this.state.floodedCheckedmonthsSix}
                                  onChange={() => this.updateViolations("Flooded 6+", "floodedCheckedmonthsSix")}/>
-                          <label for="flooded-months-six" className="monthsLabel">6+</label>
+                          <label htmlFor="flooded-months-six" className="monthsLabel">6+</label>
                         </p>
                         <p>
                           <input type="checkbox" id="junk-months-one" checked={this.state.junkCheckedmonthsOne}
                                  onChange={() => this.updateViolations("Excessive Trash 1-3", "junkCheckedmonthsOne")}/>
-                          <label for="junk-months-one" className="monthsLabel">1-3</label>
+                          <label htmlFor="junk-months-one" className="monthsLabel">1-3</label>
                           <input type="checkbox" id="junk-months-four" checked={this.state.junkCheckedmonthsFour}
                                  onChange={() => this.updateViolations("Excessive Trash 4-6", "junkCheckedmonthsFour")}/>
-                          <label for="junk-months-four" className="monthsLabel">4-6</label>
+                          <label htmlFor="junk-months-four" className="monthsLabel">4-6</label>
                           <input type="checkbox" id="junk-months-six" checked={this.state.junkCheckedmonthsSix}
                                  onChange={() => this.updateViolations("Excessive Trash 6+", "junkCheckedmonthsSix")}/>
-                          <label for="junk-months-six" className="monthsLabel">6+</label>
+                          <label htmlFor="junk-months-six" className="monthsLabel">6+</label>
                         </p>
                         <p>
                           <input type="checkbox" id="junkVehicle-months-one" checked={this.state.junkVehicleCheckedmonthsOne}
                                  onChange={() => this.updateViolations("Junk Vehicle 1-3", "junkVehicleCheckedmonthsOne")}/>
-                          <label for="junkVehicle-months-one" className="monthsLabel">1-3</label>
+                          <label htmlFor="junkVehicle-months-one" className="monthsLabel">1-3</label>
                           <input type="checkbox" id="junkVehicle-months-four" checked={this.state.junkVehicleCheckedmonthsFour}
                                  onChange={() => this.updateViolations("Junk Vehicle 4-6", "junkVehicleCheckedmonthsFour")}/>
-                          <label for="junkVehicle-months-four" className="monthsLabel">4-6</label>
+                          <label htmlFor="junkVehicle-months-four" className="monthsLabel">4-6</label>
                           <input type="checkbox" id="junkVehicle-months-six" checked={this.state.junkVehicleCheckedmonthsSix}
                                  onChange={() => this.updateViolations("Junk Vehicle 6+", "junkVehicleCheckedmonthsSix")}/>
-                          <label for="junkVehicle-months-six" className="monthsLabel">6+</label>
+                          <label htmlFor="junkVehicle-months-six" className="monthsLabel">6+</label>
                         </p>
                         <p>
                           <input type="checkbox" id="other-months-one" checked={this.state.otherCheckedmonthsOne}
                                  onChange={() => this.updateViolations("Other 1-3", "otherCheckedmonthsOne")}/>
-                          <label for="other-months-one" className="monthsLabel">1-3</label>
+                          <label htmlFor="other-months-one" className="monthsLabel">1-3</label>
                           <input type="checkbox" id="other-months-four" checked={this.state.otherCheckedmonthsFour}
                                  onChange={() => this.updateViolations("Other 4-6", "otherCheckedmonthsFour")}/>
-                          <label for="other-months-four" className="monthsLabel">4-6</label>
+                          <label htmlFor="other-months-four" className="monthsLabel">4-6</label>
                           <input type="checkbox" id="other-months-six" checked={this.state.otherCheckedmonthsSix}
                                  onChange={() => this.updateViolations("Other 6+", "otherCheckedmonthsSix")}/>
-                          <label for="other-months-six" className="monthsLabel">6+</label>
+                          <label htmlFor="other-months-six" className="monthsLabel">6+</label>
                         </p>
                         </form>
                       </div>
@@ -969,243 +1118,247 @@ class Form extends Component {
                         <p>
                           <input type="checkbox" id="open-front" checked={this.state.openCheckedfront}
                                  onChange={() => this.updateViolations("Open/Vacant front", "openCheckedfront")}/>
-                          <label for="open-front" className="monthsLabel">Front</label>
+                          <label htmlFor="open-front" className="monthsLabel">Front</label>
                           <input type="checkbox" id="open-back" checked={this.state.openCheckedback}
                                  onChange={() => this.updateViolations("Open/Vacant back", "openCheckedback")}/>
-                          <label for="open-back" className="monthsLabel">Back</label>
+                          <label htmlFor="open-back" className="monthsLabel">Back</label>
                           <input type="checkbox" id="open-side" checked={this.state.openCheckedside}
                                  onChange={() => this.updateViolations("Open/Vacant side", "openCheckedside")}/>
-                          <label for="open-side" className="monthsLabel">Side</label>
+                          <label htmlFor="open-side" className="monthsLabel">Side</label>
                         </p>
                         <p>
                           <input type="checkbox" id="overgrowth-front" checked={this.state.overgrowthCheckedfront}
                                  onChange={() => this.updateViolations("Overgrown front", "overgrowthCheckedfront")}/>
-                          <label for="overgrowth-front" className="monthsLabel">Front</label>
+                          <label htmlFor="overgrowth-front" className="monthsLabel">Front</label>
                           <input type="checkbox" id="overgrowth-back" checked={this.state.overgrowthCheckedback}
                                  onChange={() => this.updateViolations("Overgrown back", "overgrowthCheckedback")}/>
-                          <label for="overgrowth-back" className="monthsLabel">Back</label>
+                          <label htmlFor="overgrowth-back" className="monthsLabel">Back</label>
                           <input type="checkbox" id="overgrowth-side" checked={this.state.overgrowthCheckedside}
                                  onChange={() => this.updateViolations("Overgrown side", "overgrowthCheckedside")}/>
-                          <label for="overgrowth-side" className="monthsLabel">Side</label>
+                          <label htmlFor="overgrowth-side" className="monthsLabel">Side</label>
                         </p>
                         <p>
                           <input type="checkbox" id="squatters-front" checked={this.state.squattersCheckedfront}
                                  onChange={() => this.updateViolations("Housing Squatters front", "squattersCheckedfront")}/>
-                          <label for="squatters-front" className="monthsLabel">Front</label>
+                          <label htmlFor="squatters-front" className="monthsLabel">Front</label>
                           <input type="checkbox" id="squatters-back" checked={this.state.squattersCheckedback}
                                  onChange={() => this.updateViolations("Housing Squatters back", "squattersCheckedback")}/>
-                          <label for="squatters-back" className="monthsLabel">Back</label>
+                          <label htmlFor="squatters-back" className="monthsLabel">Back</label>
                           <input type="checkbox" id="squatters-side" checked={this.state.squattersCheckedside}
                                  onChange={() => this.updateViolations("Housing Squatters side", "squattersCheckedside")}/>
-                          <label for="squatters-side" className="monthsLabel">Side</label>
+                          <label htmlFor="squatters-side" className="monthsLabel">Side</label>
                         </p>
                         <p>
                           <input type="checkbox" id="leaking-front" checked={this.state.leakingCheckedfront}
                                  onChange={() => this.updateViolations("Damaged/Leaking front", "leakingCheckedfront")}/>
-                          <label for="leaking-front" className="monthsLabel">Front</label>
+                          <label htmlFor="leaking-front" className="monthsLabel">Front</label>
                           <input type="checkbox" id="leaking-back" checked={this.state.leakingCheckedback}
                                  onChange={() => this.updateViolations("Damaged/Leaking back", "leakingCheckedback")}/>
-                          <label for="leaking-back" className="monthsLabel">Back</label>
+                          <label htmlFor="leaking-back" className="monthsLabel">Back</label>
                           <input type="checkbox" id="leaking-side" checked={this.state.leakingCheckedside}
                                  onChange={() => this.updateViolations("Damaged/Leaking side", "leakingCheckedside")}/>
-                          <label for="leaking-side" className="monthsLabel">Side</label>
+                          <label htmlFor="leaking-side" className="monthsLabel">Side</label>
                         </p>
                         <p>
                           <input type="checkbox" id="water-front" checked={this.state.waterCheckedfront}
                                  onChange={() => this.updateViolations("No Power/Water front", "waterCheckedfront")}/>
-                          <label for="water-front" className="monthsLabel">Front</label>
+                          <label htmlFor="water-front" className="monthsLabel">Front</label>
                           <input type="checkbox" id="water-back" checked={this.state.waterCheckedback}
                                  onChange={() => this.updateViolations("No Power/Water back", "waterCheckedback")}/>
-                          <label for="water-back" className="monthsLabel">Back</label>
+                          <label htmlFor="water-back" className="monthsLabel">Back</label>
                           <input type="checkbox" id="water-side" checked={this.state.waterCheckedside}
                                  onChange={() => this.updateViolations("No Power/Water side", "waterCheckedside")}/>
-                          <label for="water-side" className="monthsLabel">Side</label>
+                          <label htmlFor="water-side" className="monthsLabel">Side</label>
                         </p>
                         <p>
                           <input type="checkbox" id="boarded-front" checked={this.state.boardedCheckedfront}
                                  onChange={() => this.updateViolations("Boarded Up front", "boardedCheckedfront")}/>
-                          <label for="boarded-front" className="monthsLabel">Front</label>
+                          <label htmlFor="boarded-front" className="monthsLabel">Front</label>
                           <input type="checkbox" id="boarded-back" checked={this.state.boardedCheckedback}
                                  onChange={() => this.updateViolations("Boarded Up back", "boardedCheckedback")}/>
-                          <label for="boarded-back" className="monthsLabel">Back</label>
+                          <label htmlFor="boarded-back" className="monthsLabel">Back</label>
                           <input type="checkbox" id="boarded-side" checked={this.state.boardedCheckedside}
                                  onChange={() => this.updateViolations("Boarded Up side", "boardedCheckedside")}/>
-                          <label for="boarded-side" className="monthsLabel">Side</label>
+                          <label htmlFor="boarded-side" className="monthsLabel">Side</label>
                         </p>
                         <p>
                           <input type="checkbox" id="rodent-front" checked={this.state.rodentCheckedfront}
                                  onChange={() => this.updateViolations("Rodent Infested front", "rodentCheckedfront")}/>
-                          <label for="rodent-front" className="monthsLabel">Front</label>
+                          <label htmlFor="rodent-front" className="monthsLabel">Front</label>
                           <input type="checkbox" id="rodent-back" checked={this.state.rodentCheckedback}
                                  onChange={() => this.updateViolations("Rodent Infested back", "rodentCheckedback")}/>
-                          <label for="rodent-back" className="monthsLabel">Back</label>
+                          <label htmlFor="rodent-back" className="monthsLabel">Back</label>
                           <input type="checkbox" id="rodent-side" checked={this.state.rodentCheckedside}
                                  onChange={() => this.updateViolations("Rodent Infested side", "rodentCheckedside")}/>
-                          <label for="rodent-side" className="monthsLabel">Side</label>
+                          <label htmlFor="rodent-side" className="monthsLabel">Side</label>
                         </p>
                         <p>
                           <input type="checkbox" id="flooded-front" checked={this.state.floodedCheckedfront}
                                  onChange={() => this.updateViolations("Flooded front", "floodedCheckedfront")}/>
-                          <label for="flooded-front" className="monthsLabel">Front</label>
+                          <label htmlFor="flooded-front" className="monthsLabel">Front</label>
                           <input type="checkbox" id="flooded-back" checked={this.state.floodedCheckedback}
                                  onChange={() => this.updateViolations("Flooded back", "floodedCheckedback")}/>
-                          <label for="flooded-back" className="monthsLabel">Back</label>
+                          <label htmlFor="flooded-back" className="monthsLabel">Back</label>
                           <input type="checkbox" id="flooded-side" checked={this.state.floodedCheckedside}
                                  onChange={() => this.updateViolations("Flooded side", "floodedCheckedside")}/>
-                          <label for="flooded-side" className="monthsLabel">Side</label>
+                          <label htmlFor="flooded-side" className="monthsLabel">Side</label>
                         </p>
                         <p>
                           <input type="checkbox" id="junk-front" checked={this.state.junkCheckedfront}
                                  onChange={() => this.updateViolations("Excessive Trash front", "junkCheckedfront")}/>
-                          <label for="junk-front" className="monthsLabel">Front</label>
+                          <label htmlFor="junk-front" className="monthsLabel">Front</label>
                           <input type="checkbox" id="junk-back" checked={this.state.junkCheckedback}
                                  onChange={() => this.updateViolations("Excessive Trash back", "junkCheckedback")}/>
-                          <label for="junk-back" className="monthsLabel">Back</label>
+                          <label htmlFor="junk-back" className="monthsLabel">Back</label>
                           <input type="checkbox" id="junk-side" checked={this.state.junkCheckedside}
                                  onChange={() => this.updateViolations("Excessive Trash side", "junkCheckedside")}/>
-                          <label for="junk-side" className="monthsLabel">Side</label>
+                          <label htmlFor="junk-side" className="monthsLabel">Side</label>
                         </p>
                         <p>
                           <input type="checkbox" id="junkVehicle-front" checked={this.state.junkVehicleCheckedfront}
                                  onChange={() => this.updateViolations("Junk Vehicle front", "junkVehicleCheckedfront")}/>
-                          <label for="junkVehicle-front" className="monthsLabel">Front</label>
+                          <label htmlFor="junkVehicle-front" className="monthsLabel">Front</label>
                           <input type="checkbox" id="junkVehicle-back" checked={this.state.junkVehicleCheckedback}
                                  onChange={() => this.updateViolations("Junk Vehicle back", "junkVehicleCheckedback")}/>
-                          <label for="junkVehicle-back" className="monthsLabel">Back</label>
+                          <label htmlFor="junkVehicle-back" className="monthsLabel">Back</label>
                           <input type="checkbox" id="junkVehicle-side" checked={this.state.junkVehicleCheckedside}
                                  onChange={() => this.updateViolations("Junk Vehicle side", "junkVehicleCheckedside")}/>
-                          <label for="junkVehicle-side" className="monthsLabel">Side</label>
+                          <label htmlFor="junkVehicle-side" className="monthsLabel">Side</label>
                         </p>
                         <p>
                           <input type="checkbox" id="other-front" checked={this.state.otherCheckedfront}
                                  onChange={() => this.updateViolations("Other front", "otherCheckedfront")}/>
-                          <label for="other-front" className="monthsLabel">Front</label>
+                          <label htmlFor="other-front" className="monthsLabel">Front</label>
                           <input type="checkbox" id="other-back" checked={this.state.otherCheckedback}
                                  onChange={() => this.updateViolations("Other back", "otherCheckedback")}/>
-                          <label for="other-back" className="monthsLabel">Back</label>
+                          <label htmlFor="other-back" className="monthsLabel">Back</label>
                           <input type="checkbox" id="other-side" checked={this.state.otherCheckedside}
                                  onChange={() => this.updateViolations("Other side", "otherCheckedside")}/>
-                          <label for="other-side" className="monthsLabel">Side</label>
+                          <label htmlFor="other-side" className="monthsLabel">Side</label>
                         </p>
                           </form>
                       </div>
-                      <div className="col s12 m3">
+                      <div className="col s12 m2">
                         <p className="">Comments</p>
                         <form action="#">
                         <div className="row comment">
                           <div className="input-field col s12">
-                            <input placeholder="Comments" id="first_name" type="text" onBlur={() => this.updateViolations("comment", "openChecked", "comment")} />
+                            <input placeholder="Comments" id="openCheckedcomments" type="text" className="Open/Vacant" onChange={this.commentCallback.bind(this)} value={this.state.openCheckedcomments} />
                           </div>
                         </div>
                         <div className="row comment">
                           <div className="input-field col s12">
-                            <input placeholder="Comments" id="first_name" type="text" className="validate" />
+                            <input placeholder="Comments" id="overgrowthCheckedcomments" type="text" className="Overgrown" onChange={this.commentCallback.bind(this)} value={this.state.overgrowthCheckedcomments} />
                           </div>
                         </div>
                         <div className="row comment">
                           <div className="input-field col s12">
-                            <input placeholder="Comments" id="first_name" type="text" className="validate" />
+                            <input placeholder="Comments" id="squattersCheckedcomments" type="text" className="Housing Squatters" onChange={this.commentCallback.bind(this)} value={this.state.squattersCheckedcomments} />
                           </div>
                         </div>
                         <div className="row comment">
                           <div className="input-field col s12">
-                            <input placeholder="Comments" id="first_name" type="text" className="validate" />
+                            <input placeholder="Comments" id="leakingCheckedcomments" type="text" className="Damaged/Leaking" onChange={this.commentCallback.bind(this)} value={this.state.leakingCheckedcomments} />
                           </div>
                         </div>
                         <div className="row comment">
                           <div className="input-field col s12">
-                            <input placeholder="Comments" id="first_name" type="text" className="validate" />
+                            <input placeholder="Comments" id="waterCheckedcomments" type="text" className="NoPower/Water" onChange={this.commentCallback.bind(this)} value={this.state.waterCheckedcomments} />
                           </div>
                         </div>
                         <div className="row comment">
                           <div className="input-field col s12">
-                            <input placeholder="Comments" id="first_name" type="text" className="validate" />
+                            <input placeholder="Comments" id="boardedCheckedcomments" type="text" className="Boarded Up" onChange={this.commentCallback.bind(this)} value={this.state.boardedCheckedcomments} />
+                          </div>
+                        </div>
+                          <div className="row comment">
+                            <div className="input-field col s12">
+                              <input placeholder="Comments" id="rodentCheckedcomments" type="text" className="Rodent Infested" onChange={this.commentCallback.bind(this)} value={this.state.rodentCheckedcomments} />
+                            </div>
+                          </div>
+                        <div className="row comment">
+                          <div className="input-field col s12">
+                            <input placeholder="Comments" id="floodedCheckedcomments" type="text" className="Flooded" onChange={this.commentCallback.bind(this)} value={this.state.floodedCheckedcomments} />
                           </div>
                         </div>
                         <div className="row comment">
                           <div className="input-field col s12">
-                            <input placeholder="Comments" id="first_name" type="text" className="validate" />
+                            <input placeholder="Comments" id="junkCheckedcomments" type="text" className="Excessive Trash" onChange={this.commentCallback.bind(this)} value={this.state.junkCheckedcomments} />
                           </div>
                         </div>
                         <div className="row comment">
                           <div className="input-field col s12">
-                            <input placeholder="Comments" id="first_name" type="text" className="validate" />
+                            <input placeholder="Comments" id="junkVehicleCheckedcomments" type="text" className="Junk Vehicle" onChange={this.commentCallback.bind(this)} value={this.state.junkVehicleCheckedcomments} />
                           </div>
                         </div>
                         <div className="row comment">
                           <div className="input-field col s12">
-                            <input placeholder="Comments" id="first_name" type="text" className="validate" />
+                            <input placeholder="Comments" id="otherCheckedcomments" type="text" className="Other" onChange={this.commentCallback.bind(this)} value={this.state.otherCheckedcomments} />
                           </div>
                         </div>
-                        <div className="row comment">
-                          <div className="input-field col s12">
-                            <input placeholder="Comments" id="first_name" type="text" className="validate" />
-                          </div>
-                        </div>
-                        <div className="row comment">
-                          <div className="input-field col s12">
-                            <input placeholder="Comments" id="first_name" type="text" className="validate" />
-                          </div>
-                        </div>
-                        <div className="row comment">
-                          <div className="input-field col s12">
-                            <input placeholder="Comments" id="first_name" type="text" className="validate" />
-                          </div>
-                        </div>
-                          <br></br>
-                          <a className="btn" onClick={() => this.saveViolations()}>Save</a>
                           </form>
                       </div>
-
-
+                      <div className="col s12 m2 resCol">
+                        <p>Is Resolved?</p>
+                        <form action="#">
+                          <p>
+                            <input type="checkbox" id="openResolved" checked={this.state.openResolved}
+                                   onChange={this.resolvedCallback.bind(this)}/>
+                            <label htmlFor="openResolved" className="monthsLabel">&nbsp;</label>
+                          </p>
+                          <p>
+                            <input type="checkbox" id="overgrowthResolved" checked={this.state.overgrowthResolved}
+                                   onChange={this.resolvedCallback.bind(this)}/>
+                            <label htmlFor="overgrowthResolved" className="monthsLabel">&nbsp;</label>
+                          </p>
+                          <p>
+                            <input type="checkbox" id="squattersResolved" checked={this.state.squattersResolved}
+                                   onChange={this.resolvedCallback.bind(this)}/>
+                            <label htmlFor="squattersResolved" className="monthsLabel">&nbsp;</label>
+                          </p>
+                          <p>
+                            <input type="checkbox" id="leakingResolved" checked={this.state.leakingResolved}
+                                   onChange={this.resolvedCallback.bind(this)}/>
+                            <label htmlFor="leakingResolved" className="monthsLabel">&nbsp;</label>
+                          </p>
+                          <p>
+                            <input type="checkbox" id="waterResolved" checked={this.state.waterResolved}
+                                   onChange={this.resolvedCallback.bind(this)}/>
+                            <label htmlFor="waterResolved" className="monthsLabel">&nbsp;</label>
+                          </p>
+                          <p>
+                            <input type="checkbox" id="boardedResolved" checked={this.state.boardedResolved}
+                                   onChange={this.resolvedCallback.bind(this)}/>
+                            <label htmlFor="boardedResolved" className="monthsLabel">&nbsp;</label>
+                          </p>
+                          <p>
+                            <input type="checkbox" id="rodentResolved" checked={this.state.rodentResolved}
+                                   onChange={this.resolvedCallback.bind(this)}/>
+                            <label htmlFor="rodentResolved" className="monthsLabel">&nbsp;</label>
+                          </p>
+                          <p>
+                            <input type="checkbox" id="floodedResolved" checked={this.state.floodedResolved}
+                                   onChange={this.resolvedCallback.bind(this)}/>
+                            <label htmlFor="floodedResolved" className="monthsLabel">&nbsp;</label>
+                          </p>
+                          <p>
+                            <input type="checkbox" id="junkResolved" checked={this.state.junkResolved}
+                                   onChange={this.resolvedCallback.bind(this)}/>
+                            <label htmlFor="junkResolved" className="monthsLabel">&nbsp;</label>
+                          </p>
+                          <p>
+                            <input type="checkbox" id="junkVehicleResolved" checked={this.state.junkVehicleResolved}
+                                   onChange={this.resolvedCallback.bind(this)}/>
+                            <label htmlFor="junkVehicleResolved" className="monthsLabel">&nbsp;</label>
+                          </p>
+                          <p>
+                            <input type="checkbox" id="otherResolved" checked={this.state.otherResolved}
+                                   onChange={this.resolvedCallback.bind(this)}/>
+                            <label htmlFor="otherResolved" className="monthsLabel">&nbsp;</label>
+                          </p>
+                        </form>
+                      </div>
                       <div className="col s12 formCol">
-                        {/*<form action="#">
-                          <p>
-                            <input type="checkbox" id="open-struct" checked={this.state.openChecked.state}
-                                   onChange={() => this.updateViolations("Open/Vacant", "openChecked.state")}/>
-                            <label for="open-struct">Open & Vacant Structure</label>
-                          </p>
-                          <p>
-                            <input type="checkbox" id="overgrowth" checked={this.state.overgrowthChecked}
-                                   onChange={() => this.updateViolations("Overgrowth (grass, weeds, kudz)", "overgrowthChecked")}/>
-                            <label for="overgrowth">Overgrowth (grass, weeds, kudz)</label>
-                          </p>
-                          <p>
-                            <input type="checkbox" id="junk-vehicle" checked={this.state.junkVehicleChecked}
-                                   onChange={() => this.updateViolations("Junk vehicle", "junkVehicleChecked")}/>
-                            <label for="junk-vehicle">Junk vehicle</label>
-                          </p>
-                          <p>
-                            <input type="checkbox" id="trash" checked={this.state.junkChecked}
-                                   onChange={() => this.updateViolations("Junk, debris, trash", "junkChecked")}/>
-                            <label for="trash">Junk, debris, trash</label>
-                          </p>
-                          <p>
-                            <input type="checkbox" id="vacant-lot" checked={this.state.vacantChecked}
-                                   onChange={() => this.updateViolations("Vacant Lot", "vacantChecked")}/>
-                            <label for="vacant-lot">Vacant Lot</label>
-                          </p>
-                          <p>
-                            <input type="checkbox" id="leaking" checked={this.state.leakingChecked}
-                                   onChange={() => this.updateViolations("Leaking / inoperable plumbing", "leakingChecked")}/>
-                            <label for="leaking">Leaking / inoperable plumbing</label>
-                          </p>
-                          <p>
-                            <input type="checkbox" id="no-water" checked={this.state.waterChecked}
-                                   onChange={() => this.updateViolations("No water (hot/cold)", "waterChecked")}/>
-                            <label for="no-water">No water (hot/cold)</label>
-                          </p>
-                          <p>
-                            <input type="checkbox" id="no-heat" checked={this.state.heatChecked}
-                                   onChange={() => this.updateViolations("No heat", "heatChecked")}/>
-                            <label for="no-heat">No heat</label>
-                          </p>
-                          <p>
-                            <input type="checkbox" id="junk-tires" checked={this.state.tiresChecked}
-                                   onChange={() => this.updateViolations("Junk Tires", "tiresChecked")}/>
-                            <label for="junk-tires">Junk Tires</label>
-                          </p>
-                        </form>*/}
                         <br></br>
                         <a className="btn" onClick={() => this.saveViolations()}>Save</a>
                       </div>

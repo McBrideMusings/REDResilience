@@ -198,6 +198,7 @@ app.get("/data", (req, res) => {
 app.post("/addViolations", (req, res) =>{
   setAuthData(function () {
     dataDoc.getInfo(function (err, info) {
+      console.log(req.body);
       let mySheet = info.worksheets.find(x => x.title === "RawData");
       //let mySheet = info.worksheets[req.body.id];
       // console.log(mySheet.getRows());
@@ -216,9 +217,12 @@ app.post("/addViolations", (req, res) =>{
         Over_Six_Months: req.body.violationData.monthsSix,
         Location_Front: req.body.violationData.front,
         Location_Back: req.body.violationData.back,
-        Location_Side: req.body.violationData.side
+        Location_Side: req.body.violationData.side,
+        Comments: req.body.violationData.comments,
+        Is_Resolved: req.body.violationData.isResolved
       }, function () {
         console.log("done");
+        res.send("done");
       });
     });
   });
