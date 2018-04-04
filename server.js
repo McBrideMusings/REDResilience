@@ -103,9 +103,9 @@ app.post('/upload', (req, res) => {
 });
 
 app.get('/testing', (req, res) => {
-  client.Upload('./pic1.png', "559_Sunset", true)
+  client.Upload('./pic1.png', "558_Sunset", "vacant", false)
   .then((fulfilled) => {
-    res.json(fulfilled);
+    res.send(fulfilled);
   }).catch((error) => {
     res.send(error);
   });
