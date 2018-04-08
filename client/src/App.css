@@ -8,13 +8,20 @@ body {
   font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   font-weight: 300;
   color: #303338;
+  /*min-height: 100vh;*/
+  display: flex;
   min-height: 100vh;
+  flex-direction: column;
 }
 a {
   color: #25AB50;
 }
+main {
+  flex: 1 0 auto;
+}
 .root {
   min-height: 100vh;
+  flex: 1 0 auto;
 }
 .flex {
   display: flex;
@@ -119,4 +126,8 @@ h5.heading{
 }
 .resCol{
   padding-left: 35px !important;
+}
+.upload-link{
+  font-size: 18px;
+  font-weight: 500;
 }

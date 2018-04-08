@@ -91,19 +91,19 @@ app.post('/upload', (req, res) => {
       filename() function defined in the diskStorage configuration. Other form fields
       are available here in req.body.
     */
-    console.log(req.files);
+    console.log(req.body.files);
     if(err) {
       res.status(500).send({ error: err.code });
       return res.end();
     }
     // res.end("File is uploaded");
-    let fileNames = [];
-    for (let i = 0; i < req.files.length; i++) {
-      // This is possibly what we want in production
-      // fileNames[i] = req.files[i].destination+req.files[i].filename;
-      fileNames[i] = req.files[i].filename;
-    }
-    res.json({files: fileNames});
+    // let fileNames = [];
+    // for (let i = 0; i < req.files.length; i++) {
+    //   // This is possibly what we want in production
+    //   // fileNames[i] = req.files[i].destination+req.files[i].filename;
+    //   fileNames[i] = req.files[i].filename;
+    // }
+    // res.json({files: fileNames});
     //res.end("File is uploaded");
   });
 });
@@ -198,10 +198,16 @@ app.get("/data", (req, res) => {
 app.post("/addViolations", (req, res) =>{
   setAuthData(function () {
     dataDoc.getInfo(function (err, info) {
-      console.log(req.body);
       let mySheet = info.worksheets.find(x => x.title === "RawData");
-      //let mySheet = info.worksheets[req.body.id];
-      // console.log(mySheet.getRows());
+
+      if(req.body.violationData.isResolved == undefined){
+        req.body.violationData.isResolved = false;
+      }
+      req.body.url = "./client/public"+req.body.url;
+      var promise = client.Upload(req.body.url, req.body.concatAddress, req.body.violationData.isResolved);
+      promise.then(function (resolved) {
+        console.log(resolved);
+      });
       var ts = dateFormat(getTimestamp(), "dddd, mmmm dS, yyyy, h:MM:ss TT");
       mySheet.addRow({
         Street_Number: req.body.houseData.streetNumber,
@@ -228,16 +234,16 @@ app.post("/addViolations", (req, res) =>{
   });
 });
 
-app.post(('/upload'), (req, res) => {
-  console.log('upload endpoint hit');
-  let imageFile = req.files.file;
-  imageFile.mv(`${__dirname}/client/public/img/${req.body.filename}`, function(err) {
-    if (err) {
-      return res.status(500).send(err);
-    }
-    res.json({file: `${req.body.filename}`});
-  });
-});
+// app.post(('/upload'), (req, res) => {
+//   console.log('upload endpoint hit');
+//   let imageFile = req.files.file;
+//   imageFile.mv(`${__dirname}/client/public/img/${req.body.filename}`, function(err) {
+//     if (err) {
+//       return res.status(500).send(err);
+//     }
+//     res.json({file: `${req.body.filename}`});
+//   });
+// });
 
 // app.listen(app.get("port"), () => {
 //   console.log(`Find the server at: http://localhost:${app.get("port")}/`); // eslint-disable-line no-console

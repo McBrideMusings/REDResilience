@@ -1,18 +1,15 @@
 import React, { Component } from 'react';
 import ReactMaterialSelect from 'react-material-select'
+import UploadPics from '../upload/UploadPics';
+import Upload from '../upload/Upload';
 import 'react-material-select/lib/css/reactMaterialSelect.css'
 import tempData from '../../tempData.json';
+import axios from 'axios';
 
 class Form extends Component {
   constructor(props) {
     super(props);
-
-    this.violations = [];
-    // this.violationList = ["Open & Vacant Structure", "Overgrowth (grass, weeds, kudz)", "Junk vehicle", "Junk, debris, trash", "Vacant Lot", "Leaking/ inoperable plumbing", "No water (hot/cold)", "No heat", "Junk Tires"];
-    // this.picRow1Callback = this.picRow1Callback.bind(this);
-    // this.picRow2Callback = this.picRow2Callback.bind(this);
-    // this.picRow3Callback = this.picRow3Callback.bind(this);
-    // this.picRow3Callback = this.picRow3Callback.bind(this);
+    
     this.localSelectCallback = this.localSelectCallback.bind(this);
     this.commentCallback = this.commentCallback.bind(this);
     this.resolvedCallback = this.resolvedCallback.bind(this);
@@ -20,6 +17,7 @@ class Form extends Component {
 
   state = {
     screen: 0,
+    files: [],
     picRow1Data: {},
     picRow2Data: {},
     picRow3Data: {},
@@ -117,9 +115,7 @@ class Form extends Component {
     otherCheckedside: false,
     otherCheckedcomments: null
   };
-
-
-
+  
   localSelectCallback(selected){
     console.log(selected);
     var id = this.state.currId;
@@ -135,26 +131,7 @@ class Form extends Component {
       this.refs.localSelect.handleSetSelect("Select An Address", "None");
     }
   }
-  // picRow1Callback(selected) {
-  //   this.setState({picRow1Data: selected});
-  //   console.log(this.state.picRow1Data);
-  // }
-  // picRow2Callback(selected) {
-  //   this.setState({picRow2Data: selected})
-  // }
-  // picRow3Callback(selected) {
-  //   this.setState({picRow3Data: selected})
-  // }
-
-  componentDidMount() {
-    fetch('/data', {
-      method: 'GET'
-    })
-    .then(res => res.json())
-    .then(data => {
-      console.log(data);
-      this.setState({test: data});
-    });
+  getImages(){
     fetch('/images', {
       method: 'GET'
     })
@@ -280,6 +257,140 @@ class Form extends Component {
       this.setState({images: obj});
     });
   }
+  componentDidMount() {
+    fetch('/data', {
+      method: 'GET'
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log(data);
+      this.setState({test: data});
+    });
+    // fetch('/images', {
+    //   method: 'GET'
+    // })
+    // .then(res => res.json())
+    // .then(data => {
+    //   var obj = {};
+    //   for(var i = 0; i < data.length; i++){
+    //     obj[i] = {
+    //       id: i,
+    //       url: data[i],
+    //       openChecked: false,
+    //       openResolved: false,
+    //       openCheckedmonthsOne: false,
+    //       openCheckedmonthsFour: false,
+    //       openCheckedmonthsSix: false,
+    //       openCheckedfront: false,
+    //       openCheckedback: false,
+    //       openCheckedside: false,
+    //       openCheckedcomments: "",
+    //       overgrowthChecked: false,
+    //       overgrowthResolved: false,
+    //       overgrowthCheckedmonthsOne: false,
+    //       overgrowthCheckedmonthsFour: false,
+    //       overgrowthCheckedmonthsSix: false,
+    //       overgrowthCheckedfront: false,
+    //       overgrowthCheckedback: false,
+    //       overgrowthCheckedside: false,
+    //       overgrowthCheckedcomments: "",
+    //       junkVehicleChecked: false,
+    //       junkVehicleResolved: false,
+    //       junkVehicleCheckedmonthsOne: false,
+    //       junkVehicleCheckedmonthsFour: false,
+    //       junkVehicleCheckedmonthsSix: false,
+    //       junkVehicleCheckedfront: false,
+    //       junkVehicleCheckedback: false,
+    //       junkVehicleCheckedside: false,
+    //       junkVehicleCheckedcomments: "",
+    //       junkChecked: false,
+    //       junkResolved: false,
+    //       junkCheckedmonthsOne: false,
+    //       junkCheckedmonthsFour: false,
+    //       junkCheckedmonthsSix: false,
+    //       junkCheckedfront: false,
+    //       junkCheckedback: false,
+    //       junkCheckedside: false,
+    //       junkCheckedcomments: "",
+    //       vacantChecked: false,
+    //       vacantResolved: false,
+    //       vacantCheckedmonthsOne: false,
+    //       vacantCheckedmonthsFour: false,
+    //       vacantCheckedmonthsSix: false,
+    //       vacantCheckedfront: false,
+    //       vacantCheckedback: false,
+    //       vacantCheckedside: false,
+    //       vacantCheckedcomments: "",
+    //       leakingChecked: false,
+    //       leakingResolved: false,
+    //       leakingCheckedmonthsOne: false,
+    //       leakingCheckedmonthsFour: false,
+    //       leakingCheckedmonthsSix: false,
+    //       leakingCheckedfront: false,
+    //       leakingCheckedback: false,
+    //       leakingCheckedside: false,
+    //       leakingCheckedcomments: "",
+    //       waterChecked: false,
+    //       waterResolved: false,
+    //       waterCheckedmonthsOne: false,
+    //       waterCheckedmonthsFour: false,
+    //       waterCheckedmonthsSix: false,
+    //       waterCheckedfront: false,
+    //       waterCheckedback: false,
+    //       waterCheckedside: false,
+    //       waterCheckedcomments: "",
+    //       squattersChecked: false,
+    //       squattersResolved: false,
+    //       squattersCheckedmonthsOne: false,
+    //       squattersCheckedmonthsFour: false,
+    //       squattersCheckedmonthsSix: false,
+    //       squattersCheckedfront: false,
+    //       squattersCheckedback: false,
+    //       squattersCheckedside: false,
+    //       squattersCheckedcomments: "",
+    //       boardedChecked: false,
+    //       boardedResolved: false,
+    //       boardedCheckedmonthsOne: false,
+    //       boardedCheckedmonthsFour: false,
+    //       boardedCheckedmonthsSix: false,
+    //       boardedCheckedfront: false,
+    //       boardedCheckedback: false,
+    //       boardedCheckedside: false,
+    //       boardedCheckedcomments: "",
+    //       rodentChecked: false,
+    //       rodentResolved: false,
+    //       rodentCheckedmonthsOne: false,
+    //       rodentCheckedmonthsFour: false,
+    //       rodentCheckedmonthsSix: false,
+    //       rodentCheckedfront: false,
+    //       rodentCheckedback: false,
+    //       rodentCheckedside: false,
+    //       rodentCheckedcomments: "",
+    //       floodedChecked: false,
+    //       floodedCResolved: false,
+    //       floodedCheckedmonthsOne: false,
+    //       floodedCheckedmonthsFour: false,
+    //       floodedCheckedmonthsSix: false,
+    //       floodedCheckedfront: false,
+    //       floodedCheckedback: false,
+    //       floodedCheckedside: false,
+    //       floodedCheckedcomments: "",
+    //       otherChecked: false,
+    //       otherResolved: false,
+    //       otherCheckedmonthsOne: false,
+    //       otherCheckedmonthsFour: false,
+    //       otherCheckedmonthsSix: false,
+    //       otherCheckedfront: false,
+    //       otherCheckedback: false,
+    //       otherCheckedside: false,
+    //       otherCheckedcomments: "",
+    //       houseData: {},
+    //       violations: []
+    //     }
+    //   }
+    //   this.setState({images: obj});
+    // });
+  }
 
   addNewEntry(){
     var tempImg = this.state.images;
@@ -404,9 +515,7 @@ class Form extends Component {
     this.setState({images: tempImg});
     this.selectImage(this.state.images[obj.id]);
   }
-
-
-
+  
   selectImage(obj){
     this.setState({
       currId: obj.id,
@@ -549,9 +658,12 @@ class Form extends Component {
 
   saveViolations(){
     for(var i=0; i< Object.keys(this.state.images).length; i++){
-      var postData = {houseData: {}, violationData: {}};
+      var postData = {houseData: {}, violationData: {}, url: "", concatAddress: ""};
       let newViolations = this.reconstructViolations(this.state.images[i]);
       postData.houseData = this.state.images[i].houseData;
+      postData.url = this.state.images[i].url;
+      postData.concatAddress = this.state.images[i].houseData.streetNumber+" "+this.state.images[i].houseData.streetName;
+      postData.concatAddress = postData.concatAddress.replace(/ /g,"_");
       Object.keys(newViolations[0]).forEach(function(key, idx) {
         if(Object.keys(newViolations[0][key]).length){
           fetch('/addViolations', {
@@ -561,6 +673,8 @@ class Form extends Component {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+              concatAddress: postData.concatAddress,
+              url: postData.url,
               houseData: postData.houseData,
               violationData: newViolations[0][key]
             })
@@ -837,24 +951,307 @@ class Form extends Component {
     return newViolations;
   }
 
+  // handler = data => {
+  //   var tempImg = this.state.images;
+  //   var l = Object.keys(this.state.images).length;
+  //   var str = "/uploads/"+data[0];
+  //   var obj = {
+  //     id: l,
+  //     url: str,
+  //     openChecked: false,
+  //     openResolved: false,
+  //     openCheckedmonthsOne: false,
+  //     openCheckedmonthsFour: false,
+  //     openCheckedmonthsSix: false,
+  //     openCheckedfront: false,
+  //     openCheckedback: false,
+  //     openCheckedside: false,
+  //     openCheckedcomments: "",
+  //     overgrowthChecked: false,
+  //     overgrowthResolved: false,
+  //     overgrowthCheckedmonthsOne: false,
+  //     overgrowthCheckedmonthsFour: false,
+  //     overgrowthCheckedmonthsSix: false,
+  //     overgrowthCheckedfront: false,
+  //     overgrowthCheckedback: false,
+  //     overgrowthCheckedside: false,
+  //     overgrowthCheckedcomments: "",
+  //     junkVehicleChecked: false,
+  //     junkVehicleResolved: false,
+  //     junkVehicleCheckedmonthsOne: false,
+  //     junkVehicleCheckedmonthsFour: false,
+  //     junkVehicleCheckedmonthsSix: false,
+  //     junkVehicleCheckedfront: false,
+  //     junkVehicleCheckedback: false,
+  //     junkVehicleCheckedside: false,
+  //     junkVehicleCheckedcomments: "",
+  //     junkChecked: false,
+  //     junkResolved: false,
+  //     junkCheckedmonthsOne: false,
+  //     junkCheckedmonthsFour: false,
+  //     junkCheckedmonthsSix: false,
+  //     junkCheckedfront: false,
+  //     junkCheckedback: false,
+  //     junkCheckedside: false,
+  //     junkCheckedcomments: "",
+  //     vacantChecked: false,
+  //     vacantResolved: false,
+  //     vacantCheckedmonthsOne: false,
+  //     vacantCheckedmonthsFour: false,
+  //     vacantCheckedmonthsSix: false,
+  //     vacantCheckedfront: false,
+  //     vacantCheckedback: false,
+  //     vacantCheckedside: false,
+  //     vacantCheckedcomments: "",
+  //     leakingChecked: false,
+  //     leakingResolved: false,
+  //     leakingCheckedmonthsOne: false,
+  //     leakingCheckedmonthsFour: false,
+  //     leakingCheckedmonthsSix: false,
+  //     leakingCheckedfront: false,
+  //     leakingCheckedback: false,
+  //     leakingCheckedside: false,
+  //     leakingCheckedcomments: "",
+  //     waterChecked: false,
+  //     waterResolved: false,
+  //     waterCheckedmonthsOne: false,
+  //     waterCheckedmonthsFour: false,
+  //     waterCheckedmonthsSix: false,
+  //     waterCheckedfront: false,
+  //     waterCheckedback: false,
+  //     waterCheckedside: false,
+  //     waterCheckedcomments: "",
+  //     squattersChecked: false,
+  //     squattersResolved: false,
+  //     squattersCheckedmonthsOne: false,
+  //     squattersCheckedmonthsFour: false,
+  //     squattersCheckedmonthsSix: false,
+  //     squattersCheckedfront: false,
+  //     squattersCheckedback: false,
+  //     squattersCheckedside: false,
+  //     squattersCheckedcomments: "",
+  //     boardedChecked: false,
+  //     boardedResolved: false,
+  //     boardedCheckedmonthsOne: false,
+  //     boardedCheckedmonthsFour: false,
+  //     boardedCheckedmonthsSix: false,
+  //     boardedCheckedfront: false,
+  //     boardedCheckedback: false,
+  //     boardedCheckedside: false,
+  //     boardedCheckedcomments: "",
+  //     rodentChecked: false,
+  //     rodentResolved: false,
+  //     rodentCheckedmonthsOne: false,
+  //     rodentCheckedmonthsFour: false,
+  //     rodentCheckedmonthsSix: false,
+  //     rodentCheckedfront: false,
+  //     rodentCheckedback: false,
+  //     rodentCheckedside: false,
+  //     rodentCheckedcomments: "",
+  //     floodedChecked: false,
+  //     floodedCResolved: false,
+  //     floodedCheckedmonthsOne: false,
+  //     floodedCheckedmonthsFour: false,
+  //     floodedCheckedmonthsSix: false,
+  //     floodedCheckedfront: false,
+  //     floodedCheckedback: false,
+  //     floodedCheckedside: false,
+  //     floodedCheckedcomments: "",
+  //     otherChecked: false,
+  //     otherResolved: false,
+  //     otherCheckedmonthsOne: false,
+  //     otherCheckedmonthsFour: false,
+  //     otherCheckedmonthsSix: false,
+  //     otherCheckedfront: false,
+  //     otherCheckedback: false,
+  //     otherCheckedside: false,
+  //     otherCheckedcomments: "",
+  //     houseData: {},
+  //     violations: [],
+  //     isPlaceholder: true
+  //   };
+  //   tempImg[l] = obj;
+  //   console.log(tempImg);
+  //   this.setState({images: tempImg});
+  //   //this.selectImage(this.state.images[obj.id]);
+  // };
+  onClick = (e) => {
+    e.preventDefault();
+  };
+  onChange = (e) => {
+    //console.log(e.target.files);
+
+    this.setState({
+      files: e.target.files
+    });
+  };
+  onSubmit = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    let formData = new FormData(e.target);
+    axios.post('/upload', formData)
+        .then(response => {
+          //console.log(response);
+          //this.state.handler(response.data.files);
+        })
+        .catch(error => {
+          console.log(error.response);
+        });
+
+    this.getImages();
+    console.log(this.state.images);
+    // var tempImg = this.state.images;
+    // var l = Object.keys(this.state.images).length;
+    // var str = "client/public/uploads/"+this.state.files[0].name;
+    // var obj = {
+    //   id: l,
+    //   url: str,
+    //   openChecked: false,
+    //   openResolved: false,
+    //   openCheckedmonthsOne: false,
+    //   openCheckedmonthsFour: false,
+    //   openCheckedmonthsSix: false,
+    //   openCheckedfront: false,
+    //   openCheckedback: false,
+    //   openCheckedside: false,
+    //   openCheckedcomments: "",
+    //   overgrowthChecked: false,
+    //   overgrowthResolved: false,
+    //   overgrowthCheckedmonthsOne: false,
+    //   overgrowthCheckedmonthsFour: false,
+    //   overgrowthCheckedmonthsSix: false,
+    //   overgrowthCheckedfront: false,
+    //   overgrowthCheckedback: false,
+    //   overgrowthCheckedside: false,
+    //   overgrowthCheckedcomments: "",
+    //   junkVehicleChecked: false,
+    //   junkVehicleResolved: false,
+    //   junkVehicleCheckedmonthsOne: false,
+    //   junkVehicleCheckedmonthsFour: false,
+    //   junkVehicleCheckedmonthsSix: false,
+    //   junkVehicleCheckedfront: false,
+    //   junkVehicleCheckedback: false,
+    //   junkVehicleCheckedside: false,
+    //   junkVehicleCheckedcomments: "",
+    //   junkChecked: false,
+    //   junkResolved: false,
+    //   junkCheckedmonthsOne: false,
+    //   junkCheckedmonthsFour: false,
+    //   junkCheckedmonthsSix: false,
+    //   junkCheckedfront: false,
+    //   junkCheckedback: false,
+    //   junkCheckedside: false,
+    //   junkCheckedcomments: "",
+    //   vacantChecked: false,
+    //   vacantResolved: false,
+    //   vacantCheckedmonthsOne: false,
+    //   vacantCheckedmonthsFour: false,
+    //   vacantCheckedmonthsSix: false,
+    //   vacantCheckedfront: false,
+    //   vacantCheckedback: false,
+    //   vacantCheckedside: false,
+    //   vacantCheckedcomments: "",
+    //   leakingChecked: false,
+    //   leakingResolved: false,
+    //   leakingCheckedmonthsOne: false,
+    //   leakingCheckedmonthsFour: false,
+    //   leakingCheckedmonthsSix: false,
+    //   leakingCheckedfront: false,
+    //   leakingCheckedback: false,
+    //   leakingCheckedside: false,
+    //   leakingCheckedcomments: "",
+    //   waterChecked: false,
+    //   waterResolved: false,
+    //   waterCheckedmonthsOne: false,
+    //   waterCheckedmonthsFour: false,
+    //   waterCheckedmonthsSix: false,
+    //   waterCheckedfront: false,
+    //   waterCheckedback: false,
+    //   waterCheckedside: false,
+    //   waterCheckedcomments: "",
+    //   squattersChecked: false,
+    //   squattersResolved: false,
+    //   squattersCheckedmonthsOne: false,
+    //   squattersCheckedmonthsFour: false,
+    //   squattersCheckedmonthsSix: false,
+    //   squattersCheckedfront: false,
+    //   squattersCheckedback: false,
+    //   squattersCheckedside: false,
+    //   squattersCheckedcomments: "",
+    //   boardedChecked: false,
+    //   boardedResolved: false,
+    //   boardedCheckedmonthsOne: false,
+    //   boardedCheckedmonthsFour: false,
+    //   boardedCheckedmonthsSix: false,
+    //   boardedCheckedfront: false,
+    //   boardedCheckedback: false,
+    //   boardedCheckedside: false,
+    //   boardedCheckedcomments: "",
+    //   rodentChecked: false,
+    //   rodentResolved: false,
+    //   rodentCheckedmonthsOne: false,
+    //   rodentCheckedmonthsFour: false,
+    //   rodentCheckedmonthsSix: false,
+    //   rodentCheckedfront: false,
+    //   rodentCheckedback: false,
+    //   rodentCheckedside: false,
+    //   rodentCheckedcomments: "",
+    //   floodedChecked: false,
+    //   floodedCResolved: false,
+    //   floodedCheckedmonthsOne: false,
+    //   floodedCheckedmonthsFour: false,
+    //   floodedCheckedmonthsSix: false,
+    //   floodedCheckedfront: false,
+    //   floodedCheckedback: false,
+    //   floodedCheckedside: false,
+    //   floodedCheckedcomments: "",
+    //   otherChecked: false,
+    //   otherResolved: false,
+    //   otherCheckedmonthsOne: false,
+    //   otherCheckedmonthsFour: false,
+    //   otherCheckedmonthsSix: false,
+    //   otherCheckedfront: false,
+    //   otherCheckedback: false,
+    //   otherCheckedside: false,
+    //   otherCheckedcomments: "",
+    //   houseData: {},
+    //   violations: [],
+    //   isPlaceholder: true
+    // };
+    // tempImg[l] = obj;
+    // this.setState({images: tempImg});
+    // this.selectImage(this.state.images[obj.id]);
+    // console.log(this.state.images);
+  };
 
   render() {
     const today = new Date();
     if (this.state.test !== undefined) {
       return (
           <div className="App">
-            <div className="section">
-              <div className="container">
-                <div className="row">
-                  <div className="col s12 l6">
-                    {/*<h5 className="no-margin-top heading"><b>1. Select An Address</b></h5>
-                    <ReactMaterialSelect ref="row1Select" label="Select An Address" resetLabel="None" defaultValue="Choose An Address..." onChange={this.picRow1Callback.bind(this)}>
-                      {this.state.test.map((element) =>
-                          <option dataValue={JSON.stringify(element)}>{element.streetNumber} {element.streetName}</option>
-                      )}
-                    </ReactMaterialSelect>*/}
+             {this.state.images.length == 0 ? (
+                <div className="section">
+                  <div className="container">
+                    <div className="row">
+                      <div className="col s12">
+                        <form onSubmit={this.onSubmit}>
+                          <input
+                              type="file"
+                              name="userPhoto"
+                              onChange={this.onChange}
+                              accept='image/*'
+                              multiple
+                          />
+                          <span className='hint'>Supported files: jpg, jpeg, png.</span>
+                          <button onClick={this.onSubmit}>Submit</button>
+                        </form>
+                      </div>
+                    </div>
                   </div>
                 </div>
+              ) : (
+            <div className="section">
+              <div className="container">
                 <div className="row">
                   <div className="col s12 l2">
                     <h5><b>1. Select A Photo</b></h5>
@@ -867,11 +1264,6 @@ class Form extends Component {
                   <div className="col s12 l2">
                     <div className="row">
                       <div className="col s12">
-                        {/*<ReactMaterialSelect ref="row1Select" label="Assign address to picture(s) below" resetLabel="None" defaultValue="Choose An Address..." onChange={this.picRow1Callback.bind(this)}>
-                          {this.state.test.map((element) =>
-                              <option dataValue={JSON.stringify(element)}>{element.streetNumber} {element.streetName}</option>
-                          )}
-                        </ReactMaterialSelect>*/}
                         <div className="row">
                           { Object.keys(this.state.images).map((element, i) =>
                           <div className="col s12" key={element}>
@@ -1367,11 +1759,11 @@ class Form extends Component {
                         <div className="col s12 l8 null">
                           <h3 className="grey-text lighten-2 null-state">Choose An Image, Assign An Address, Add Violations</h3>
                         </div>
-
                   }
                 </div>
               </div>
             </div>
+            )}
           </div>
       );
     }else{
@@ -1383,6 +1775,7 @@ class Form extends Component {
           </div>
       );
     }
+
   }
 
   checkState() { // This is hyper-specific and bad and assumes the data never fails to be passed

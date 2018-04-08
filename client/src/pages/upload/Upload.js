@@ -35,7 +35,7 @@ class Upload extends Component {
       );
     } else {
       return (
-        <div className="container">
+        <div className="">
           <div className="row">
             <Form></Form>
           </div>
