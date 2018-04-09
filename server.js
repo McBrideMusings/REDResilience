@@ -1,5 +1,5 @@
 "use strict";
-require('dotenv').config()
+//require('dotenv').config()
 // libraries
 const port              = process.env.PORT || 3001;
 const express           = require("express");
@@ -12,8 +12,8 @@ const path              = require('path');
 const GoogleSpreadsheet = require('google-spreadsheet');
 
 const dateFormat        = require('dateformat');
-const {google}          = require('googleapis');
-const drive             = google.drive('v3');
+//const {google}          = require('googleapis');
+//const drive             = google.drive('v3');
 const DriveUpload       = require('./server/driveupload');
 
 
@@ -30,25 +30,6 @@ const dataDoc = new GoogleSpreadsheet('13CzpEoPA2bxh6w-heRgog5pejYQ_uttE1qVtI3TW
 
 const client = new DriveUpload(creds);
 
-
-/*
-// configure a JWT auth client
-let jwtClient = new google.auth.JWT (
-  creds.client_email,
-  null,
-  creds.private_key,
-  ['https://www.googleapis.com/auth/spreadsheets',
-   'https://www.googleapis.com/auth/drive']);
-  //authenticate request
-  jwtClient.authorize(function (err, tokens) {
-  if (err) {
-  console.log(err);
-  return;
-  } else {
-  console.log("Successfully connected!");
-  }
-});
-*/
 // configure storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -95,7 +76,6 @@ app.post('/upload', (req, res) => {
       filename() function defined in the diskStorage configuration. Other form fields
       are available here in req.body.
     */
-   console.log(req.files);
     if(err) {
       res.status(500).send({ error: err.code });
       return res.end();
@@ -107,27 +87,12 @@ app.post('/upload', (req, res) => {
       fileNames[i] = req.files[i].filename;
     }
     res.json({files: fileNames});
-    //res.end("File is uploaded");
   });
 });
-/*
-app.get('/testing', (req, res) => {
-  client.Upload('./pic1.png', "558_Sunset", "vacant", false)
-  .then((fulfilled) => {
-    res.send(fulfilled);
-  }).catch((error) => {
-    res.send(error);
-  });
-});
-*/
-
-
-app.listen(port, () => console.log(`Server listening on port ${port}`));
-
 
 app.post('/images', function (req, res) {
   var imgArray = [];
-  fs.readdir(`${__dirname}/client/public/uploads/`, (err, files) => {
+  fs.readdir(`${__dirname}/client/build/uploads/`, (err, files) => {
     files.forEach(file => {
       var str = "/uploads/"+file;
       // var str = `${__dirname}/client/public/img/`+file;
@@ -207,6 +172,11 @@ app.post("/addViolations", (req, res) =>{
     });
   });
 });
+
+app.listen(port, () => console.log(`Server listening on port ${port}`));
+
+
+
 
 // app.post(('/upload'), (req, res) => {
 //   console.log('upload endpoint hit');

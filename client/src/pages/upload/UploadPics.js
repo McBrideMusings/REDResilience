@@ -19,9 +19,13 @@ class UploadPics extends Component {
   onSubmit = (e) => {
     e.preventDefault();
     let formData = new FormData();
-    let testFormData = new FormData(e.target);
-    let inputElement = document.querySelector('#child') 
-    console.log(inputElement);
+    let inputElement;
+    for (let index = 0; index < e.target.children.length; index++) {
+      if (e.target.children[index].tagName === "INPUT") {
+        inputElement = e.target.children[index];
+        break;
+      }
+    }
     for (let index = 0; index < inputElement.files.length; index++) {
       formData.append('userPhoto', inputElement.files[index], 'chris2.jpg'); // APPEND WORKS?!
     }
@@ -32,7 +36,7 @@ class UploadPics extends Component {
       })
       .catch(error => {
         console.log(error.response);
-      });
+      }); 
   }
 
   render() {
