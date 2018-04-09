@@ -84,7 +84,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // app 
 app.post('/upload', (req, res) => {
-  console.log(req);
   upload.array("userPhoto", maxNumFiles)(req,res,function(err) {
     /*
       We now have a new req.file object here. At this point the file has been saved
@@ -92,7 +91,6 @@ app.post('/upload', (req, res) => {
       filename() function defined in the diskStorage configuration. Other form fields
       are available here in req.body.
     */
-    console.log(req.body);
     if(err) {
       res.status(500).send({ error: err.code });
       return res.end();
@@ -105,7 +103,7 @@ app.post('/upload', (req, res) => {
       fileNames[i] = req.files[i].filename;
     }
     res.json({files: fileNames});
-    //res.end("File is uploaded");
+    res.end("File is uploaded");
   });
 });
 
@@ -196,34 +194,52 @@ app.get("/data", (req, res) => {
   });
 });
 
+app.post("/deleteImg", (req, res) => {
+  console.log(req.body.path);
+  var s = `${__dirname}/client/public/${req.body.path}`;
+  fs.unlink(s);
+  res.send("done");
+});
+
 app.post("/addViolations", (req, res) =>{
   setAuthData(function () {
     dataDoc.getInfo(function (err, info) {
       console.log(req.body);
       let mySheet = info.worksheets.find(x => x.title === "RawData");
-      //let mySheet = info.worksheets[req.body.id];
-      // console.log(mySheet.getRows());
-      var ts = dateFormat(getTimestamp(), "dddd, mmmm dS, yyyy, h:MM:ss TT");
-      mySheet.addRow({
-        Street_Number: req.body.houseData.streetNumber,
-        Street_Name: req.body.houseData.streetName,
-        City: req.body.houseData.city,
-        State: req.body.houseData.state,
-        Zip: req.body.houseData.zip,
-        Full_Address: req.body.houseData.fullAddress,
-        Timestamp: ts,
-        Code_violation: req.body.violationData.name,
-        One_to_Three_Months: req.body.violationData.monthsOne,
-        Four_to_Six_Months: req.body.violationData.monthsFour,
-        Over_Six_Months: req.body.violationData.monthsSix,
-        Location_Front: req.body.violationData.front,
-        Location_Back: req.body.violationData.back,
-        Location_Side: req.body.violationData.side,
-        Comments: req.body.violationData.comments,
-        Is_Resolved: req.body.violationData.isResolved
-      }, function () {
-        console.log("done");
-        res.send("done");
+      if(req.body.violationData.isResolved == undefined){
+        req.body.violationData.isResolved = false;
+      }
+
+      req.body.url = "./client/public"+req.body.url;
+      console.log(req.body.url);
+      var promise = client.Upload(req.body.url, req.body.concatAddress, req.body.violationData.name, req.body.violationData.isResolved);
+      var url;
+      promise.then(function (resolved) {
+        console.log(resolved);
+        url = resolved;
+        var ts = dateFormat(getTimestamp(), "dddd, mmmm dS, yyyy, h:MM:ss TT");
+        mySheet.addRow({
+          Street_Number: req.body.houseData.streetNumber,
+          Street_Name: req.body.houseData.streetName,
+          City: req.body.houseData.city,
+          State: req.body.houseData.state,
+          Zip: req.body.houseData.zip,
+          Full_Address: req.body.houseData.fullAddress,
+          Timestamp: ts,
+          Code_violation: req.body.violationData.name,
+          One_to_Three_Months: req.body.violationData.monthsOne,
+          Four_to_Six_Months: req.body.violationData.monthsFour,
+          Over_Six_Months: req.body.violationData.monthsSix,
+          Location_Front: req.body.violationData.front,
+          Location_Back: req.body.violationData.back,
+          Location_Side: req.body.violationData.side,
+          Comments: req.body.violationData.comments,
+          Is_Resolved: req.body.violationData.isResolved,
+          IMG_URL: url
+        }, function () {
+          console.log("done");
+          res.send("done");
+        });
       });
     });
   });

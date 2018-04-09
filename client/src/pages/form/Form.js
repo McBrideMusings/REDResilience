@@ -411,7 +411,36 @@ class Form extends Component {
     this.selectImage(this.state.images[obj.id]);
   }
 
+  deleteImage(obj){
+    var tempData = this.state.images;
 
+    console.log(tempData);
+    fetch('/deleteImg', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        path: obj.url
+      })
+    }).then(function(res){
+
+          console.log(res);
+        }
+    );
+
+    delete tempData[obj.id];
+    var first = tempData[Object.keys(tempData)[0]];
+    console.log(first);
+    if(first != undefined){
+      this.setState({images: tempData, currId: first.id});
+      this.selectImage(first);
+    }
+    else{
+      this.setState({images: tempData, currId: null});
+    }
+  }
 
   selectImage(obj){
     this.setState({
@@ -552,12 +581,14 @@ class Form extends Component {
       this.state.images[id].violations.splice(index, 1);
     }
   }
-
   saveViolations(){
     for(var i=0; i< Object.keys(this.state.images).length; i++){
-      var postData = {houseData: {}, violationData: {}};
+      var postData = {houseData: {}, violationData: {}, url: "", concatAddress: ""};
       let newViolations = this.reconstructViolations(this.state.images[i]);
       postData.houseData = this.state.images[i].houseData;
+      postData.url = this.state.images[i].url;
+      postData.concatAddress = this.state.images[i].houseData.streetNumber+" "+this.state.images[i].houseData.streetName;
+      postData.concatAddress = postData.concatAddress.replace(/ /g,"_");
       Object.keys(newViolations[0]).forEach(function(key, idx) {
         if(Object.keys(newViolations[0][key]).length){
           fetch('/addViolations', {
@@ -567,17 +598,44 @@ class Form extends Component {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+              concatAddress: postData.concatAddress,
+              url: postData.url,
               houseData: postData.houseData,
               violationData: newViolations[0][key]
             })
           }).then(function(res){
-              console.log(res);
-            }
+                console.log(res);
+              }
           );
         }
       });
     }
   }
+  // saveViolations(){
+  //   for(var i=0; i< Object.keys(this.state.images).length; i++){
+  //     var postData = {houseData: {}, violationData: {}};
+  //     let newViolations = this.reconstructViolations(this.state.images[i]);
+  //     postData.houseData = this.state.images[i].houseData;
+  //     Object.keys(newViolations[0]).forEach(function(key, idx) {
+  //       if(Object.keys(newViolations[0][key]).length){
+  //         fetch('/addViolations', {
+  //           method: 'POST',
+  //           headers: {
+  //             'Accept': 'application/json',
+  //             'Content-Type': 'application/json'
+  //           },
+  //           body: JSON.stringify({
+  //             houseData: postData.houseData,
+  //             violationData: newViolations[0][key]
+  //           })
+  //         }).then(function(res){
+  //             console.log(res);
+  //           }
+  //         );
+  //       }
+  //     });
+  //   }
+  // }
 
   reconstructViolations(img){
     var newViolations = [];
@@ -878,7 +936,7 @@ class Form extends Component {
     for(var pair of testFormData.entries()) { // verify it's the same as old method
       console.log(pair[0]+ ', '+ pair[1]);
     }
-    // axios.post('/upload', testFormData)
+    // axios.post('/upload', formData)
     //     .then(response => {
     //       console.log(response.data.files);
     //       //this.state.handler(response.data.files);
@@ -889,20 +947,15 @@ class Form extends Component {
     this.uploadNow(formData);
   };
   uploadNow(data){
-    axios({
+    fetch('/upload',{
       method: 'post',
-      url: '/upload',
-      data: data,
-      config: { headers: {'Content-Type': 'multipart/form-data' }}
+      body: data
+    }).then(response => {
+      console.log(response);
     })
-        .then(function (response) {
-          //handle success
-          console.log(response);
-        })
-        .catch(function (response) {
-          //handle error
-          console.log(response);
-        });
+    .then(data => {
+      console.log(data)
+    })
   }
 
   render() {
@@ -931,7 +984,7 @@ class Form extends Component {
                   </div>
                 </div>
                 <div className="row">
-                  <div className="col s12 l2">
+                  <div className="col s12 l2 viewImg-col">
                     <div className="row">
                       <div className="col s12">
                         {/*<ReactMaterialSelect ref="row1Select" label="Assign address to picture(s) below" resetLabel="None" defaultValue="Choose An Address..." onChange={this.picRow1Callback.bind(this)}>
@@ -941,7 +994,7 @@ class Form extends Component {
                         </ReactMaterialSelect>*/}
                         <div className="row">
                           { Object.keys(this.state.images).map((element, i) =>
-                          <div className="col s12" key={element}>
+                          <div className="col s12 img-col" key={element}>
                               <a href="javascript:void(0)" onClick={() => this.selectImage(this.state.images[element])}>
                                 <div className="card">
                                   <div className="card-image">
@@ -949,6 +1002,7 @@ class Form extends Component {
                                   </div>
                                 </div>
                               </a>
+                              <a className="trash" onClick={() => this.deleteImage(this.state.images[element])} href="javascript:void(0)"><i className="material-icons left white red-text">delete</i></a>
                           </div>
                           )}
                         </div>
@@ -1436,17 +1490,22 @@ class Form extends Component {
                           </p>
                         </form>
                       </div>
-                      <div className="col s12 formCol">
+                      {/*<div className="col s12 formCol">
                         <br></br>
-                        <a className="btn" onClick={() => this.saveViolations()}>Save</a>
-                      </div>
+                        <a className="btn" onClick={() => this.saveViolations()}>Save All House Data</a>
+                      </div>*/}
                     </div>
-                  </div> ) :
+                  </div>
+                  ) :
                         <div className="col s12 l8 null">
                           <h3 className="grey-text lighten-2 null-state">Choose An Image, Assign An Address, Add Violations</h3>
                         </div>
 
                   }
+                  <div className="col s12 formCol align-right">
+                    <br></br>
+                    <a className="btn btn-large blue darken-1" onClick={() => this.saveViolations()}>Save All House Data</a>
+                  </div>
                 </div>
               </div>
             </div>
