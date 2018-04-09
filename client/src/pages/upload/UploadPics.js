@@ -18,8 +18,13 @@ class UploadPics extends Component {
 
   onSubmit = (e) => {
     e.preventDefault();
-    let formData = new FormData(e.target);
-    console.log(formData);
+    let formData = new FormData();
+    let testFormData = new FormData(e.target);
+    let inputElement = document.querySelector('#child') 
+    console.log(inputElement);
+    for (let index = 0; index < inputElement.files.length; index++) {
+      formData.append('userPhoto', inputElement.files[index], 'chris2.jpg'); // APPEND WORKS?!
+    }
     axios.post('/upload', formData)
       .then(response => { 
         console.log(response);
@@ -35,6 +40,7 @@ class UploadPics extends Component {
       <div>
         <form onSubmit={this.onSubmit}>
           <input
+            id="child"
             type="file"
             name="userPhoto"
             onChange={this.onChange}

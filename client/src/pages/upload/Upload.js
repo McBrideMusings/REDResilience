@@ -13,8 +13,6 @@ class Upload extends Component {
   }
 
   handler = data => {
-    console.log("thuis");
-    console.log(data);
     this.setState({
       files: data
     })
@@ -37,7 +35,7 @@ class Upload extends Component {
       return (
         <div className="">
           <div className="row">
-            <Form></Form>
+            <ViewPics files={this.state.files}></ViewPics>
           </div>
         </div>
       );

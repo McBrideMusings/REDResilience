@@ -95,19 +95,18 @@ app.post('/upload', (req, res) => {
       filename() function defined in the diskStorage configuration. Other form fields
       are available here in req.body.
     */
-    console.log(req.body.files);
+   console.log(req.files);
     if(err) {
       res.status(500).send({ error: err.code });
       return res.end();
     }
-    // res.end("File is uploaded");
-    // let fileNames = [];
-    // for (let i = 0; i < req.files.length; i++) {
-    //   // This is possibly what we want in production
-    //   // fileNames[i] = req.files[i].destination+req.files[i].filename;
-    //   fileNames[i] = req.files[i].filename;
-    // }
-    // res.json({files: fileNames});
+    let fileNames = [];
+    for (let i = 0; i < req.files.length; i++) {
+      // This is possibly what we want in production
+      // fileNames[i] = req.files[i].destination+req.files[i].filename;
+      fileNames[i] = req.files[i].filename;
+    }
+    res.json({files: fileNames});
     //res.end("File is uploaded");
   });
 });
