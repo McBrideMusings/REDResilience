@@ -1058,7 +1058,7 @@ class Form extends Component {
 
                     <div className="row issues">
                       <div className="col s12 m2">
-                        <p className="">Select Code Violation(s)</p>
+                        <p className="colHeader">Select Code Violation(s)</p>
                         <form action="#">
                         <p>
                           <input type="checkbox" id="open-struct" checked={this.state.openChecked}
@@ -1119,7 +1119,7 @@ class Form extends Component {
                         </form>
                       </div>
                       <div className="col s12 m3">
-                        <p className=""># Months</p>
+                        <p className="colHeader"># Months</p>
                         <form action="#">
                         <p>
                           <input type="checkbox" id="open-months-one" checked={this.state.openCheckedmonthsOne}
@@ -1245,7 +1245,7 @@ class Form extends Component {
                         </form>
                       </div>
                       <div className="col s12 m3">
-                        <p className="">Location On Property</p>
+                        <p className="colHeader">Location On Property</p>
                         <form action="#">
                         <p>
                           <input type="checkbox" id="open-front" checked={this.state.openCheckedfront}
@@ -1371,7 +1371,7 @@ class Form extends Component {
                           </form>
                       </div>
                       <div className="col s12 m2">
-                        <p className="">Comments</p>
+                        <p className="colHeader">Comments</p>
                         <form action="#">
                         <div className="row comment">
                           <div className="input-field col s12">
@@ -1431,7 +1431,7 @@ class Form extends Component {
                           </form>
                       </div>
                       <div className="col s12 m2 resCol">
-                        <p>Is Resolved?</p>
+                        <p className="colHeader">Is Resolved?</p>
                         <form action="#">
                           <p>
                             <input type="checkbox" id="openResolved" checked={this.state.openResolved}
