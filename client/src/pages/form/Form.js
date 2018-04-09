@@ -8,19 +8,10 @@ class Form extends Component {
   constructor(props) {
     super(props);
 
-    this.violations = [];
-    // this.violationList = ["Open & Vacant Structure", "Overgrowth (grass, weeds, kudz)", "Junk vehicle", "Junk, debris, trash", "Vacant Lot", "Leaking/ inoperable plumbing", "No water (hot/cold)", "No heat", "Junk Tires"];
-    // this.picRow1Callback = this.picRow1Callback.bind(this);
-    // this.picRow2Callback = this.picRow2Callback.bind(this);
-    // this.picRow3Callback = this.picRow3Callback.bind(this);
-    // this.picRow3Callback = this.picRow3Callback.bind(this);
     this.localSelectCallback = this.localSelectCallback.bind(this);
     this.commentCallback = this.commentCallback.bind(this);
     this.resolvedCallback = this.resolvedCallback.bind(this);
     this.handleMyFormSubmit = this.handleMyFormSubmit.bind(this);
-    // this.onMySubmit = this.onMySubmit.bind(this);
-    //this.uploadCallback = this.uploadCallback.bind(this);
-
   }
 
   state = {
@@ -124,8 +115,6 @@ class Form extends Component {
     otherCheckedcomments: null
   };
 
-
-
   localSelectCallback(selected){
     console.log(selected);
     var id = this.state.currId;
@@ -141,17 +130,256 @@ class Form extends Component {
       this.refs.localSelect.handleSetSelect("Select An Address", "None");
     }
   }
-  // picRow1Callback(selected) {
-  //   this.setState({picRow1Data: selected});
-  //   console.log(this.state.picRow1Data);
-  // }
-  // picRow2Callback(selected) {
-  //   this.setState({picRow2Data: selected})
-  // }
-  // picRow3Callback(selected) {
-  //   this.setState({picRow3Data: selected})
-  // }
-
+  createNewImages(arr){
+    var tempImg = this.state.images;
+    var imgOffset = Object.keys(this.state.images).length;
+    var obj = {};
+    for(var i = imgCount; i < (arr.length + imgOffset); i++){
+      var url = "/uploads/"+arr[i];
+      obj[i] = {
+        id: i,
+        url: url,
+        openChecked: false,
+        openResolved: false,
+        openCheckedmonthsOne: false,
+        openCheckedmonthsFour: false,
+        openCheckedmonthsSix: false,
+        openCheckedfront: false,
+        openCheckedback: false,
+        openCheckedside: false,
+        openCheckedcomments: "",
+        overgrowthChecked: false,
+        overgrowthResolved: false,
+        overgrowthCheckedmonthsOne: false,
+        overgrowthCheckedmonthsFour: false,
+        overgrowthCheckedmonthsSix: false,
+        overgrowthCheckedfront: false,
+        overgrowthCheckedback: false,
+        overgrowthCheckedside: false,
+        overgrowthCheckedcomments: "",
+        junkVehicleChecked: false,
+        junkVehicleResolved: false,
+        junkVehicleCheckedmonthsOne: false,
+        junkVehicleCheckedmonthsFour: false,
+        junkVehicleCheckedmonthsSix: false,
+        junkVehicleCheckedfront: false,
+        junkVehicleCheckedback: false,
+        junkVehicleCheckedside: false,
+        junkVehicleCheckedcomments: "",
+        junkChecked: false,
+        junkResolved: false,
+        junkCheckedmonthsOne: false,
+        junkCheckedmonthsFour: false,
+        junkCheckedmonthsSix: false,
+        junkCheckedfront: false,
+        junkCheckedback: false,
+        junkCheckedside: false,
+        junkCheckedcomments: "",
+        vacantChecked: false,
+        vacantResolved: false,
+        vacantCheckedmonthsOne: false,
+        vacantCheckedmonthsFour: false,
+        vacantCheckedmonthsSix: false,
+        vacantCheckedfront: false,
+        vacantCheckedback: false,
+        vacantCheckedside: false,
+        vacantCheckedcomments: "",
+        leakingChecked: false,
+        leakingResolved: false,
+        leakingCheckedmonthsOne: false,
+        leakingCheckedmonthsFour: false,
+        leakingCheckedmonthsSix: false,
+        leakingCheckedfront: false,
+        leakingCheckedback: false,
+        leakingCheckedside: false,
+        leakingCheckedcomments: "",
+        waterChecked: false,
+        waterResolved: false,
+        waterCheckedmonthsOne: false,
+        waterCheckedmonthsFour: false,
+        waterCheckedmonthsSix: false,
+        waterCheckedfront: false,
+        waterCheckedback: false,
+        waterCheckedside: false,
+        waterCheckedcomments: "",
+        squattersChecked: false,
+        squattersResolved: false,
+        squattersCheckedmonthsOne: false,
+        squattersCheckedmonthsFour: false,
+        squattersCheckedmonthsSix: false,
+        squattersCheckedfront: false,
+        squattersCheckedback: false,
+        squattersCheckedside: false,
+        squattersCheckedcomments: "",
+        boardedChecked: false,
+        boardedResolved: false,
+        boardedCheckedmonthsOne: false,
+        boardedCheckedmonthsFour: false,
+        boardedCheckedmonthsSix: false,
+        boardedCheckedfront: false,
+        boardedCheckedback: false,
+        boardedCheckedside: false,
+        boardedCheckedcomments: "",
+        rodentChecked: false,
+        rodentResolved: false,
+        rodentCheckedmonthsOne: false,
+        rodentCheckedmonthsFour: false,
+        rodentCheckedmonthsSix: false,
+        rodentCheckedfront: false,
+        rodentCheckedback: false,
+        rodentCheckedside: false,
+        rodentCheckedcomments: "",
+        floodedChecked: false,
+        floodedCResolved: false,
+        floodedCheckedmonthsOne: false,
+        floodedCheckedmonthsFour: false,
+        floodedCheckedmonthsSix: false,
+        floodedCheckedfront: false,
+        floodedCheckedback: false,
+        floodedCheckedside: false,
+        floodedCheckedcomments: "",
+        otherChecked: false,
+        otherResolved: false,
+        otherCheckedmonthsOne: false,
+        otherCheckedmonthsFour: false,
+        otherCheckedmonthsSix: false,
+        otherCheckedfront: false,
+        otherCheckedback: false,
+        otherCheckedside: false,
+        otherCheckedcomments: "",
+        houseData: {},
+        violations: []
+      };
+      tempImg.push(obj[i]);
+    }
+    this.setState({images: tempImg});
+  }
+  getImages(){
+    fetch('/images', {
+      method: 'GET'
+    })
+        .then(res => res.json())
+        .then(data => {
+          var obj = {};
+          for(var i = 0; i < data.length; i++){
+            obj[i] = {
+              id: i,
+              url: data[i],
+              openChecked: false,
+              openResolved: false,
+              openCheckedmonthsOne: false,
+              openCheckedmonthsFour: false,
+              openCheckedmonthsSix: false,
+              openCheckedfront: false,
+              openCheckedback: false,
+              openCheckedside: false,
+              openCheckedcomments: "",
+              overgrowthChecked: false,
+              overgrowthResolved: false,
+              overgrowthCheckedmonthsOne: false,
+              overgrowthCheckedmonthsFour: false,
+              overgrowthCheckedmonthsSix: false,
+              overgrowthCheckedfront: false,
+              overgrowthCheckedback: false,
+              overgrowthCheckedside: false,
+              overgrowthCheckedcomments: "",
+              junkVehicleChecked: false,
+              junkVehicleResolved: false,
+              junkVehicleCheckedmonthsOne: false,
+              junkVehicleCheckedmonthsFour: false,
+              junkVehicleCheckedmonthsSix: false,
+              junkVehicleCheckedfront: false,
+              junkVehicleCheckedback: false,
+              junkVehicleCheckedside: false,
+              junkVehicleCheckedcomments: "",
+              junkChecked: false,
+              junkResolved: false,
+              junkCheckedmonthsOne: false,
+              junkCheckedmonthsFour: false,
+              junkCheckedmonthsSix: false,
+              junkCheckedfront: false,
+              junkCheckedback: false,
+              junkCheckedside: false,
+              junkCheckedcomments: "",
+              vacantChecked: false,
+              vacantResolved: false,
+              vacantCheckedmonthsOne: false,
+              vacantCheckedmonthsFour: false,
+              vacantCheckedmonthsSix: false,
+              vacantCheckedfront: false,
+              vacantCheckedback: false,
+              vacantCheckedside: false,
+              vacantCheckedcomments: "",
+              leakingChecked: false,
+              leakingResolved: false,
+              leakingCheckedmonthsOne: false,
+              leakingCheckedmonthsFour: false,
+              leakingCheckedmonthsSix: false,
+              leakingCheckedfront: false,
+              leakingCheckedback: false,
+              leakingCheckedside: false,
+              leakingCheckedcomments: "",
+              waterChecked: false,
+              waterResolved: false,
+              waterCheckedmonthsOne: false,
+              waterCheckedmonthsFour: false,
+              waterCheckedmonthsSix: false,
+              waterCheckedfront: false,
+              waterCheckedback: false,
+              waterCheckedside: false,
+              waterCheckedcomments: "",
+              squattersChecked: false,
+              squattersResolved: false,
+              squattersCheckedmonthsOne: false,
+              squattersCheckedmonthsFour: false,
+              squattersCheckedmonthsSix: false,
+              squattersCheckedfront: false,
+              squattersCheckedback: false,
+              squattersCheckedside: false,
+              squattersCheckedcomments: "",
+              boardedChecked: false,
+              boardedResolved: false,
+              boardedCheckedmonthsOne: false,
+              boardedCheckedmonthsFour: false,
+              boardedCheckedmonthsSix: false,
+              boardedCheckedfront: false,
+              boardedCheckedback: false,
+              boardedCheckedside: false,
+              boardedCheckedcomments: "",
+              rodentChecked: false,
+              rodentResolved: false,
+              rodentCheckedmonthsOne: false,
+              rodentCheckedmonthsFour: false,
+              rodentCheckedmonthsSix: false,
+              rodentCheckedfront: false,
+              rodentCheckedback: false,
+              rodentCheckedside: false,
+              rodentCheckedcomments: "",
+              floodedChecked: false,
+              floodedCResolved: false,
+              floodedCheckedmonthsOne: false,
+              floodedCheckedmonthsFour: false,
+              floodedCheckedmonthsSix: false,
+              floodedCheckedfront: false,
+              floodedCheckedback: false,
+              floodedCheckedside: false,
+              floodedCheckedcomments: "",
+              otherChecked: false,
+              otherResolved: false,
+              otherCheckedmonthsOne: false,
+              otherCheckedmonthsFour: false,
+              otherCheckedmonthsSix: false,
+              otherCheckedfront: false,
+              otherCheckedback: false,
+              otherCheckedside: false,
+              otherCheckedcomments: "",
+              houseData: {},
+              violations: []
+            }
+          }
+          this.setState({images: obj});
+        });
+  }
   componentDidMount() {
     fetch('/data', {
       method: 'GET'
@@ -611,31 +839,6 @@ class Form extends Component {
       });
     }
   }
-  // saveViolations(){
-  //   for(var i=0; i< Object.keys(this.state.images).length; i++){
-  //     var postData = {houseData: {}, violationData: {}};
-  //     let newViolations = this.reconstructViolations(this.state.images[i]);
-  //     postData.houseData = this.state.images[i].houseData;
-  //     Object.keys(newViolations[0]).forEach(function(key, idx) {
-  //       if(Object.keys(newViolations[0][key]).length){
-  //         fetch('/addViolations', {
-  //           method: 'POST',
-  //           headers: {
-  //             'Accept': 'application/json',
-  //             'Content-Type': 'application/json'
-  //           },
-  //           body: JSON.stringify({
-  //             houseData: postData.houseData,
-  //             violationData: newViolations[0][key]
-  //           })
-  //         }).then(function(res){
-  //             console.log(res);
-  //           }
-  //         );
-  //       }
-  //     });
-  //   }
-  // }
 
   reconstructViolations(img){
     var newViolations = [];
@@ -936,15 +1139,16 @@ class Form extends Component {
     for(var pair of testFormData.entries()) { // verify it's the same as old method
       console.log(pair[0]+ ', '+ pair[1]);
     }
-    // axios.post('/upload', formData)
-    //     .then(response => {
-    //       console.log(response.data.files);
-    //       //this.state.handler(response.data.files);
-    //     })
-    //     .catch(error => {
-    //       console.log(error.response);
-    //     });
-    this.uploadNow(formData);
+    axios.post('/upload', formData)
+        .then(response => {
+          console.log(response.data.files);
+          this.createNewImages(response.data.files);
+          //this.state.handler(response.data.files);
+        })
+        .catch(error => {
+          console.log(error.response);
+        });
+    //this.uploadNow(formData);
   };
   uploadNow(data){
     fetch('/upload',{
@@ -1504,6 +1708,7 @@ class Form extends Component {
                   }
                   <div className="col s12 formCol align-right">
                     <br></br>
+                    <p>After you have set the appropriate data for each image, hit the save button below.</p>
                     <a className="btn btn-large blue darken-1" onClick={() => this.saveViolations()}>Save All House Data</a>
                   </div>
                 </div>
