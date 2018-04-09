@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import UploadPics from './UploadPics';
 import ViewPics from './ViewPics';
+import Form from '../form/Form';
 
 class Upload extends Component {
   constructor() {
@@ -34,9 +35,9 @@ class Upload extends Component {
       );
     } else {
       return (
-        <div className="container">
+        <div className="">
           <div className="row">
-            <ViewPics files={this.state.files}></ViewPics>
+            <Form></Form>
           </div>
         </div>
       );
@@ -75,7 +76,7 @@ class Upload extends Component {
     axios.post('/upload', data)
       .then(response => console.log(response))
       .catch(error => console.log(error));
-    
+
     fetch('/upload', { // Your POST endpoint
       method: 'POST',
       body: data,

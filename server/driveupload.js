@@ -1,22 +1,13 @@
-/*
-  This is used by several samples to easily provide
-  an oauth2 workflow.
-*/
-
 'use strict';
-
+// libraries
 const {google}        = require('googleapis');
 const http            = require('http');
 const url             = require('url');
-const querystring     = require('querystring');
-const opn             = require('opn');
-const destroyer       = require('server-destroy');
 const fs              = require('fs');
 const path            = require('path');
 const uuidv4          = require('uuid/v4');
-const readChunk       = require('read-chunk'); // npm install read-chunk 
+const readChunk       = require('read-chunk');
 const imageType       = require('image-type');
-
 
 const drive           = google.drive('v3');
 const sheets          = google.sheets('v4');

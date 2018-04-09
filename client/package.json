@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "concurrently": "^3.5.1",
     "axios": "^0.18.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-recaptcha": "^2.3.7",
+    "react-material-select": "^1.3.0",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.1.1"
   },

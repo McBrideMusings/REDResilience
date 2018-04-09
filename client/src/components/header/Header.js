@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom'
 
-const Header = ({useContainer}) => (
+const Header = () => (
   <div className="container">
     <div className="row" role="navigation">
       <div className="col s6">

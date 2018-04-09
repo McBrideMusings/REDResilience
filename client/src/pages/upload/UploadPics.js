@@ -19,6 +19,7 @@ class UploadPics extends Component {
   onSubmit = (e) => {
     e.preventDefault();
     let formData = new FormData(e.target);
+    console.log(formData);
     axios.post('/upload', formData)
       .then(response => { 
         console.log(response);

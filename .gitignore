@@ -56,7 +56,7 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
+*.env
 
 master-creds.json
 master-creds-pierce.json

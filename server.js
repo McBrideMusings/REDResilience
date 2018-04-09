@@ -1,4 +1,5 @@
 "use strict";
+require('dotenv').config()
 // libraries
 const port              = process.env.PORT || 3001;
 const express           = require("express");
@@ -9,9 +10,12 @@ const cors              = require('cors');
 const fs 	              = require("fs");
 const path              = require('path');
 const GoogleSpreadsheet = require('google-spreadsheet');
-const {google}            = require('googleapis');
+
+const dateFormat        = require('dateformat');
+const {google}          = require('googleapis');
 const drive             = google.drive('v3');
-const DriveUpload      = require('./driveupload');
+const DriveUpload       = require('./server/driveupload');
+
 
 // config
 const maxFileSize = 10000000000; // Might be total across all uploaded files
@@ -19,10 +23,13 @@ const maxNumFiles = 10;
 
 // setup
 var sheet;
-const creds = require('./master-creds-pierce.json');
+const creds = require('./master-creds.json');
 const data = require(__dirname + "/data.json");
 const doc = new GoogleSpreadsheet('1AEvI_VAcKss93_angVXQowdvnjL8u0diIjLsO3vnlJs');
+const dataDoc = new GoogleSpreadsheet('13CzpEoPA2bxh6w-heRgog5pejYQ_uttE1qVtI3TWwIc');
+
 const client = new DriveUpload(creds);
+
 
 /*
 // configure a JWT auth client
@@ -49,7 +56,7 @@ const storage = multer.diskStorage({
       Files will be saved in the 'uploads' directory. Make
       sure this directory already exists!
     */
-    cb(null, `${__dirname}/public/uploads/`);
+    cb(null, `${__dirname}/client/build/uploads/`);
   },
   filename: (req, file, cb) => {
     /*
@@ -62,7 +69,7 @@ const storage = multer.diskStorage({
     */
     const newFilename = `${uuidv4()}${path.extname(file.originalname)}`;
     cb(null, newFilename);
-  },
+  }
 });
 // create the multer instance that will be used to upload/save the file
 const upload = multer({ 
@@ -71,10 +78,13 @@ const upload = multer({
 });
 
 const app = express();
-app.use(express.static('./public'));
+app.use(express.static( `${__dirname}/client/build` ) );
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.get('*', (req, res)=>{
+  res.sendFile(path.join(__dirname, '../build/index.html'));
+})
 
 // app 
 app.post('/upload', (req, res) => {
@@ -85,23 +95,23 @@ app.post('/upload', (req, res) => {
       filename() function defined in the diskStorage configuration. Other form fields
       are available here in req.body.
     */
-    console.log(req.files);
+    console.log(req.body.files);
     if(err) {
       res.status(500).send({ error: err.code });
       return res.end();
     }
     // res.end("File is uploaded");
-    let fileNames = [];
-    for (let i = 0; i < req.files.length; i++) {
-      // This is possibly what we want in production
-      // fileNames[i] = req.files[i].destination+req.files[i].filename;
-      fileNames[i] = req.files[i].filename;
-    }
-    res.json({files: fileNames});
+    // let fileNames = [];
+    // for (let i = 0; i < req.files.length; i++) {
+    //   // This is possibly what we want in production
+    //   // fileNames[i] = req.files[i].destination+req.files[i].filename;
+    //   fileNames[i] = req.files[i].filename;
+    // }
+    // res.json({files: fileNames});
     //res.end("File is uploaded");
   });
 });
-
+/*
 app.get('/testing', (req, res) => {
   client.Upload('./pic1.png', "558_Sunset", "vacant", false)
   .then((fulfilled) => {
@@ -110,50 +120,36 @@ app.get('/testing', (req, res) => {
     res.send(error);
   });
 });
+*/
 
 
 app.listen(port, () => console.log(`Server listening on port ${port}`));
 
-/*
-function runSamples () {
-  var folderId = '1KKSuuouIc6pkLQKsJ13PkH99P2PbnPUv';
-  var fileMetadata = {
-    'name': 'photo.jpg',
-    parents: [folderId]
-  };
-  var media = {
-    mimeType: 'image/jpeg',
-    body: fs.createReadStream('./photo.jpg')
-  };
-  drive.files.create({
-    resource: fileMetadata,
-    media: media,
-    fields: 'id',
-    auth: jwtClient
-  }, function (err, file) {
-    if (err) {
-      // Handle error
-      throw (err);
-    } else {
-      return ('File Id: ', file.id);
-    }
-  });
-};
-*/
-/*
 
-app.get("/data", (req, res) => {
+app.post('/images', function (req, res) {
+  var imgArray = [];
+  fs.readdir(`${__dirname}/client/public/uploads/`, (err, files) => {
+    files.forEach(file => {
+      var str = "/uploads/"+file;
+      // var str = `${__dirname}/client/public/img/`+file;
+      imgArray.push(str);
+    });
+    res.send(imgArray);
+  });
+});
+
+app.post("/data", (req, res) => {
   setAuth(function(){
     console.log("authenticated");
-    // It's probably bad to do this many nested callbacks? Should we construct this a different way?
-    doc.getInfo(function(err, data) { 
+    doc.getInfo(function(err, data) {
       if (data === undefined) {
+        console.log(err);
         res.send(err);
       } else {
         let sheetList = {};
         const sheetZero = data.worksheets[0];
         sheetZero.getRows({
-          offset: 1,
+          offset: 1
         }, function( err, rows ) {
           let metaData = [];
           for (let index = 0; index < rows.length; index++) {
@@ -169,30 +165,91 @@ app.get("/data", (req, res) => {
           }
           res.send(metaData);
         });
-        }
+      }
     });
   });
 });
 
-app.post(('/upload'), (req, res) => {
-  console.log('upload endpoint hit');
-  let imageFile = req.files.file;
-  imageFile.mv(`${__dirname}/public/${req.body.filename}`, function(err) {
-    if (err) {
-      return res.status(500).send(err);
-    }
-    res.json({file: `${req.body.filename}`});
+app.post("/addViolations", (req, res) =>{
+  setAuthData(function () {
+    dataDoc.getInfo(function (err, info) {
+      let mySheet = info.worksheets.find(x => x.title === "RawData");
+
+      if(req.body.violationData.isResolved == undefined){
+        req.body.violationData.isResolved = false;
+      }
+      req.body.url = "./client/public"+req.body.url;
+      var promise = client.Upload(req.body.url, req.body.concatAddress, req.body.violationData.isResolved);
+      promise.then(function (resolved) {
+        console.log(resolved);
+      });
+      var ts = dateFormat(getTimestamp(), "dddd, mmmm dS, yyyy, h:MM:ss TT");
+      mySheet.addRow({
+        Street_Number: req.body.houseData.streetNumber,
+        Street_Name: req.body.houseData.streetName,
+        City: req.body.houseData.city,
+        State: req.body.houseData.state,
+        Zip: req.body.houseData.zip,
+        Full_Address: req.body.houseData.fullAddress,
+        Timestamp: ts,
+        Code_violation: req.body.violationData.name,
+        One_to_Three_Months: req.body.violationData.monthsOne,
+        Four_to_Six_Months: req.body.violationData.monthsFour,
+        Over_Six_Months: req.body.violationData.monthsSix,
+        Location_Front: req.body.violationData.front,
+        Location_Back: req.body.violationData.back,
+        Location_Side: req.body.violationData.side,
+        Comments: req.body.violationData.comments,
+        Is_Resolved: req.body.violationData.isResolved
+      }, function () {
+        console.log("done");
+        res.send("done");
+      });
+    });
   });
 });
 
-app.listen(app.get("port"), () => {
-  console.log(`Find the server at: http://localhost:${app.get("port")}/`); // eslint-disable-line no-console
-});
+// app.post(('/upload'), (req, res) => {
+//   console.log('upload endpoint hit');
+//   let imageFile = req.files.file;
+//   imageFile.mv(`${__dirname}/client/public/img/${req.body.filename}`, function(err) {
+//     if (err) {
+//       return res.status(500).send(err);
+//     }
+//     res.json({file: `${req.body.filename}`});
+//   });
+// });
+
+// app.listen(app.get("port"), () => {
+//   console.log(`Find the server at: http://localhost:${app.get("port")}/`); // eslint-disable-line no-console
+// });
+
+
+  // console.log("Server Initialized");
+
+// function setAuth() {
+//   var creds = require('./master-creds.json');
+//   doc.useServiceAccountAuth(creds, getInfoAndWorksheets);
+// }
+
+function getTimestamp(){
+  var localTime = new Date(); //get your local time
+  var utcTime = localTime.getUTCHours(); // find UTC hours
+  var estTime = new Date(); // create a new date object for the EST time
+  estTime.setHours(utcTime-5); // adjust it for EST hours.
+  return estTime;
+}
+//setAuth();
 
 function setAuth(callback) {
   doc.useServiceAccountAuth(creds, callback);
 }
+function setAuthData(callback) {
+  dataDoc.useServiceAccountAuth(creds, callback);
+}
 function formatFullAddress(streetNumber,streetName,city,state,zip) {
   return streetNumber+" "+streetName+" "+city+", "+state+" "+zip;
 }
-*/
+
+
+
