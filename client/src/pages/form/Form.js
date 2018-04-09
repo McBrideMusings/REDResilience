@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ReactMaterialSelect from 'react-material-select'
 import 'react-material-select/lib/css/reactMaterialSelect.css'
 import tempData from '../../tempData.json';
+import axios from 'axios';
 
 class Form extends Component {
   constructor(props) {
@@ -16,10 +17,15 @@ class Form extends Component {
     this.localSelectCallback = this.localSelectCallback.bind(this);
     this.commentCallback = this.commentCallback.bind(this);
     this.resolvedCallback = this.resolvedCallback.bind(this);
+    this.handleMyFormSubmit = this.handleMyFormSubmit.bind(this);
+    // this.onMySubmit = this.onMySubmit.bind(this);
+    //this.uploadCallback = this.uploadCallback.bind(this);
+
   }
 
   state = {
     screen: 0,
+    files: '',
     picRow1Data: {},
     picRow2Data: {},
     picRow3Data: {},
@@ -837,6 +843,67 @@ class Form extends Component {
     return newViolations;
   }
 
+  onChange = (e) => {
+    this.setState({
+      files: e.target.files
+    });
+  }
+
+  handleMyFormSubmit(e) {
+    e.preventDefault();
+    var formData = new FormData();
+    formData.append("userPhoto", this.state.files);
+
+    axios.post('/upload', formData)
+        .then(response => {
+          console.log(response.data.files);
+        })
+        .catch(error => {
+          //console.log(error.response);
+        });
+
+  }
+  onSubmit = (e) =>{
+    e.preventDefault();
+    let formData = new FormData();
+    let testFormData = new FormData(e.target);
+    let inputElement = document.querySelector('#child');
+    console.log(inputElement);
+    for (let index = 0; index < inputElement.files.length; index++) {
+      formData.append('userPhoto', inputElement.files[index], 'chris2.jpg'); // APPEND WORKS?!
+    }
+    for(var pair of formData.entries()) { // test results
+      console.log(pair[0]+ ', '+ pair[1]);
+    }
+    for(var pair of testFormData.entries()) { // verify it's the same as old method
+      console.log(pair[0]+ ', '+ pair[1]);
+    }
+    // axios.post('/upload', testFormData)
+    //     .then(response => {
+    //       console.log(response.data.files);
+    //       //this.state.handler(response.data.files);
+    //     })
+    //     .catch(error => {
+    //       console.log(error.response);
+    //     });
+    this.uploadNow(formData);
+  };
+  uploadNow(data){
+    axios({
+      method: 'post',
+      url: '/upload',
+      data: data,
+      config: { headers: {'Content-Type': 'multipart/form-data' }}
+    })
+        .then(function (response) {
+          //handle success
+          console.log(response);
+        })
+        .catch(function (response) {
+          //handle error
+          console.log(response);
+        });
+  }
 
   render() {
     const today = new Date();
@@ -905,6 +972,17 @@ class Form extends Component {
                         </ReactMaterialSelect>
                         <p></p>
                         <img src={this.state.currImg} width="50%"/>
+                        <form onSubmit={this.onSubmit}>
+                          <input
+                              type="file"
+                              name="userPhoto"
+                              onChange={this.onChange}
+                              accept='image/*'
+                              multiple
+                              id="child"
+                          />
+                          <button className="btn green darken-1" type="submit">Upload Photo</button>
+                        </form>
                       </div>
                     </div>
                     <div className="row address">

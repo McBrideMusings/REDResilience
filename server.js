@@ -84,6 +84,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // app 
 app.post('/upload', (req, res) => {
+  console.log(req);
   upload.array("userPhoto", maxNumFiles)(req,res,function(err) {
     /*
       We now have a new req.file object here. At this point the file has been saved
@@ -91,7 +92,7 @@ app.post('/upload', (req, res) => {
       filename() function defined in the diskStorage configuration. Other form fields
       are available here in req.body.
     */
-    console.log(req.files);
+    console.log(req.body);
     if(err) {
       res.status(500).send({ error: err.code });
       return res.end();
@@ -228,16 +229,16 @@ app.post("/addViolations", (req, res) =>{
   });
 });
 
-app.post(('/upload'), (req, res) => {
-  console.log('upload endpoint hit');
-  let imageFile = req.files.file;
-  imageFile.mv(`${__dirname}/client/public/img/${req.body.filename}`, function(err) {
-    if (err) {
-      return res.status(500).send(err);
-    }
-    res.json({file: `${req.body.filename}`});
-  });
-});
+// app.post(('/upload'), (req, res) => {
+//   console.log('upload endpoint hit');
+//   let imageFile = req.files.file;
+//   imageFile.mv(`${__dirname}/client/public/img/${req.body.filename}`, function(err) {
+//     if (err) {
+//       return res.status(500).send(err);
+//     }
+//     res.json({file: `${req.body.filename}`});
+//   });
+// });
 
 // app.listen(app.get("port"), () => {
 //   console.log(`Find the server at: http://localhost:${app.get("port")}/`); // eslint-disable-line no-console
