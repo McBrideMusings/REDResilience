@@ -134,10 +134,10 @@ class Form extends Component {
     var tempImg = this.state.images;
     var imgOffset = Object.keys(this.state.images).length;
     var obj = {};
-    for(var i = imgCount; i < (arr.length + imgOffset); i++){
+    for(var i = 0; i < arr.length; i++){
       var url = "/uploads/"+arr[i];
       obj[i] = {
-        id: i,
+        id: (i+imgOffset),
         url: url,
         openChecked: false,
         openResolved: false,
@@ -1142,7 +1142,10 @@ class Form extends Component {
     axios.post('/upload', formData)
         .then(response => {
           console.log(response.data.files);
-          this.createNewImages(response.data.files);
+          //var temp = this.state.images[this.state.currId].url;
+          var newUrl = "/uploads/"+response.data.files[0];
+          this.setState({ [images[this.state.currId][url]]: newUrl});
+          //this.createNewImages(response.data.files);
           //this.state.handler(response.data.files);
         })
         .catch(error => {
