@@ -37,7 +37,7 @@ const storage = multer.diskStorage({
       Files will be saved in the 'uploads' directory. Make
       sure this directory already exists!
     */
-    cb(null, `${__dirname}/client/build/uploads/`);
+    cb(null, `${__dirname}/public/uploads/`);
   },
   filename: (req, file, cb) => {
     /*
@@ -59,13 +59,11 @@ const upload = multer({
 });
 
 const app = express();
-app.use(express.static( `${__dirname}/client/build` ) );
+app.use(express.static( `${__dirname}/public` ) );
+//app.use(express.static( `${__dirname}/client/build` ) );
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('*', (req, res)=>{
-  res.sendFile(path.join(__dirname, '../build/index.html'));
-})
 
 // app 
 app.post('/upload', (req, res) => {
@@ -92,9 +90,9 @@ app.post('/upload', (req, res) => {
 
 app.post('/images', function (req, res) {
   var imgArray = [];
-  fs.readdir(`${__dirname}/client/build/uploads/`, (err, files) => {
+  fs.readdir(`${__dirname}/public/uploads/`, (err, files) => {
     files.forEach(file => {
-      var str = "/uploads/"+file;
+      var str = "/public/uploads/"+file;
       // var str = `${__dirname}/client/public/img/`+file;
       imgArray.push(str);
     });
@@ -132,6 +130,13 @@ app.post("/data", (req, res) => {
       }
     });
   });
+});
+
+app.post("/deleteImg", (req, res) => {
+  console.log(req.body.path);
+  var s = `${__dirname}/client/public/${req.body.path}`;
+  fs.unlink(s);
+  res.send("done");
 });
 
 app.post("/addViolations", (req, res) =>{
