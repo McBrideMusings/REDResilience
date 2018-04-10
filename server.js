@@ -1,7 +1,7 @@
 "use strict";
-//require('dotenv').config()
+require('dotenv').config()
 // libraries
-const port              = process.env.PORT || 3001;
+const port              = process.env.PORT;
 const express           = require("express");
 const bodyParser        = require('body-parser');
 const multer            = require('multer');
@@ -59,13 +59,19 @@ const upload = multer({
 });
 
 const app = express();
-app.use(express.static( `${__dirname}/public` ) );
+app.use(express.static( `${__dirname}/client/build/` ) );
 //app.use(express.static( `${__dirname}/client/build` ) );
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-// app 
+// GET 
+app.get('*', (req, res)=>{
+  res.send("working!");
+  //res.sendFile(path.join(__dirname, '/client/build/index.html'));
+})
+
+// POST
 app.post('/upload', (req, res) => {
   upload.array("userPhoto", maxNumFiles)(req,res,function(err) {
     /*
@@ -180,32 +186,6 @@ app.post("/addViolations", (req, res) =>{
 
 app.listen(port, () => console.log(`Server listening on port ${port}`));
 
-
-
-
-// app.post(('/upload'), (req, res) => {
-//   console.log('upload endpoint hit');
-//   let imageFile = req.files.file;
-//   imageFile.mv(`${__dirname}/client/public/img/${req.body.filename}`, function(err) {
-//     if (err) {
-//       return res.status(500).send(err);
-//     }
-//     res.json({file: `${req.body.filename}`});
-//   });
-// });
-
-// app.listen(app.get("port"), () => {
-//   console.log(`Find the server at: http://localhost:${app.get("port")}/`); // eslint-disable-line no-console
-// });
-
-
-  // console.log("Server Initialized");
-
-// function setAuth() {
-//   var creds = require('./master-creds.json');
-//   doc.useServiceAccountAuth(creds, getInfoAndWorksheets);
-// }
-
 function getTimestamp(){
   var localTime = new Date(); //get your local time
   var utcTime = localTime.getUTCHours(); // find UTC hours
@@ -213,7 +193,6 @@ function getTimestamp(){
   estTime.setHours(utcTime-5); // adjust it for EST hours.
   return estTime;
 }
-//setAuth();
 
 function setAuth(callback) {
   doc.useServiceAccountAuth(creds, callback);
