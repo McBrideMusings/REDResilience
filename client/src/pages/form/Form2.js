@@ -4,6 +4,8 @@
 import React, { Component } from 'react';
 import ReactMaterialSelect from 'react-material-select'
 import 'react-material-select/lib/css/reactMaterialSelect.css'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import RaisedButton from 'material-ui/RaisedButton';
 import axios from 'axios';
 
 class Form2 extends Component {
@@ -17,6 +19,7 @@ class Form2 extends Component {
     }
     state = {
         images: [],
+        files: [],
         test: undefined,
         currId: null,
         houseData: {},
@@ -150,10 +153,7 @@ class Form2 extends Component {
         }
     }
 
-    deleteImage(obj){
-        /*
-        * TODO: sync this up with new image functionality
-        * */
+    deleteImage(img){
         var tempData = this.state.images;
         fetch('/deleteImg', {
             method: 'POST',
@@ -162,10 +162,11 @@ class Form2 extends Component {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                path: obj.url
+                path: img
             })
         }).then(function(res){});
-        delete tempData[obj.id];
+        var index = tempData.indexOf(img);
+        if (index !== -1) tempData.splice(index, 1);
         this.setState({images: tempData});
     }
 
@@ -532,7 +533,13 @@ class Form2 extends Component {
         if(this.state.owner.length) obj.owner = this.state.owner;
         return obj;
     }
-    
+
+    onChange = (e) => {
+        this.setState({
+            files: e.target.files
+        });
+    }
+
     onSubmitt = (e) =>{
 
         let formData = new FormData();
@@ -555,10 +562,26 @@ class Form2 extends Component {
             .catch(error => {
                 console.log(error.response);
         });
+        this.setState({ files: []});
         e.preventDefault();
     };
 
     render(){
+        const styles = {
+            button: {
+                margin: 12
+            },
+            exampleImageInput: {
+                cursor: 'pointer',
+                position: 'absolute',
+                top: 0,
+                bottom: 0,
+                right: 0,
+                left: 0,
+                width: '100%',
+                opacity: 0
+            }
+        };
         if(this.state.test !== undefined){
             return(
                 <div className="section no-pad">
@@ -571,16 +594,33 @@ class Form2 extends Component {
                                         <div className="row no-margin-bottom">
                                             <div className="col s12 m3 border-right-light">
                                                 <h6><b>Upload New Photo(s)</b></h6>
+
                                                 <form className="uploadForm" >
-                                                    <input
+                                                    <MuiThemeProvider>
+                                                        <RaisedButton
+                                                            label="Choose Photo(s)"
+                                                            labelPosition="before"
+                                                            className="green darken-1 white-text"
+                                                            containerElement="label"
+                                                        >
+                                                            <input type="file"
+                                                                   name="userPhoto"
+                                                                   accept='image/*'
+                                                                   onChange={this.onChange}
+                                                                   multiple
+                                                                   id="child"
+                                                                   style={styles.exampleImageInput} />
+                                                        </RaisedButton>
+                                                    </MuiThemeProvider>
+                                                    {/*<input
                                                         type="file"
                                                         name="userPhoto"
                                                         accept='image/*'
                                                         multiple
                                                         id="child"
                                                         className="green-text"
-                                                    />
-                                                    <button className="btn green darken-1 uploadBtn"    onClick={this.onSubmitt}>Upload</button>
+                                                    />*/}
+                                                    <button className="btn green darken-1 uploadBtn" onClick={this.onSubmitt} disabled={this.state.files.length == 0}>Upload Photo(s)</button>
                                                 </form>
                                             </div>
                                             <div className="col s12 m9">
