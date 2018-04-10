@@ -3,6 +3,7 @@ import { Switch, Route } from 'react-router-dom';
 import Home from './pages/home/Home';
 import MapView from './pages/mapview/Mapview';
 import Form from './pages/form/Form';
+import Form2 from './pages/form/Form2';
 import Test from './pages/test/Test';
 import Pictures from './pages/pictures/Pictures';
 import Upload from './pages/upload/Upload';
@@ -20,6 +21,7 @@ class App extends Component {
           <Route exact path='/' component={Home}/>
           <Route path='/map' component={MapView}/>
           <Route path='/form' component={Form}/>
+          <Route path='/form2' component={Form2}/>
           <Route path='/test' component={Test}/>
           <Route path='/pictures' component={Pictures}/>
           <Route path='/upload' component={Upload}/>

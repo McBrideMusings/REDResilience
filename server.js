@@ -17,7 +17,7 @@ const DriveUpload      = require('./driveupload');
 
 
 // config
-const maxFileSize = 10000000000; // Might be total across all uploaded files
+const maxFileSize = 10000000000;   // Might be total across all uploaded files
 const maxNumFiles = 10;
 
 // setup
@@ -205,42 +205,42 @@ app.post("/addViolations", (req, res) =>{
   setAuthData(function () {
     dataDoc.getInfo(function (err, info) {
       console.log(req.body);
-      let mySheet = info.worksheets.find(x => x.title === "RawData");
-      if(req.body.violationData.isResolved == undefined){
-        req.body.violationData.isResolved = false;
-      }
-
-      req.body.url = "./client/public"+req.body.url;
-      console.log(req.body.url);
-      var promise = client.Upload(req.body.url, req.body.concatAddress, req.body.violationData.name, req.body.violationData.isResolved);
-      var url;
-      promise.then(function (resolved) {
-        console.log(resolved);
-        url = resolved;
-        var ts = dateFormat(getTimestamp(), "dddd, mmmm dS, yyyy, h:MM:ss TT");
-        mySheet.addRow({
-          Street_Number: req.body.houseData.streetNumber,
-          Street_Name: req.body.houseData.streetName,
-          City: req.body.houseData.city,
-          State: req.body.houseData.state,
-          Zip: req.body.houseData.zip,
-          Full_Address: req.body.houseData.fullAddress,
-          Timestamp: ts,
-          Code_violation: req.body.violationData.name,
-          One_to_Three_Months: req.body.violationData.monthsOne,
-          Four_to_Six_Months: req.body.violationData.monthsFour,
-          Over_Six_Months: req.body.violationData.monthsSix,
-          Location_Front: req.body.violationData.front,
-          Location_Back: req.body.violationData.back,
-          Location_Side: req.body.violationData.side,
-          Comments: req.body.violationData.comments,
-          Is_Resolved: req.body.violationData.isResolved,
-          IMG_URL: url
-        }, function () {
-          console.log("done");
-          res.send("done");
-        });
-      });
+      // let mySheet = info.worksheets.find(x => x.title === "RawData");
+      // if(req.body.violationData.isResolved == undefined){
+      //   req.body.violationData.isResolved = false;
+      // }
+      //
+      // req.body.url = "./client/public"+req.body.url;
+      // console.log(req.body.url);
+      // var promise = client.Upload(req.body.url, req.body.concatAddress, req.body.violationData.name, req.body.violationData.isResolved);
+      // var url;
+      // promise.then(function (resolved) {
+      //   console.log(resolved);
+      //   url = resolved;
+      //   var ts = dateFormat(getTimestamp(), "dddd, mmmm dS, yyyy, h:MM:ss TT");
+      //   mySheet.addRow({
+      //     Street_Number: req.body.houseData.streetNumber,
+      //     Street_Name: req.body.houseData.streetName,
+      //     City: req.body.houseData.city,
+      //     State: req.body.houseData.state,
+      //     Zip: req.body.houseData.zip,
+      //     Full_Address: req.body.houseData.fullAddress,
+      //     Timestamp: ts,
+      //     Code_violation: req.body.violationData.name,
+      //     One_to_Three_Months: req.body.violationData.monthsOne,
+      //     Four_to_Six_Months: req.body.violationData.monthsFour,
+      //     Over_Six_Months: req.body.violationData.monthsSix,
+      //     Location_Front: req.body.violationData.front,
+      //     Location_Back: req.body.violationData.back,
+      //     Location_Side: req.body.violationData.side,
+      //     Comments: req.body.violationData.comments,
+      //     Is_Resolved: req.body.violationData.isResolved,
+      //     IMG_URL: url
+      //   }, function () {
+      //     console.log("done");
+      //     res.send("done");
+      //   });
+      // });
     });
   });
 });

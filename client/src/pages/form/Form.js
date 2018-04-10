@@ -1142,9 +1142,13 @@ class Form extends Component {
     axios.post('/upload', formData)
         .then(response => {
           console.log(response.data.files);
-          var temp = this.state.images[this.state.currId].url;
+          //var temp = this.state.images[this.state.currId].url;
           var newUrl = "/uploads/"+response.data.files[0];
-          this.setState({ [this.state.images[temp].url] : newUrl});
+          console.log(this.state.images[this.state.currId].url);
+          var temp = this.state.images;
+          temp[this.state.currId].url = newUrl;
+          this.setState({ images : temp, currImg: newUrl});
+          console.log(this.state.images[this.state.currId].url);
           //this.createNewImages(response.data.files);
           //this.state.handler(response.data.files);
         })
