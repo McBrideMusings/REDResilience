@@ -19,11 +19,7 @@ class App extends Component {
         <Header></Header>
         <Switch>
           <Route exact path='/' component={Home}/>
-          <Route path='/form' component={Form}/>
-          <Route path='/form2' component={Form2}/>
-          <Route path='/test' component={Test}/>
-          <Route path='/pictures' component={Pictures}/>
-          <Route path='/upload' component={Upload}/>
+          <Route path='/form' component={Form2}/>
         </Switch>
         </main>
         <Footer></Footer>
