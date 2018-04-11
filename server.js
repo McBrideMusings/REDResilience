@@ -24,8 +24,7 @@ const maxNumFiles = 10;
 var sheet;
 const creds = require('./master-creds.json');
 const data = require(__dirname + "/data.json");
-const doc = new GoogleSpreadsheet('1AEvI_VAcKss93_angVXQowdvnjL8u0diIjLsO3vnlJs');
-const dataDoc = new GoogleSpreadsheet('13CzpEoPA2bxh6w-heRgog5pejYQ_uttE1qVtI3TWwIc');
+const doc = new GoogleSpreadsheet('1KYZOVHZM7KVj0jVMx8H95jqPP3jjVC5vQUIewIRb33w');
 
 const client = new DriveUpload(creds);
 
@@ -171,8 +170,8 @@ app.get("/data", (req, res) => {
         res.send(err);
       } else {
         let sheetList = {};
-        const sheetZero = data.worksheets[0];
-        sheetZero.getRows({
+        let mySheet = data.worksheets.find(x => x.title === "MetaData");
+        mySheet.getRows({
           offset: 1
         }, function( err, rows ) {
           let metaData = [];
@@ -210,8 +209,7 @@ app.post("/deleteAllImg", (req, res) => {
 });
 
 app.post("/addViolations", (req, res) =>{
-  setAuthData(function () {
-    dataDoc.getInfo(function (err, info) {
+    doc.getInfo(function (err, info) {
       console.log(req.body);
       var imgPaths = "";
       let mySheet = info.worksheets.find(x => x.title === "RawData");
@@ -293,8 +291,7 @@ app.post("/addViolations", (req, res) =>{
           res.send("done");
         });
       }
-    });
-  });
+    } );
 });
 
 // app.post(('/upload'), (req, res) => {
