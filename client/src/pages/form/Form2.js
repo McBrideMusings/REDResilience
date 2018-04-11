@@ -2,10 +2,14 @@
  * Created by Brendan on 4/9/2018.
  */
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom'
 import ReactMaterialSelect from 'react-material-select'
 import 'react-material-select/lib/css/reactMaterialSelect.css'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import {GridList, GridTile} from 'material-ui/GridList';
 import RaisedButton from 'material-ui/RaisedButton';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 import axios from 'axios';
 
 class Form2 extends Component {
@@ -18,6 +22,10 @@ class Form2 extends Component {
         this.checkboxCallback = this.checkboxCallback.bind(this);
     }
     state = {
+        hasSaved: false,
+        modalOpen: false,
+        noAddressModalOpen: false,
+        noViolationsModalOpen: false,
         images: [],
         files: [],
         test: undefined,
@@ -132,6 +140,9 @@ class Form2 extends Component {
         });
     }
 
+    refreshPage(){
+        window.location.reload();
+    }
     localSelectCallback(selected){
         /*
          * Handles the Address Selector drop-down
@@ -143,6 +154,32 @@ class Form2 extends Component {
             console.log(this.state.houseData);
         }catch(e){}
     }
+
+    handleOpen = () => {
+        if(!Object.keys(this.state.houseData).length){
+            this.setState({noAddressModalOpen: true});
+        }
+        else if(this.state.violations.length == 0){
+            this.setState({noViolationsModalOpen: true});
+        }
+        else{
+            this.setState({modalOpen: true});
+        }
+
+    };
+    handleClose = () => {
+        this.setState({modalOpen: false});
+    };
+    handleAddressClose = () => {
+        this.setState({noAddressModalOpen: false});
+    };
+    handleViolationsClose = () => {
+        this.setState({noViolationsModalOpen: false});
+    };
+    handleSave= () => {
+        this.saveViolations();
+        this.setState({modalOpen: false});
+    };
 
     resetDropdown(){
         /*
@@ -170,22 +207,34 @@ class Form2 extends Component {
         this.setState({images: tempData});
     }
 
+    deleteAllUploads(images){
+        console.log(images);
+        fetch('/deleteAllImg', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                data: images
+            })
+        }).then(function(res){});
+    }
+
     resolvedCallback(event){
         /*
-        * Handles each 'Is Resolved?' checkbox
-        * Flips the checked state and actual bool state value
-        * */
+         * TODO: Remove and replace all isResolved checkbox callbacks to 'checkboxCallback()'
+         * */
         this.setState({ [event.target.id] : !this.state[event.target.id] });
-        this.state[event.target.id] = !this.state[event.target.id];
+        this.violationCheck(event.target.id);
     }
 
     commentCallback(event){
         /*
-         * Handles each Comment field as user types
-         * I use the html id as the state object value (probably a better way)
+         * TODO: Remove and replace all comment field callbacks to 'textFieldCallback()'
          * */
         this.setState({ [event.target.id] : event.target.value});
-        this.state[event.target.id] = event.target.value;
+        this.violationCheck(event.target.id);
     }
 
     textFieldCallback(event){
@@ -209,7 +258,7 @@ class Form2 extends Component {
         * @param c - violation checkbox value (i.e. "openChecked")
         * */
         this.setState({ [c]: !this.state[c] });
-        // this.state.images[id][c] = !this.state.images[id][c];
+        this.violationCheck(c);
         var result = this.state.violations.find((n) => {
             return n === v;
         });
@@ -224,6 +273,43 @@ class Form2 extends Component {
         }
     }
 
+    violationCheck(c){
+        if(c.includes("open") && !this.state.openChecked){
+            this.setState({openChecked: true });
+        }
+        if(c.includes("overgrowth") && !this.state.overgrowthChecked){
+            this.setState({overgrowthChecked: true });
+        }
+        if(c.includes("squatters") && !this.state.squattersChecked){
+            this.setState({squattersChecked: true });
+        }
+        if(c.includes("leaking") && !this.state.leakingChecked){
+            this.setState({leakingChecked: true });
+        }
+        if(c.includes("water") && !this.state.waterChecked){
+            this.setState({waterChecked: true });
+        }
+        if(c.includes("boarded") && !this.state.boardedChecked){
+            this.setState({boardedChecked: true });
+        }
+        if(c.includes("rodent") && !this.state.rodentChecked){
+            this.setState({rodentChecked: true });
+        }
+        if(c.includes("flooded") && !this.state.floodedChecked){
+            this.setState({floodedChecked: true });
+        }
+
+        if(c.includes("junk") && !this.state.junkChecked){
+            this.setState({junkChecked: true });
+        }
+        if(c.includes("junkVehicle") && !this.state.junkVehicleChecked){
+            this.setState({junkVehicle: true });
+        }
+        if(c.includes("other") && !this.state.otherChecked){
+            this.setState({otherChecked: true });
+        }
+    }
+
     saveViolations(){
         /*
         * TODO: Finish this when I get the form set up
@@ -235,6 +321,7 @@ class Form2 extends Component {
         let newViolations = this.reconstructViolations();
         let propertyData = this.constructPropertyInfo();
         var images = this.state.images;
+        let myImages = this.state.images;
         Object.keys(newViolations[0]).forEach(function(key, idx) {
             if(Object.keys(newViolations[0][key]).length){
                 fetch('/addViolations', {
@@ -256,6 +343,8 @@ class Form2 extends Component {
                 );
             }
         });
+        this.setState({hasSaved: true});
+        this.deleteAllUploads(myImages);
     }
 
     reconstructViolations(){
@@ -538,14 +627,11 @@ class Form2 extends Component {
         this.setState({
             files: e.target.files
         });
-    }
+    };
 
-    onSubmitt = (e) =>{
-
+    onSubmit = (e) =>{
         let formData = new FormData();
-        //let testFormData = new FormData(e.target);
         let inputElement = document.querySelector('#child');
-        console.log(inputElement);
         for (let index = 0; index < inputElement.files.length; index++) {
             formData.append('userPhoto', inputElement.files[index], 'chris2.jpg'); // APPEND WORKS?!
         }
@@ -580,10 +666,50 @@ class Form2 extends Component {
                 left: 0,
                 width: '100%',
                 opacity: 0
+            },
+            root: {
+                display: 'flex',
+                flexWrap: 'wrap',
+                justifyContent: 'space-around'
+            },
+            gridList: {
+                display: 'flex',
+                flexWrap: 'nowrap',
+                overflowX: 'auto'
             }
         };
+        const actions = [
+            <FlatButton
+                label="Cancel"
+                primary={false}
+                onClick={this.handleClose}
+            />,
+            <FlatButton
+                label="Submit"
+                primary={true}
+                onClick={this.handleSave}
+            />
+        ];
         if(this.state.test !== undefined){
             return(
+                <MuiThemeProvider>
+                { this.state.hasSaved ? (
+                    <div className="section no-pad loading-sec">
+                        <div className="container">
+                            <div className="row">
+                                <div className="col s12 center">
+                                    <h3 className="green-text darken-1">Your data has been submitted!</h3>
+                                    <br></br>
+                                    <h5>Would you like to create new entry?</h5>
+                                    <div>
+                                        <Link to='/'><a className="btn btn-large white black-text" >No, Return Home</a></Link>
+                                        <a className="btn btn-large blue" onClick={this.refreshPage}>Yes, Create New</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ) : (
                 <div className="section no-pad">
                     <div className="container">
                         <div className="row no-margin-bottom">
@@ -594,7 +720,6 @@ class Form2 extends Component {
                                         <div className="row no-margin-bottom">
                                             <div className="col s12 m3 border-right-light">
                                                 <h6><b>Upload New Photo(s)</b></h6>
-
                                                 <form className="uploadForm" >
                                                     <MuiThemeProvider>
                                                         <RaisedButton
@@ -612,15 +737,7 @@ class Form2 extends Component {
                                                                    style={styles.exampleImageInput} />
                                                         </RaisedButton>
                                                     </MuiThemeProvider>
-                                                    {/*<input
-                                                        type="file"
-                                                        name="userPhoto"
-                                                        accept='image/*'
-                                                        multiple
-                                                        id="child"
-                                                        className="green-text"
-                                                    />*/}
-                                                    <button className="btn green darken-1 uploadBtn" onClick={this.onSubmitt} disabled={this.state.files.length == 0}>Upload Photo(s)</button>
+                                                    <button className="btn green darken-1 uploadBtn" onClick={this.onSubmit} disabled={this.state.files.length == 0}>Upload Photo(s)</button>
                                                 </form>
                                             </div>
                                             <div className="col s12 m9">
@@ -1139,12 +1256,49 @@ class Form2 extends Component {
                             </div>
                             <div className="col s12 formCol align-right">
                                 <br></br>
-                                <a className="btn btn-large blue darken-1" onClick={() => this.saveViolations()}>Submit House Data</a>
+                                <a className="btn btn-large blue darken-1" onClick={() => this.handleOpen()}>Submit House Data</a>
+                                <Dialog
+                                    title="Are You Sure?"
+                                    actions={actions}
+                                    modal={true}
+                                    open={this.state.modalOpen}
+                                >
+                                    Please review your information before submitting.
+                                </Dialog>
+                                <Dialog
+                                    title="Missing Data!"
+                                    actions={<FlatButton
+                                                label="Ok"
+                                                primary={false}
+                                                onClick={this.handleAddressClose}
+                                            />}
+                                    modal={false}
+                                    open={this.state.noAddressModalOpen}
+                                    onRequestClose={this.handleAddressClose}
+                                >
+                                    Please enter an address to submit.
+                                </Dialog>
+                                <Dialog
+                                    title="Missing Data!"
+                                    actions={<FlatButton
+                                                label="Ok"
+                                                primary={false}
+                                                onClick={this.handleViolationsClose}
+                                            />}
+                                    modal={false}
+                                    open={this.state.noViolationsModalOpen}
+                                    onRequestClose={this.handleViolationsClose}
+                                >
+                                    Please select at least one violation before submitting.
+                                </Dialog>
                             </div>
                         </div>
                     </div>
                 </div>
+                ) }
+                </MuiThemeProvider>
             );
+
         }
         else{
             return(
