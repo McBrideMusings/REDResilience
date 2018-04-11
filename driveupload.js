@@ -86,7 +86,7 @@ class DriveUpload {
     return new Promise((resolve, reject) => {
       Promise.all(promises)
       .then((results) => { resolve(results); })
-      .catch((e) => { reject(Error("From ProcessFiles: "+err)); });
+      .catch((err) => { reject(Error("From ProcessFiles: "+err)); });
     });
   }
   AddFileToFolder(file, fileName, folderID) {

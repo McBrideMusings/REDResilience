@@ -37,7 +37,7 @@ const storage = multer.diskStorage({
       Files will be saved in the 'uploads' directory. Make
       sure this directory already exists!
     */
-    cb(null, `${__dirname}/public/uploads/`);
+    cb(null, `${__dirname}/client/build/uploads/`);
   },
   filename: (req, file, cb) => {
     /*
@@ -107,15 +107,18 @@ app.post('/images', function (req, res) {
 });
 
 app.post("/data", (req, res) => {
+  console.log("here");
   setAuth(function(){
     console.log("authenticated");
     doc.getInfo(function(err, data) {
+      console.log("also here");
       if (data === undefined) {
         console.log(err);
         res.send(err);
       } else {
         let sheetList = {};
         let mySheet = data.worksheets.find(x => x.title === "MetaData");
+        console.log("here");
         mySheet.getRows({
           offset: 1
         }, function( err, rows ) {
@@ -140,14 +143,14 @@ app.post("/data", (req, res) => {
 
 app.post("/deleteImg", (req, res) => {
   console.log(req.body.path);
-  var s = `${__dirname}/client/public/${req.body.path}`;
+  var s = `${__dirname}/client/build/${req.body.path}`;
   fs.unlink(s);
   res.send("done");
 });
 
 app.post("/deleteAllImg", (req, res) => {
   for(var i=0; i < req.body.data.length; i++){
-    var s = `${__dirname}/client/public/${req.body.data[i]}`;
+    var s = `${__dirname}/client/build/${req.body.data[i]}`;
     fs.unlink(s);
   }
   res.send("done");
@@ -164,14 +167,14 @@ app.post("/addViolations", (req, res) =>{
       }
       if(req.body.images.length){
         for(var i=0; i < req.body.images.length; i++){
-          req.body.images[i] = "./client/public"+req.body.images[i];
+          req.body.images[i] = "./client/build"+req.body.images[i];
         }
         //req.body.url = "./client/public"+req.body.url;
         var promise = client.Upload(req.body.images, req.body.concatAddress, req.body.violationData.name, req.body.violationData.isResolved);
         promise.then(function (resolved) {
           console.log(resolved);
           for(var i=0; i < resolved.length; i++){
-            imgPaths = imgPaths+" | "+resolved[i][webViewLink];
+            imgPaths = imgPaths+" | "+resolved[i].webViewLink;
           }
           var ts = dateFormat(getTimestamp(), "dddd, mmmm dS, yyyy, h:MM:ss TT");
           mySheet.addRow({

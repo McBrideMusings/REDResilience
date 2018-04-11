@@ -20,6 +20,7 @@ class Form2 extends Component {
         this.resolvedCallback = this.resolvedCallback.bind(this);
         this.textFieldCallback = this.textFieldCallback.bind(this);
         this.checkboxCallback = this.checkboxCallback.bind(this);
+        this.saveViolations = this.saveViolations.bind(this);
     }
     state = {
         hasSaved: false,
@@ -131,7 +132,7 @@ class Form2 extends Component {
 
     componentDidMount() {
         fetch('/data', {
-            method: 'GET'
+            method: 'POST'
         })
         .then(res => res.json())
         .then(data => {
@@ -322,7 +323,59 @@ class Form2 extends Component {
         let propertyData = this.constructPropertyInfo();
         var images = this.state.images;
         let myImages = this.state.images;
-        Object.keys(newViolations[0]).forEach(function(key, idx) {
+
+        var promises = [];
+        var keys = []
+        var violation = ""
+        Object.keys(newViolations[0]).forEach((key, idx) => {
+            if (Object.keys(newViolations[0][key]).length){
+                //keys.push(newViolations[0][key]);
+                //violation = violation.concat(key.toString());
+                promises.push(
+                    fetch('/addViolations', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            concatAddress: postData.concatAddress,
+                            images: images,
+                            propertyData: propertyData,
+                            houseData: postData.houseData,
+                            violationData: newViolations[0][key]
+                        })
+                    })
+                );
+            }
+        });
+        /*
+        for (let index = 0; index < keys.length; index++) {
+            promises.push(
+                fetch('/addViolations', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        concatAddress: postData.concatAddress,
+                        images: images,
+                        propertyData: propertyData,
+                        houseData: postData.houseData,
+                        violationData: newViolations[0][keys[index]]
+                    })
+                })
+            );
+        }
+        */
+        Promise.all(promises)
+        .then(() => { 
+            this.setState({hasSaved: true});
+            //this.deleteAllUploads(myImages);
+        });
+        /*
+        Object.keys(newViolations[0]).forEach((key, idx) => {
             if(Object.keys(newViolations[0][key]).length){
                 fetch('/addViolations', {
                     method: 'POST',
@@ -337,14 +390,14 @@ class Form2 extends Component {
                         houseData: postData.houseData,
                         violationData: newViolations[0][key]
                     })
-                }).then(function(res){
-                        console.log(res);
+                }).then((res) => {
+                    this.setState({hasSaved: true});
+                    this.deleteAllUploads(myImages);
                     }
                 );
             }
         });
-        this.setState({hasSaved: true});
-        this.deleteAllUploads(myImages);
+        */
     }
 
     reconstructViolations(){
