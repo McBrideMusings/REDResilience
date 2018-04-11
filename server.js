@@ -19,7 +19,7 @@ const DriveUpload       = require('./driveupload');
 
 
 // config
-const maxFileSize = 10000000000; // Might be total across all uploaded files
+const maxFileSize = 10000000000;   // Might be total across all uploaded files
 const maxNumFiles = 10;
 
 // setup
@@ -146,41 +146,99 @@ app.post("/deleteImg", (req, res) => {
   res.send("done");
 });
 
+app.post("/deleteAllImg", (req, res) => {
+  for(var i=0; i < req.body.data.length; i++){
+    var s = `${__dirname}/client/public/${req.body.data[i]}`;
+    fs.unlink(s);
+  }
+  res.send("done");
+});
+
 app.post("/addViolations", (req, res) =>{
   setAuthData(function () {
     dataDoc.getInfo(function (err, info) {
+      console.log(req.body);
+      var imgPaths = "";
       let mySheet = info.worksheets.find(x => x.title === "RawData");
 
       if(req.body.violationData.isResolved == undefined){
         req.body.violationData.isResolved = false;
       }
-      req.body.url = "./client/public"+req.body.url;
-      var promise = client.Upload(req.body.url, req.body.concatAddress,req.body.violationData.name, req.body.violationData.isResolved);      
-      promise.then(function (resolved) {
-        console.log(resolved);
-      });
-      var ts = dateFormat(getTimestamp(), "dddd, mmmm dS, yyyy, h:MM:ss TT");
-      mySheet.addRow({
-        Street_Number: req.body.houseData.streetNumber,
-        Street_Name: req.body.houseData.streetName,
-        City: req.body.houseData.city,
-        State: req.body.houseData.state,
-        Zip: req.body.houseData.zip,
-        Full_Address: req.body.houseData.fullAddress,
-        Timestamp: ts,
-        Code_violation: req.body.violationData.name,
-        One_to_Three_Months: req.body.violationData.monthsOne,
-        Four_to_Six_Months: req.body.violationData.monthsFour,
-        Over_Six_Months: req.body.violationData.monthsSix,
-        Location_Front: req.body.violationData.front,
-        Location_Back: req.body.violationData.back,
-        Location_Side: req.body.violationData.side,
-        Comments: req.body.violationData.comments,
-        Is_Resolved: req.body.violationData.isResolved
-      }, function () {
-        console.log("done");
-        res.send("done");
-      });
+      if(req.body.images.length){
+        for(var i=0; i < req.body.images.length; i++){
+          req.body.images[i] = "./client/public"+req.body.images[i];
+        }
+        //req.body.url = "./client/public"+req.body.url;
+        var promise = client.Upload(req.body.images, req.body.concatAddress, req.body.violationData.name, req.body.violationData.isResolved);
+        promise.then(function (resolved) {
+          console.log(resolved);
+          for(var i=0; i < resolved.length; i++){
+            imgPaths = imgPaths+" | "+resolved[i][webViewLink];
+          }
+          var ts = dateFormat(getTimestamp(), "dddd, mmmm dS, yyyy, h:MM:ss TT");
+          mySheet.addRow({
+            Street_Number: req.body.houseData.streetNumber,
+            Street_Name: req.body.houseData.streetName,
+            City: req.body.houseData.city,
+            State: req.body.houseData.state,
+            Zip: req.body.houseData.zip,
+            Full_Address: req.body.houseData.fullAddress,
+            Single_Dwelling: req.body.propertyData.singleDwelling,
+            Multifamily_Dwelling: req.body.propertyData.multiDwelling,
+            Apartment: req.body.propertyData.isApt,
+            Commercial: req.body.propertyData.isCommercial,
+            Property_Owner_Name: req.body.propertyData.owner,
+            Lives_There: req.body.propertyData.livesThere,
+            Not_Lives_There: req.body.propertyData.notLivesThere,
+            Timestamp: ts,
+            Code_violation: req.body.violationData.name,
+            One_to_Three_Months: req.body.violationData.monthsOne,
+            Four_to_Six_Months: req.body.violationData.monthsFour,
+            Over_Six_Months: req.body.violationData.monthsSix,
+            Location_Front: req.body.violationData.front,
+            Location_Back: req.body.violationData.back,
+            Location_Side: req.body.violationData.side,
+            Comments: req.body.violationData.comments,
+            Is_Resolved: req.body.violationData.isResolved,
+            IMG_URL: imgPaths
+          }, function () {
+            console.log("done");
+            res.send("done");
+          });
+        });
+      }
+      else{
+        var ts = dateFormat(getTimestamp(), "dddd, mmmm dS, yyyy, h:MM:ss TT");
+        mySheet.addRow({
+          Street_Number: req.body.houseData.streetNumber,
+          Street_Name: req.body.houseData.streetName,
+          City: req.body.houseData.city,
+          State: req.body.houseData.state,
+          Zip: req.body.houseData.zip,
+          Full_Address: req.body.houseData.fullAddress,
+          Single_Dwelling: req.body.propertyData.singleDwelling,
+          Multifamily_Dwelling: req.body.propertyData.multiDwelling,
+          Apartment: req.body.propertyData.isApt,
+          Commercial: req.body.propertyData.isCommercial,
+          Property_Owner_Name: req.body.propertyData.owner,
+          Lives_There: req.body.propertyData.livesThere,
+          Not_Lives_There: req.body.propertyData.notLivesThere,
+          Timestamp: ts,
+          Code_violation: req.body.violationData.name,
+          One_to_Three_Months: req.body.violationData.monthsOne,
+          Four_to_Six_Months: req.body.violationData.monthsFour,
+          Over_Six_Months: req.body.violationData.monthsSix,
+          Location_Front: req.body.violationData.front,
+          Location_Back: req.body.violationData.back,
+          Location_Side: req.body.violationData.side,
+          Comments: req.body.violationData.comments,
+          Is_Resolved: req.body.violationData.isResolved,
+          IMG_URL: imgPaths
+        }, function () {
+          console.log("done");
+          res.send("done");
+        });
+      }
     });
   });
 });
