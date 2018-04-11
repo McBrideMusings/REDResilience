@@ -4,6 +4,7 @@ require('dotenv').config()
 const port              = process.env.PORT || 3000;
 const express           = require("express");
 const bodyParser        = require('body-parser');
+const helmet            = require('helmet')
 const multer            = require('multer');
 const uuidv4            = require('uuid/v4');
 const cors              = require('cors');
@@ -59,25 +60,15 @@ const upload = multer({
 });
 
 const app = express();
-//app.use(express.static( `${__dirname}/client/build/` ) );
+app.use(express.static( `${__dirname}/client/build/` ) );
+app.use(helmet())
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
 // GET 
-app.get('/', (req, res)=>{
+app.get('*', (req, res)=>{
   //res.send("working!");
-  client.Upload(['./testpic.png','./test2.png'], "goodsdasddNow", "TooMuchFun", false)      
-  .then(function (resolved) {
-    console.log("resolved");
-    console.log(resolved);
-    res.send(resolved);
-  })
-  .catch(function (rejected) {
-    console.log("rejected");
-    console.log(rejected);
-    res.send("fucked up");
-  });
   //res.sendFile(path.join(__dirname, '/client/build/index.html'));
 })
 
