@@ -148,7 +148,7 @@ app.post("/addViolations", (req, res) =>{
         req.body.violationData.isResolved = false;
       }
       req.body.url = "./client/public"+req.body.url;
-      var promise = client.Upload(req.body.url, req.body.concatAddress, req.body.violationData.isResolved);
+      var promise = client.Upload(req.body.url, req.body.concatAddress,req.body.violationData.name, req.body.violationData.isResolved);      
       promise.then(function (resolved) {
         console.log(resolved);
       });

@@ -9,14 +9,10 @@ import axios from 'axios';
 class Form extends Component {
   constructor(props) {
     super(props);
-    
     this.localSelectCallback = this.localSelectCallback.bind(this);
     this.commentCallback = this.commentCallback.bind(this);
     this.resolvedCallback = this.resolvedCallback.bind(this);
     this.handleMyFormSubmit = this.handleMyFormSubmit.bind(this);
-    // this.onMySubmit = this.onMySubmit.bind(this);
-    //this.uploadCallback = this.uploadCallback.bind(this);
-
   }
 
   state = {
@@ -119,7 +115,6 @@ class Form extends Component {
     otherCheckedside: false,
     otherCheckedcomments: null
   };
-  
   localSelectCallback(selected){
     console.log(selected);
     var id = this.state.currId;
@@ -135,7 +130,265 @@ class Form extends Component {
       this.refs.localSelect.handleSetSelect("Select An Address", "None");
     }
   }
+  createNewImages(arr){
+    var tempImg = this.state.images;
+    var imgOffset = Object.keys(this.state.images).length;
+    var obj = {};
+    for(var i = 0; i < (arr.length); i++){
+      var url = "/uploads/"+arr[i];
+      obj[i] = {
+        id: i+imgOffset,
+        url: url,
+        openChecked: false,
+        openResolved: false,
+        openCheckedmonthsOne: false,
+        openCheckedmonthsFour: false,
+        openCheckedmonthsSix: false,
+        openCheckedfront: false,
+        openCheckedback: false,
+        openCheckedside: false,
+        openCheckedcomments: "",
+        overgrowthChecked: false,
+        overgrowthResolved: false,
+        overgrowthCheckedmonthsOne: false,
+        overgrowthCheckedmonthsFour: false,
+        overgrowthCheckedmonthsSix: false,
+        overgrowthCheckedfront: false,
+        overgrowthCheckedback: false,
+        overgrowthCheckedside: false,
+        overgrowthCheckedcomments: "",
+        junkVehicleChecked: false,
+        junkVehicleResolved: false,
+        junkVehicleCheckedmonthsOne: false,
+        junkVehicleCheckedmonthsFour: false,
+        junkVehicleCheckedmonthsSix: false,
+        junkVehicleCheckedfront: false,
+        junkVehicleCheckedback: false,
+        junkVehicleCheckedside: false,
+        junkVehicleCheckedcomments: "",
+        junkChecked: false,
+        junkResolved: false,
+        junkCheckedmonthsOne: false,
+        junkCheckedmonthsFour: false,
+        junkCheckedmonthsSix: false,
+        junkCheckedfront: false,
+        junkCheckedback: false,
+        junkCheckedside: false,
+        junkCheckedcomments: "",
+        vacantChecked: false,
+        vacantResolved: false,
+        vacantCheckedmonthsOne: false,
+        vacantCheckedmonthsFour: false,
+        vacantCheckedmonthsSix: false,
+        vacantCheckedfront: false,
+        vacantCheckedback: false,
+        vacantCheckedside: false,
+        vacantCheckedcomments: "",
+        leakingChecked: false,
+        leakingResolved: false,
+        leakingCheckedmonthsOne: false,
+        leakingCheckedmonthsFour: false,
+        leakingCheckedmonthsSix: false,
+        leakingCheckedfront: false,
+        leakingCheckedback: false,
+        leakingCheckedside: false,
+        leakingCheckedcomments: "",
+        waterChecked: false,
+        waterResolved: false,
+        waterCheckedmonthsOne: false,
+        waterCheckedmonthsFour: false,
+        waterCheckedmonthsSix: false,
+        waterCheckedfront: false,
+        waterCheckedback: false,
+        waterCheckedside: false,
+        waterCheckedcomments: "",
+        squattersChecked: false,
+        squattersResolved: false,
+        squattersCheckedmonthsOne: false,
+        squattersCheckedmonthsFour: false,
+        squattersCheckedmonthsSix: false,
+        squattersCheckedfront: false,
+        squattersCheckedback: false,
+        squattersCheckedside: false,
+        squattersCheckedcomments: "",
+        boardedChecked: false,
+        boardedResolved: false,
+        boardedCheckedmonthsOne: false,
+        boardedCheckedmonthsFour: false,
+        boardedCheckedmonthsSix: false,
+        boardedCheckedfront: false,
+        boardedCheckedback: false,
+        boardedCheckedside: false,
+        boardedCheckedcomments: "",
+        rodentChecked: false,
+        rodentResolved: false,
+        rodentCheckedmonthsOne: false,
+        rodentCheckedmonthsFour: false,
+        rodentCheckedmonthsSix: false,
+        rodentCheckedfront: false,
+        rodentCheckedback: false,
+        rodentCheckedside: false,
+        rodentCheckedcomments: "",
+        floodedChecked: false,
+        floodedCResolved: false,
+        floodedCheckedmonthsOne: false,
+        floodedCheckedmonthsFour: false,
+        floodedCheckedmonthsSix: false,
+        floodedCheckedfront: false,
+        floodedCheckedback: false,
+        floodedCheckedside: false,
+        floodedCheckedcomments: "",
+        otherChecked: false,
+        otherResolved: false,
+        otherCheckedmonthsOne: false,
+        otherCheckedmonthsFour: false,
+        otherCheckedmonthsSix: false,
+        otherCheckedfront: false,
+        otherCheckedback: false,
+        otherCheckedside: false,
+        otherCheckedcomments: "",
+        houseData: {},
+        violations: []
+      };
+      tempImg.push(obj[i]);
+    }
+    this.setState({images: tempImg});
+  }
   getImages(){
+    fetch('/images', {
+      method: 'GET'
+    })
+        .then(res => res.json())
+        .then(data => {
+          var obj = {};
+          for(var i = 0; i < data.length; i++){
+            obj[i] = {
+              id: i,
+              url: data[i],
+              openChecked: false,
+              openResolved: false,
+              openCheckedmonthsOne: false,
+              openCheckedmonthsFour: false,
+              openCheckedmonthsSix: false,
+              openCheckedfront: false,
+              openCheckedback: false,
+              openCheckedside: false,
+              openCheckedcomments: "",
+              overgrowthChecked: false,
+              overgrowthResolved: false,
+              overgrowthCheckedmonthsOne: false,
+              overgrowthCheckedmonthsFour: false,
+              overgrowthCheckedmonthsSix: false,
+              overgrowthCheckedfront: false,
+              overgrowthCheckedback: false,
+              overgrowthCheckedside: false,
+              overgrowthCheckedcomments: "",
+              junkVehicleChecked: false,
+              junkVehicleResolved: false,
+              junkVehicleCheckedmonthsOne: false,
+              junkVehicleCheckedmonthsFour: false,
+              junkVehicleCheckedmonthsSix: false,
+              junkVehicleCheckedfront: false,
+              junkVehicleCheckedback: false,
+              junkVehicleCheckedside: false,
+              junkVehicleCheckedcomments: "",
+              junkChecked: false,
+              junkResolved: false,
+              junkCheckedmonthsOne: false,
+              junkCheckedmonthsFour: false,
+              junkCheckedmonthsSix: false,
+              junkCheckedfront: false,
+              junkCheckedback: false,
+              junkCheckedside: false,
+              junkCheckedcomments: "",
+              vacantChecked: false,
+              vacantResolved: false,
+              vacantCheckedmonthsOne: false,
+              vacantCheckedmonthsFour: false,
+              vacantCheckedmonthsSix: false,
+              vacantCheckedfront: false,
+              vacantCheckedback: false,
+              vacantCheckedside: false,
+              vacantCheckedcomments: "",
+              leakingChecked: false,
+              leakingResolved: false,
+              leakingCheckedmonthsOne: false,
+              leakingCheckedmonthsFour: false,
+              leakingCheckedmonthsSix: false,
+              leakingCheckedfront: false,
+              leakingCheckedback: false,
+              leakingCheckedside: false,
+              leakingCheckedcomments: "",
+              waterChecked: false,
+              waterResolved: false,
+              waterCheckedmonthsOne: false,
+              waterCheckedmonthsFour: false,
+              waterCheckedmonthsSix: false,
+              waterCheckedfront: false,
+              waterCheckedback: false,
+              waterCheckedside: false,
+              waterCheckedcomments: "",
+              squattersChecked: false,
+              squattersResolved: false,
+              squattersCheckedmonthsOne: false,
+              squattersCheckedmonthsFour: false,
+              squattersCheckedmonthsSix: false,
+              squattersCheckedfront: false,
+              squattersCheckedback: false,
+              squattersCheckedside: false,
+              squattersCheckedcomments: "",
+              boardedChecked: false,
+              boardedResolved: false,
+              boardedCheckedmonthsOne: false,
+              boardedCheckedmonthsFour: false,
+              boardedCheckedmonthsSix: false,
+              boardedCheckedfront: false,
+              boardedCheckedback: false,
+              boardedCheckedside: false,
+              boardedCheckedcomments: "",
+              rodentChecked: false,
+              rodentResolved: false,
+              rodentCheckedmonthsOne: false,
+              rodentCheckedmonthsFour: false,
+              rodentCheckedmonthsSix: false,
+              rodentCheckedfront: false,
+              rodentCheckedback: false,
+              rodentCheckedside: false,
+              rodentCheckedcomments: "",
+              floodedChecked: false,
+              floodedCResolved: false,
+              floodedCheckedmonthsOne: false,
+              floodedCheckedmonthsFour: false,
+              floodedCheckedmonthsSix: false,
+              floodedCheckedfront: false,
+              floodedCheckedback: false,
+              floodedCheckedside: false,
+              floodedCheckedcomments: "",
+              otherChecked: false,
+              otherResolved: false,
+              otherCheckedmonthsOne: false,
+              otherCheckedmonthsFour: false,
+              otherCheckedmonthsSix: false,
+              otherCheckedfront: false,
+              otherCheckedback: false,
+              otherCheckedside: false,
+              otherCheckedcomments: "",
+              houseData: {},
+              violations: []
+            }
+          }
+          this.setState({images: obj});
+        });
+  }
+  componentDidMount() {
+    fetch('/data', {
+      method: 'GET'
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log(data);
+      this.setState({test: data});
+    });
     fetch('/images', {
       method: 'POST'
     })
@@ -720,31 +973,6 @@ class Form extends Component {
       });
     }
   }
-  // saveViolations(){
-  //   for(var i=0; i< Object.keys(this.state.images).length; i++){
-  //     var postData = {houseData: {}, violationData: {}};
-  //     let newViolations = this.reconstructViolations(this.state.images[i]);
-  //     postData.houseData = this.state.images[i].houseData;
-  //     Object.keys(newViolations[0]).forEach(function(key, idx) {
-  //       if(Object.keys(newViolations[0][key]).length){
-  //         fetch('/addViolations', {
-  //           method: 'POST',
-  //           headers: {
-  //             'Accept': 'application/json',
-  //             'Content-Type': 'application/json'
-  //           },
-  //           body: JSON.stringify({
-  //             houseData: postData.houseData,
-  //             violationData: newViolations[0][key]
-  //           })
-  //         }).then(function(res){
-  //             console.log(res);
-  //           }
-  //         );
-  //       }
-  //     });
-  //   }
-  // }
 
   reconstructViolations(img){
     var newViolations = [];
@@ -1043,15 +1271,19 @@ class Form extends Component {
     for (let index = 0; index < inputElement.files.length; index++) {
       formData.append('userPhoto', inputElement.files[index], 'chris2.jpg'); // APPEND WORKS?!
     }
-    // axios.post('/upload', testFormData)
-    //     .then(response => {
-    //       console.log(response.data.files);
-    //       //this.state.handler(response.data.files);
-    //     })
-    //     .catch(error => {
-    //       console.log(error.response);
-    //     });
-    this.uploadNow(formData);
+    axios.post('/upload', formData)
+        .then(response => {
+          console.log(response.data.files);
+          var temp = this.state.images[this.state.currId].url;
+          var newUrl = "/uploads/"+response.data.files[0];
+          this.setState({ [this.state.images[temp].url] : newUrl});
+          this.createNewImages(response.data.files);
+          //this.state.handler(response.data.files);
+        })
+        .catch(error => {
+          console.log(error.response);
+        });
+    //this.uploadNow(formData);
   };
   uploadNow(data){
     fetch('/upload',{
@@ -1171,7 +1403,7 @@ class Form extends Component {
 
                     <div className="row issues">
                       <div className="col s12 m2">
-                        <p className="">Select Code Violation(s)</p>
+                        <p className="colHeader">Select Code Violation(s)</p>
                         <form action="#">
                         <p>
                           <input type="checkbox" id="open-struct" checked={this.state.openChecked}
@@ -1232,7 +1464,7 @@ class Form extends Component {
                         </form>
                       </div>
                       <div className="col s12 m3">
-                        <p className=""># Months</p>
+                        <p className="colHeader"># Months</p>
                         <form action="#">
                         <p>
                           <input type="checkbox" id="open-months-one" checked={this.state.openCheckedmonthsOne}
@@ -1358,7 +1590,7 @@ class Form extends Component {
                         </form>
                       </div>
                       <div className="col s12 m3">
-                        <p className="">Location On Property</p>
+                        <p className="colHeader">Location On Property</p>
                         <form action="#">
                         <p>
                           <input type="checkbox" id="open-front" checked={this.state.openCheckedfront}
@@ -1484,7 +1716,7 @@ class Form extends Component {
                           </form>
                       </div>
                       <div className="col s12 m2">
-                        <p className="">Comments</p>
+                        <p className="colHeader">Comments</p>
                         <form action="#">
                         <div className="row comment">
                           <div className="input-field col s12">
@@ -1544,7 +1776,7 @@ class Form extends Component {
                           </form>
                       </div>
                       <div className="col s12 m2 resCol">
-                        <p>Is Resolved?</p>
+                        <p className="colHeader">Is Resolved?</p>
                         <form action="#">
                           <p>
                             <input type="checkbox" id="openResolved" checked={this.state.openResolved}
@@ -1616,6 +1848,7 @@ class Form extends Component {
                   }
                   <div className="col s12 formCol align-right">
                     <br></br>
+                    <p>After you have set the appropriate data for each image, hit the save button below.</p>
                     <a className="btn btn-large blue darken-1" onClick={() => this.saveViolations()}>Save All House Data</a>
                   </div>
                 </div>
