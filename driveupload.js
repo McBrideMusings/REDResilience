@@ -10,7 +10,7 @@ const readChunk       = require('read-chunk');
 const imageType       = require('image-type');
 const drive           = google.drive('v3');
 const sheets          = google.sheets('v4');
-const rootFolderId    = '1lB53NoYKh26pQUi1YqFY2MtwKYe7gsEA'; // The folder ID for the root T4 folder
+const rootFolderId    = process.env.DRIVE_PHOTOFOLDERID; // The folder ID for the root T4 folder
 const scopes          = ['https://www.googleapis.com/auth/spreadsheets','https://www.googleapis.com/auth/drive'];
 
 class DriveUpload {
@@ -47,18 +47,23 @@ class DriveUpload {
       })
       .then((folderList) => {
         let data = folderList.data.files;
-        let foundFolder = null;
+        let folderID = null;
         for (let index = 0; index < data.length; index++) {
           const folder = data[index];
           if (folder.name === address) {
-            foundFolder = folder.id;
+            folderID = folder.id;
             break;
           }
         }
-        if (foundFolder === null) { // No existing photos of this house
+        if (folderID === null) { // No existing photos of this house
           this.CreateNewFolder(address, rootFolderId)
-          .then(() => this.ProcessFiles(files,address,name,foundFolder) )
-          .then((results) => { resolve(results); })
+          .then((newFolderID) => {
+            return Promise.all([
+              newFolderID, 
+              this.ProcessFiles(files,address,name,newFolderID) 
+            ]); 
+          })
+          .then((results) => { resolve(results[1]); })
           .catch((err) => { reject(Error("CreateFolder- "+err)); });
         } else {
           this.ProcessFiles(files,address,name,folderID)
@@ -73,10 +78,10 @@ class DriveUpload {
     var promises = [];
     if (Array.isArray(files)) {
       for (let index = 0; index < files.length; index++) {
-        promises.push(this.AddFileToFolder(files[i],fileName,newFolderID));
+        promises.push(this.AddFileToFolder(files[index],fileName,folderID));
       }
     } else {
-      promises.push(this.AddFileToFolder(files,fileName,newFolderID));
+      promises.push(this.AddFileToFolder(files,fileName,folderID));
     }
     return new Promise((resolve, reject) => {
       Promise.all(promises)

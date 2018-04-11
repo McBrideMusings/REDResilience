@@ -1,7 +1,7 @@
 "use strict";
 require('dotenv').config()
 // libraries
-const port              = process.env.PORT;
+const port              = process.env.PORT || 3000;
 const express           = require("express");
 const bodyParser        = require('body-parser');
 const multer            = require('multer');
@@ -14,7 +14,7 @@ const GoogleSpreadsheet = require('google-spreadsheet');
 const dateFormat        = require('dateformat');
 //const {google}          = require('googleapis');
 //const drive             = google.drive('v3');
-const DriveUpload       = require('./server/driveupload');
+const DriveUpload       = require('./driveupload');
 
 
 // config
@@ -59,15 +59,25 @@ const upload = multer({
 });
 
 const app = express();
-app.use(express.static( `${__dirname}/client/build/` ) );
-//app.use(express.static( `${__dirname}/client/build` ) );
+//app.use(express.static( `${__dirname}/client/build/` ) );
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
 // GET 
-app.get('*', (req, res)=>{
-  res.send("working!");
+app.get('/', (req, res)=>{
+  //res.send("working!");
+  client.Upload(['./testpic.png','./test2.png'], "goodsdasddNow", "TooMuchFun", false)      
+  .then(function (resolved) {
+    console.log("resolved");
+    console.log(resolved);
+    res.send(resolved);
+  })
+  .catch(function (rejected) {
+    console.log("rejected");
+    console.log(rejected);
+    res.send("fucked up");
+  });
   //res.sendFile(path.join(__dirname, '/client/build/index.html'));
 })
 

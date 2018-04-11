@@ -14,10 +14,11 @@ a {
   color: #25AB50;
 }
 
-.truebody {
+.app {
   display: flex;
   min-height: 100vh;
   flex-direction: column; 
+  justify-content: space-between;
 }
 .flex {
   display: flex;

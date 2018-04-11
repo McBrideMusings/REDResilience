@@ -11,14 +11,14 @@ class App extends Component {
 
   render() {
     return (
-      <div className="truebody">
-        <Header></Header>
+      <div className="app">
         <main>
-          <Switch>
-            <Route exact path='/' component={Home}/>
-            <Route path='/form' component={Form}/>
-            <Route path='/upload' component={Upload}/>
-          </Switch>
+        <Header></Header>
+        <Switch>
+          <Route exact path='/' component={Home}/>
+          <Route path='/form' component={Form}/>
+          <Route path='/upload' component={Upload}/>
+        </Switch>
         </main>
         <Footer></Footer>
       </div>
