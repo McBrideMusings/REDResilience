@@ -33,8 +33,16 @@ class App extends Component {
     return (
       <div className="app">
         <main>
+<<<<<<< HEAD
         <Header appHandler={this.appHandler}></Header>
         {this.state.page[this.state.pageIndex]}
+=======
+        <Header></Header>
+        <Switch>
+          <Route exact path='/' component={Home}/>
+          <Route path='/form' component={Form2}/>
+        </Switch>
+>>>>>>> 2296c91e20cfaa17a43f46768f98962fb2466833
         </main>
         <Footer appHandler={this.appHandler}></Footer>
       </div>
