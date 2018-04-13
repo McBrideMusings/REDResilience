@@ -72,6 +72,14 @@ app.get('*', (req, res)=>{
 })
 
 // POST
+app.post('/password', function (req, res) {
+  if (req.body.password === process.env.PASSWORD) {
+    res.json({ result:"OK" });
+  } else {
+    res.json({ result:"BAD" });
+  }
+});
+
 app.post('/upload', (req, res) => {
   upload.array("userPhoto", maxNumFiles)(req,res,function(err) {
     /*
