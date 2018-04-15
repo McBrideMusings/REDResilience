@@ -47,8 +47,10 @@ class Form extends Component {
         openCheckedfront: false,
         openCheckedback: false,
         openCheckedside: false,
+        openResolved: false,
         openCheckedcomments: '',
         overgrowthChecked: false,
+        overgrowthResolved: false,
         overgrowthCheckedmonthsOne: false,
         overgrowthCheckedmonthsFour: false,
         overgrowthCheckedmonthsSix: false,
@@ -57,6 +59,7 @@ class Form extends Component {
         overgrowthCheckedside: false,
         overgrowthCheckedcomments: '',
         junkVehicleChecked: false,
+        junkVehicleResolved: false,
         junkVehicleCheckedmonthsOne: false,
         junkVehicleCheckedmonthsFour: false,
         junkVehicleCheckedmonthsSix: false,
@@ -64,15 +67,17 @@ class Form extends Component {
         junkVehicleCheckedback: false,
         junkVehicleCheckedside: false,
         junkVehicleCheckedcomments: '',
-        junkChecked: false,
-        junkCheckedmonthsOne: false,
-        junkCheckedmonthsFour: false,
-        junkCheckedmonthsSix: false,
-        junkCheckedfront: false,
-        junkCheckedback: false,
-        junkCheckedside: false,
-        junkCheckedcomments: '',
+        trashChecked: false,
+        trashResolved: false,
+        trashCheckedmonthsOne: false,
+        trashCheckedmonthsFour: false,
+        trashCheckedmonthsSix: false,
+        trashCheckedfront: false,
+        trashCheckedback: false,
+        trashCheckedside: false,
+        trashCheckedcomments: '',
         leakingChecked: false,
+        leakingResolved: false,
         leakingCheckedmonthsOne: false,
         leakingCheckedmonthsFour: false,
         leakingCheckedmonthsSix: false,
@@ -81,6 +86,7 @@ class Form extends Component {
         leakingCheckedside: false,
         leakingCheckedcomments: '',
         waterChecked: false,
+        waterResolved: false,
         waterCheckedmonthsOne: false,
         waterCheckedmonthsFour: false,
         waterCheckedmonthsSix: false,
@@ -89,6 +95,7 @@ class Form extends Component {
         waterCheckedside: false,
         waterCheckedcomments: '',
         squattersChecked: false,
+        squattersResolved: false,
         squattersCheckedmonthsOne: false,
         squattersCheckedmonthsFour: false,
         squattersCheckedmonthsSix: false,
@@ -97,6 +104,7 @@ class Form extends Component {
         squattersCheckedside: false,
         squattersCheckedcomments: '',
         boardedChecked: false,
+        boardedResolved: false,
         boardedCheckedmonthsOne: false,
         boardedCheckedmonthsFour: false,
         boardedCheckedmonthsSix: false,
@@ -105,6 +113,7 @@ class Form extends Component {
         boardedCheckedside: false,
         boardedCheckedcomments: '',
         rodentChecked: false,
+        rodentResolved: false,
         rodentCheckedmonthsOne: false,
         rodentCheckedmonthsFour: false,
         rodentCheckedmonthsSix: false,
@@ -113,6 +122,7 @@ class Form extends Component {
         rodentCheckedside: false,
         rodentCheckedcomments: '',
         floodedChecked: false,
+        floodedResolved: false,
         floodedCheckedmonthsOne: false,
         floodedCheckedmonthsFour: false,
         floodedCheckedmonthsSix: false,
@@ -121,6 +131,7 @@ class Form extends Component {
         floodedCheckedside: false,
         floodedCheckedcomments: '',
         otherChecked: false,
+        otherResolved: false,
         otherCheckedmonthsOne: false,
         otherCheckedmonthsFour: false,
         otherCheckedmonthsSix: false,
@@ -226,16 +237,17 @@ class Form extends Component {
         /*
          * TODO: Remove and replace all isResolved checkbox callbacks to 'checkboxCallback()'
          * */
-        this.setState({ [event.target.id] : !this.state[event.target.id] });
-        this.violationCheck(event.target.id);
+        const id = event.target.id;
+        this.setState({ [event.target.id] : !this.state[event.target.id] }, () => this.violationCheck(id));
+
     }
 
     commentCallback(event){
         /*
          * TODO: Remove and replace all comment field callbacks to 'textFieldCallback()'
          * */
-        this.setState({ [event.target.id] : event.target.value});
-        this.violationCheck(event.target.id);
+        const id = event.target.id;
+        this.setState({ [event.target.id] : event.target.value}, () => this.violationCheck(id));
     }
 
     textFieldCallback(event){
@@ -243,12 +255,14 @@ class Form extends Component {
          * Handles each text input field as user types
          * I use the html id as the state object value (probably a better way)
          * */
-        this.setState({ [event.target.id] : event.target.value});
+        const id = event.target.id;
+        this.setState({ [event.target.id] : event.target.value}, () => this.violationCheck(id));
     }
 
     checkboxCallback(event){
         /* Handles each checkbox */
-        this.setState({ [event.target.id] : !this.state[event.target.id]});
+        const id = event.target.id;
+        this.setState({ [event.target.id] : !this.state[event.target.id] }, () => this.violationCheck(id));
     }
 
     updateViolations(v, c){
@@ -259,62 +273,231 @@ class Form extends Component {
         * @param c - violation checkbox value (i.e. "openChecked")
         * */
         this.setState({ [c]: !this.state[c] });
-        this.violationCheck(c);
         var result = this.state.violations.find((n) => {
             return n === v;
         });
-        if(result == null){
+        if(result == null && !this.state[c]){
             this.state.violations.push(v);
             this.state[c] = true;
+            this.violationCheck(c);
         }
         else{
+
+            console.log(this.state.violations);
             var index = this.state.violations.indexOf(v);
-            this.state.images[c] = false;
+            this.state[c] = false;
             this.state.violations.splice(index, 1);
+            this.violationCheck(c);
+            this.violationResetCheck(v, c);
+
         }
+
+        console.log(this.state.violations);
     }
 
     violationCheck(c){
-        if(c.includes("open") && !this.state.openChecked){
+        if(c.includes("open") && !this.state.openChecked && (this.state[c] == true || this.state[c].length > 0)){
             this.setState({openChecked: true });
+            this.state.violations.push("Open/Vacant");
         }
-        if(c.includes("overgrowth") && !this.state.overgrowthChecked){
+        if(c.includes("overgrowth") && !this.state.overgrowthChecked && (this.state[c] == true || this.state[c].length > 0)){
             this.setState({overgrowthChecked: true });
+            this.state.violations.push("Overgrown");
         }
-        if(c.includes("squatters") && !this.state.squattersChecked){
+        if(c.includes("squatters") && !this.state.squattersChecked && (this.state[c] == true || this.state[c].length > 0)){
             this.setState({squattersChecked: true });
+            this.state.violations.push("Housing Squatters");
         }
-        if(c.includes("leaking") && !this.state.leakingChecked){
+        if(c.includes("leaking") && !this.state.leakingChecked && (this.state[c] == true || this.state[c].length > 0)){
             this.setState({leakingChecked: true });
+            this.state.violations.push("Damaged/Leaking");
         }
-        if(c.includes("water") && !this.state.waterChecked){
+        if(c.includes("water") && !this.state.waterChecked && (this.state[c] == true || this.state[c].length > 0)){
             this.setState({waterChecked: true });
+            this.state.violations.push("No Power/Water");
         }
-        if(c.includes("boarded") && !this.state.boardedChecked){
+        if(c.includes("boarded") && !this.state.boardedChecked && (this.state[c] == true || this.state[c].length > 0)){
             this.setState({boardedChecked: true });
+            this.state.violations.push("Boarded Up");
         }
-        if(c.includes("rodent") && !this.state.rodentChecked){
+        if(c.includes("rodent") && !this.state.rodentChecked && (this.state[c] == true || this.state[c].length > 0)){
             this.setState({rodentChecked: true });
+            this.state.violations.push("Rodent Infested");
         }
-        if(c.includes("flooded") && !this.state.floodedChecked){
+        if(c.includes("flooded") && !this.state.floodedChecked && (this.state[c] == true || this.state[c].length > 0)){
             this.setState({floodedChecked: true });
+            this.state.violations.push("Flooded");
         }
-
-        if(c.includes("junk") && !this.state.junkChecked){
+        if(c.includes("junk") && !this.state.junkChecked && (this.state[c] == true || this.state[c].length > 0)){
             this.setState({junkChecked: true });
+            this.state.violations.push("Excessive Trash");
         }
-        if(c.includes("junkVehicle") && !this.state.junkVehicleChecked){
+        if(c.includes("junkVehicle") && !this.state.junkVehicleChecked && (this.state[c] == true || this.state[c].length > 0)){
             this.setState({junkVehicle: true });
+            this.state.violations.push("Junk Vehicle");
         }
-        if(c.includes("other") && !this.state.otherChecked){
+        if(c.includes("other") && !this.state.otherChecked && (this.state[c] == true || this.state[c].length > 0)){
             this.setState({otherChecked: true });
+            this.state.violations.push("Other");
         }
     }
 
+    violationResetCheck(v, c){
+
+        if(c == "openChecked"){
+            this.setState({
+                openChecked: false,
+                openCheckedmonthsOne: false,
+                openCheckedmonthsFour: false,
+                openCheckedmonthsSix: false,
+                openCheckedfront: false,
+                openCheckedback: false,
+                openCheckedside: false,
+                openResolved: false,
+                openCheckedcomments: ''
+            });
+        }
+        if(c == "overgrowthChecked"){
+            this.setState({
+                overgrowthChecked: false,
+                overgrowthResolved: false,
+                overgrowthCheckedmonthsOne: false,
+                overgrowthCheckedmonthsFour: false,
+                overgrowthCheckedmonthsSix: false,
+                overgrowthCheckedfront: false,
+                overgrowthCheckedback: false,
+                overgrowthCheckedside: false,
+                overgrowthCheckedcomments: ''
+            });
+        }
+        if(c == "junkVehicleChecked"){
+            this.setState({
+                junkVehicleChecked: false,
+                junkVehicleResolved: false,
+                junkVehicleCheckedmonthsOne: false,
+                junkVehicleCheckedmonthsFour: false,
+                junkVehicleCheckedmonthsSix: false,
+                junkVehicleCheckedfront: false,
+                junkVehicleCheckedback: false,
+                junkVehicleCheckedside: false,
+                junkVehicleCheckedcomments: ''
+            });
+        }
+        if(c == "trashChecked"){
+            this.setState({
+                trashChecked: false,
+                trashResolved: false,
+                trashCheckedmonthsOne: false,
+                trashCheckedmonthsFour: false,
+                trashCheckedmonthsSix: false,
+                trashCheckedfront: false,
+                trashCheckedback: false,
+                trashCheckedside: false,
+                trashCheckedcomments: ''
+            });
+        }
+        if(c == "leakingChecked"){
+            this.setState({
+                leakingChecked: false,
+                leakingResolved: false,
+                leakingCheckedmonthsOne: false,
+                leakingCheckedmonthsFour: false,
+                leakingCheckedmonthsSix: false,
+                leakingCheckedfront: false,
+                leakingCheckedback: false,
+                leakingCheckedside: false,
+                leakingCheckedcomments: ''
+            });
+        }
+        if(c == "waterChecked"){
+            this.setState({
+                waterChecked: false,
+                waterResolved: false,
+                waterCheckedmonthsOne: false,
+                waterCheckedmonthsFour: false,
+                waterCheckedmonthsSix: false,
+                waterCheckedfront: false,
+                waterCheckedback: false,
+                waterCheckedside: false,
+                waterCheckedcomments: ''
+            });
+        }
+        if(c == "squattersChecked"){
+            this.setState({
+                squattersChecked: false,
+                squattersResolved: false,
+                squattersCheckedmonthsOne: false,
+                squattersCheckedmonthsFour: false,
+                squattersCheckedmonthsSix: false,
+                squattersCheckedfront: false,
+                squattersCheckedback: false,
+                squattersCheckedside: false,
+                squattersCheckedcomments: ''
+            });
+        }
+        if(c == "boardedChecked"){
+            this.setState({
+                boardedChecked: false,
+                boardedResolved: false,
+                boardedCheckedmonthsOne: false,
+                boardedCheckedmonthsFour: false,
+                boardedCheckedmonthsSix: false,
+                boardedCheckedfront: false,
+                boardedCheckedback: false,
+                boardedCheckedside: false,
+                boardedCheckedcomments: ''
+            });
+        }
+        if(c == "rodentChecked"){
+            this.setState({
+                rodentChecked: false,
+                rodentResolved: false,
+                rodentCheckedmonthsOne: false,
+                rodentCheckedmonthsFour: false,
+                rodentCheckedmonthsSix: false,
+                rodentCheckedfront: false,
+                rodentCheckedback: false,
+                rodentCheckedside: false,
+                rodentCheckedcomments: ''
+            });
+        }
+        if(c == "floodedChecked"){
+            this.setState({
+                floodedChecked: false,
+                floodedResolved: false,
+                floodedCheckedmonthsOne: false,
+                floodedCheckedmonthsFour: false,
+                floodedCheckedmonthsSix: false,
+                floodedCheckedfront: false,
+                floodedCheckedback: false,
+                floodedCheckedside: false,
+                floodedCheckedcomments: ''
+            });
+        }
+        if(c == "otherChecked"){
+            this.setState({
+                otherChecked: false,
+                otherResolved: false,
+                otherCheckedmonthsOne: false,
+                otherCheckedmonthsFour: false,
+                otherCheckedmonthsSix: false,
+                otherCheckedfront: false,
+                otherCheckedback: false,
+                otherCheckedside: false,
+                otherCheckedcomments: ''
+            });
+        }
+        let violations = [];
+        for(var i=0; i < this.state.violations.length; i++){
+            if(!this.state.violations[i].includes(v)){
+                violations.push(this.state.violations[i]);
+            }
+        }
+        this.state.violations = violations;
+
+    }
+
     saveViolations(){
-        /*
-        * TODO: Finish this when I get the form set up
-        * */
         var postData = {houseData: {}, violationData: {}, url: "", concatAddress: ""};
         postData.houseData = this.state.houseData;
         postData.concatAddress = this.state.houseData.streetNumber+" "+this.state.houseData.streetName;
@@ -325,12 +508,8 @@ class Form extends Component {
         let myImages = this.state.images;
 
         var promises = [];
-        var keys = []
-        var violation = ""
         Object.keys(newViolations[0]).forEach((key, idx) => {
             if (Object.keys(newViolations[0][key]).length){
-                //keys.push(newViolations[0][key]);
-                //violation = violation.concat(key.toString());
                 promises.push(
                     fetch('/addViolations', {
                         method: 'POST',
@@ -349,55 +528,13 @@ class Form extends Component {
                 );
             }
         });
-        /*
-        for (let index = 0; index < keys.length; index++) {
-            promises.push(
-                fetch('/addViolations', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        concatAddress: postData.concatAddress,
-                        images: images,
-                        propertyData: propertyData,
-                        houseData: postData.houseData,
-                        violationData: newViolations[0][keys[index]]
-                    })
-                })
-            );
-        }
-        */
         Promise.all(promises)
         .then(() => { 
             this.setState({hasSaved: true});
-            //this.deleteAllUploads(myImages);
+            this.deleteAllUploads(myImages);
+        }).catch((err) => {
+            console.log(err);
         });
-        /*
-        Object.keys(newViolations[0]).forEach((key, idx) => {
-            if(Object.keys(newViolations[0][key]).length){
-                fetch('/addViolations', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        concatAddress: postData.concatAddress,
-                        images: images,
-                        propertyData: propertyData,
-                        houseData: postData.houseData,
-                        violationData: newViolations[0][key]
-                    })
-                }).then((res) => {
-                    this.setState({hasSaved: true});
-                    this.deleteAllUploads(myImages);
-                    }
-                );
-            }
-        });
-        */
     }
 
     reconstructViolations(){
@@ -601,7 +738,7 @@ class Form extends Component {
                 if (v[i].includes("side")) {
                     obj.trash.side = true;
                 }
-                if(this.state.junkResolved) obj.trash.isResolved = true;
+                if(this.state.trashResolved) obj.trash.isResolved = true;
             }
             if(v[i].includes("Vehicle")) {
                 obj.junkVehicle.name = "Junk Vehicle";
@@ -656,7 +793,7 @@ class Form extends Component {
         if(this.state.boardedCheckedcomments.length) obj.boarded.comments = this.state.boardedCheckedcomments;
         if(this.state.rodentCheckedcomments.length) obj.rodent.comments = this.state.rodentCheckedcomments;
         if(this.state.floodedCheckedcomments.length) obj.flooded.comments = this.state.floodedCheckedcomments;
-        if(this.state.junkCheckedcomments.length) obj.trash.comments = this.state.junkCheckedcomments;
+        if(this.state.trashCheckedcomments.length) obj.trash.comments = this.state.trashCheckedcomments;
         if(this.state.junkVehicleCheckedcomments.length) obj.junkVehicle.comments = this.state.junkVehicleCheckedcomments;
         if(this.state.otherCheckedcomments.length) obj.other.comments = this.state.otherCheckedcomments;
 
@@ -763,7 +900,7 @@ class Form extends Component {
                         </div>
                     </div>
                 ) : (
-                <div className="section no-pad">
+                <div className="section x-pad">
                     <div className="container">
                         <div className="row no-margin-bottom">
                             <div className="col s12">
@@ -923,8 +1060,8 @@ class Form extends Component {
                                                     <label htmlFor="flooded">Flooded</label>
                                                 </p>
                                                 <p>
-                                                    <input type="checkbox" id="trash" checked={this.state.junkChecked}
-                                                           onChange={() => this.updateViolations("Excessive Trash", "junkChecked")}/>
+                                                    <input type="checkbox" id="trash" checked={this.state.trashChecked}
+                                                           onChange={() => this.updateViolations("Excessive Trash", "trashChecked")}/>
                                                     <label htmlFor="trash">Excessive Trash</label>
                                                 </p>
                                                 <p>
@@ -1030,15 +1167,15 @@ class Form extends Component {
                                                     <label htmlFor="flooded-months-six" className="monthsLabel">6+</label>
                                                 </p>
                                                 <p>
-                                                    <input type="checkbox" id="junk-months-one" checked={this.state.junkCheckedmonthsOne}
-                                                           onChange={() => this.updateViolations("Excessive Trash 1-3", "junkCheckedmonthsOne")}/>
-                                                    <label htmlFor="junk-months-one" className="monthsLabel">1-3</label>
-                                                    <input type="checkbox" id="junk-months-four" checked={this.state.junkCheckedmonthsFour}
-                                                           onChange={() => this.updateViolations("Excessive Trash 4-6", "junkCheckedmonthsFour")}/>
-                                                    <label htmlFor="junk-months-four" className="monthsLabel">4-6</label>
-                                                    <input type="checkbox" id="junk-months-six" checked={this.state.junkCheckedmonthsSix}
-                                                           onChange={() => this.updateViolations("Excessive Trash 6+", "junkCheckedmonthsSix")}/>
-                                                    <label htmlFor="junk-months-six" className="monthsLabel">6+</label>
+                                                    <input type="checkbox" id="trash-months-one" checked={this.state.trashCheckedmonthsOne}
+                                                           onChange={() => this.updateViolations("Excessive Trash 1-3", "trashCheckedmonthsOne")}/>
+                                                    <label htmlFor="trash-months-one" className="monthsLabel">1-3</label>
+                                                    <input type="checkbox" id="trash-months-four" checked={this.state.trashCheckedmonthsFour}
+                                                           onChange={() => this.updateViolations("Excessive Trash 4-6", "trashCheckedmonthsFour")}/>
+                                                    <label htmlFor="trash-months-four" className="monthsLabel">4-6</label>
+                                                    <input type="checkbox" id="trash-months-six" checked={this.state.trashCheckedmonthsSix}
+                                                           onChange={() => this.updateViolations("Excessive Trash 6+", "trashCheckedmonthsSix")}/>
+                                                    <label htmlFor="trash-months-six" className="monthsLabel">6+</label>
                                                 </p>
                                                 <p>
                                                     <input type="checkbox" id="junkVehicle-months-one" checked={this.state.junkVehicleCheckedmonthsOne}
@@ -1154,15 +1291,15 @@ class Form extends Component {
                                                     <label htmlFor="flooded-side" className="monthsLabel">Side</label>
                                                 </p>
                                                 <p>
-                                                    <input type="checkbox" id="junk-front" checked={this.state.junkCheckedfront}
-                                                           onChange={() => this.updateViolations("Excessive Trash front", "junkCheckedfront")}/>
-                                                    <label htmlFor="junk-front" className="monthsLabel">Front</label>
-                                                    <input type="checkbox" id="junk-back" checked={this.state.junkCheckedback}
-                                                           onChange={() => this.updateViolations("Excessive Trash back", "junkCheckedback")}/>
-                                                    <label htmlFor="junk-back" className="monthsLabel">Back</label>
-                                                    <input type="checkbox" id="junk-side" checked={this.state.junkCheckedside}
-                                                           onChange={() => this.updateViolations("Excessive Trash side", "junkCheckedside")}/>
-                                                    <label htmlFor="junk-side" className="monthsLabel">Side</label>
+                                                    <input type="checkbox" id="trash-front" checked={this.state.trashCheckedfront}
+                                                           onChange={() => this.updateViolations("Excessive Trash front", "trashCheckedfront")}/>
+                                                    <label htmlFor="trash-front" className="monthsLabel">Front</label>
+                                                    <input type="checkbox" id="trash-back" checked={this.state.trashCheckedback}
+                                                           onChange={() => this.updateViolations("Excessive Trash back", "trashCheckedback")}/>
+                                                    <label htmlFor="trash-back" className="monthsLabel">Back</label>
+                                                    <input type="checkbox" id="trash-side" checked={this.state.trashCheckedside}
+                                                           onChange={() => this.updateViolations("Excessive Trash side", "trashCheckedside")}/>
+                                                    <label htmlFor="trash-side" className="monthsLabel">Side</label>
                                                 </p>
                                                 <p>
                                                     <input type="checkbox" id="junkVehicle-front" checked={this.state.junkVehicleCheckedfront}
@@ -1231,7 +1368,7 @@ class Form extends Component {
                                                 </div>
                                                 <div className="row comment">
                                                     <div className="input-field col s12">
-                                                        <input placeholder="Comments" id="junkCheckedcomments" type="text" className="Excessive Trash" onChange={this.commentCallback.bind(this)} value={this.state.junkCheckedcomments} />
+                                                        <input placeholder="Comments" id="trashCheckedcomments" type="text" className="Excessive Trash" onChange={this.commentCallback.bind(this)} value={this.state.trashCheckedcomments} />
                                                     </div>
                                                 </div>
                                                 <div className="row comment">
@@ -1288,9 +1425,9 @@ class Form extends Component {
                                                     <label htmlFor="floodedResolved" className="monthsLabel">&nbsp;</label>
                                                 </p>
                                                 <p>
-                                                    <input type="checkbox" id="junkResolved" checked={this.state.junkResolved}
+                                                    <input type="checkbox" id="trashResolved" checked={this.state.trashResolved}
                                                            onChange={this.resolvedCallback.bind(this)}/>
-                                                    <label htmlFor="junkResolved" className="monthsLabel">&nbsp;</label>
+                                                    <label htmlFor="trashResolved" className="monthsLabel">&nbsp;</label>
                                                 </p>
                                                 <p>
                                                     <input type="checkbox" id="junkVehicleResolved" checked={this.state.junkVehicleResolved}

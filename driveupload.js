@@ -1,4 +1,5 @@
 'use strict';
+require('dotenv').config();
 // libraries
 const {google}        = require('googleapis');
 const http            = require('http');
@@ -10,7 +11,7 @@ const readChunk       = require('read-chunk');
 const imageType       = require('image-type');
 const drive           = google.drive('v3');
 const sheets          = google.sheets('v4');
-const rootFolderId    = process.env.DRIVE_PHOTOFOLDERID; // The folder ID for the root T4 folder
+const rootFolderId    = '1lB53NoYKh26pQUi1YqFY2MtwKYe7gsEA' || process.env.DRIVE_PHOTOFOLDERID; // The folder ID for the root T4 folder
 const scopes          = ['https://www.googleapis.com/auth/spreadsheets','https://www.googleapis.com/auth/drive'];
 
 class DriveUpload {
