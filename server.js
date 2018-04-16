@@ -33,7 +33,7 @@ const client = new DriveUpload(creds);
 
 
 // confirm that the stagingUploadPath exists (build folder is deleted on npm run build)
-mkdirSync(stagingUploadPath);
+console.log(mkdirSync(stagingUploadPath));
 
 // configure storage
 const storage = multer.diskStorage({
