@@ -193,6 +193,17 @@ div.card-image{
   margin-bottom: 5px;
   font-size: 24px;
 }
+.sec-header.photo-header{
+  display: inline-block;
+  padding-right: 18px;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  /* line-height: 19px; */
+  vertical-align: sub;
+}
+.inlineForm{
+  display: inline-block;
+}
 .x-pad{
   padding-top: 30px;
 }

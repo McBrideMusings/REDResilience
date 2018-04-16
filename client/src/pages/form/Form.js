@@ -956,9 +956,6 @@ class Form extends Component {
         this.setState({
             files: e.target.files
         });
-    };
-
-    onSubmit = (e) =>{
         let formData = new FormData();
         let inputElement = document.querySelector('#child');
         for (let index = 0; index < inputElement.files.length; index++) {
@@ -976,10 +973,33 @@ class Form extends Component {
             })
             .catch(error => {
                 console.log(error.response);
-        });
+            });
         this.setState({ files: []});
         e.preventDefault();
     };
+
+    // onSubmit = (e) =>{
+    //     let formData = new FormData();
+    //     let inputElement = document.querySelector('#child');
+    //     for (let index = 0; index < inputElement.files.length; index++) {
+    //         formData.append('userPhoto', inputElement.files[index], 'chris2.jpg'); // APPEND WORKS?!
+    //     }
+    //     axios.post('/upload', formData)
+    //         .then(response => {
+    //             console.log(response.data.files);
+    //             var temp = this.state.images;
+    //             for(var i=0; i < response.data.files.length; i++){
+    //                 var newUrl = "/uploads/"+response.data.files[i];
+    //                 temp.push(newUrl);
+    //             }
+    //             this.setState({ images : temp });
+    //         })
+    //         .catch(error => {
+    //             console.log(error.response);
+    //     });
+    //     this.setState({ files: []});
+    //     e.preventDefault();
+    // };
 
     render(){
         const styles = {
@@ -1043,33 +1063,32 @@ class Form extends Component {
                     <div className="container">
                         <div className="row no-margin-bottom">
                             <div className="col s12">
-                                <h4 className="sec-header"><b>Photos</b></h4>
+                                <h4 className="sec-header photo-header"><b>Photos</b></h4>
+                                <form className="inlineForm">
+                                    <MuiThemeProvider>
+                                        <RaisedButton
+                                            label="Upload Photo(s)"
+                                            backgroundColor="#25AB50"
+                                            labelColor="white"
+                                            labelPosition="before"
+                                            className="green darken-1 white-text"
+                                            containerElement="label"
+                                        >
+                                            <input type="file"
+                                                   name="userPhoto"
+                                                   accept='image/*'
+                                                   onChange={this.onChange}
+                                                   multiple
+                                                   id="child"
+                                                   className="green darken-1 white-text"
+                                                   style={styles.exampleImageInput} />
+                                        </RaisedButton>
+                                    </MuiThemeProvider>
+                                </form>
                                 <div className="row">
                                         <div className="col s12 blue-grey lighten-5 color-row">
                                         <div className="row no-margin-bottom">
-                                            <div className="col s12 m3 border-right-light">
-                                                <h6><b>Upload New Photo(s)</b></h6>
-                                                <form className="uploadForm" >
-                                                    <MuiThemeProvider>
-                                                        <RaisedButton
-                                                            label="Choose Photo(s)"
-                                                            labelPosition="before"
-                                                            className="green darken-1 white-text"
-                                                            containerElement="label"
-                                                        >
-                                                            <input type="file"
-                                                                   name="userPhoto"
-                                                                   accept='image/*'
-                                                                   onChange={this.onChange}
-                                                                   multiple
-                                                                   id="child"
-                                                                   style={styles.exampleImageInput} />
-                                                        </RaisedButton>
-                                                    </MuiThemeProvider>
-                                                    <button className="btn green darken-1 uploadBtn" onClick={this.onSubmit} disabled={this.state.files.length == 0}>Upload Photo(s)</button>
-                                                </form>
-                                            </div>
-                                            <div className="col s12 m9">
+                                            <div className="col s12">
                                                 { this.state.images.length > 0 ? (
                                                      this.state.images.map((element, i) =>
                                                         <div className="col s3 img-col" key={element}>
@@ -1084,7 +1103,7 @@ class Form extends Component {
                                                         </div>
                                                      )
                                                 ) : (
-                                                    <h6><b>My Photos</b></h6>
+                                                    <h5 className="center grey-text">Photos Will Appear Here</h5>
                                                 )}
                                                 {this.state.lightboxOpen && (
                                                     <Lightbox
