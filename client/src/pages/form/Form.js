@@ -10,6 +10,7 @@ import {GridList, GridTile} from 'material-ui/GridList';
 import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
+import CircularProgress from 'material-ui/CircularProgress';
 import Lightbox from "react-image-lightbox";
 import axios from 'axios';
 
@@ -21,12 +22,17 @@ class Form extends Component {
         this.resolvedCallback = this.resolvedCallback.bind(this);
         this.textFieldCallback = this.textFieldCallback.bind(this);
         this.checkboxCallback = this.checkboxCallback.bind(this);
+        this.passwordCallback = this.passwordCallback.bind(this);
         this.saveViolations = this.saveViolations.bind(this);
         this.initState = {
             hasSaved: false,
+            pwVerified: false,
+            password: '',
+            progressDisplay: false,
             lightboxOpen: false,
             lightboxIndex: 0,
             modalOpen: false,
+            pwModalOpen: false,
             noAddressModalOpen: false,
             noViolationsModalOpen: false,
             images: [],
@@ -156,6 +162,12 @@ class Form extends Component {
         .then(data => {
             console.log(data);
             this.setState({test: data});
+            if(localStorage.getItem("hasPW")){
+               this.setState({pwVerified: true, pwModalOpen: false});
+            }
+            else{
+                this.setState({pwModalOpen: true});
+            }
         });
     }
 
@@ -310,20 +322,52 @@ class Form extends Component {
         }
 
     };
+
     handleClose = () => {
         this.setState({modalOpen: false});
     };
+
     handleAddressClose = () => {
         this.setState({noAddressModalOpen: false});
     };
+
     handleViolationsClose = () => {
         this.setState({noViolationsModalOpen: false});
     };
+
     handleSave= () => {
         this.saveViolations();
         this.setState({modalOpen: false});
     };
 
+    handlePWSubmit = () =>{
+        const pw = this.state.password;
+        this.setState({password: ''});
+        fetch('/password', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                password: pw
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.result === "OK"){
+                this.setState({
+                    pwVerified: true,
+                    pwModalOpen: false,
+                    password: ''
+                });
+                localStorage.setItem("hasPW", true);
+            }
+            else{
+                alert("Incorrect Password");
+            }
+        });
+    };
     openLightBox = (i) => {
         this.setState({lightboxIndex: i, lightboxOpen: true});
     };
@@ -387,6 +431,10 @@ class Form extends Component {
          * */
         const id = event.target.id;
         this.setState({ [event.target.id] : event.target.value}, () => this.violationCheck(id));
+    }
+
+    passwordCallback(event){
+        this.setState({ password : event.target.value});
     }
 
     textFieldCallback(event){
@@ -637,6 +685,7 @@ class Form extends Component {
     }
 
     saveViolations(){
+        this.setState({progressDisplay: true});
         var postData = {houseData: {}, violationData: {}, url: "", concatAddress: ""};
         postData.houseData = this.state.houseData;
         postData.concatAddress = this.state.houseData.streetNumber+" "+this.state.houseData.streetName;
@@ -668,8 +717,8 @@ class Form extends Component {
             }
         });
         Promise.all(promises)
-        .then(() => { 
-            this.setState({hasSaved: true});
+        .then(() => {
+            this.setState({hasSaved: true, progressDisplay: false});
             this.deleteAllUploads(myImages);
         }).catch((err) => {
             console.log(err);
@@ -1610,7 +1659,7 @@ class Form extends Component {
                             </div>
                             <div className="col s12 formCol align-right">
                                 <br></br>
-                                <a className="btn btn-large blue darken-1" onClick={() => this.handleOpen()}>Submit House Data</a>
+                                <a className="btn btn-large blue darken-1" disabled={!this.state.pwVerified} onClick={() => this.handleOpen()}>Submit House Data</a>
                                 <Dialog
                                     title="Are You Sure?"
                                     actions={actions}
@@ -1618,6 +1667,56 @@ class Form extends Component {
                                     open={this.state.modalOpen}
                                 >
                                     Please review your information before submitting.
+                                </Dialog>
+                                <Dialog
+                                    modal={true}
+                                    open={this.state.progressDisplay}
+                                    titleClassName="titleCont"
+                                    contentClassName="contentCont"
+                                    bodyClassName="bodyCont"
+                                    style={
+                                       {backgroundColor: 'rgba(0,0,0,0)'}
+                                    }
+                                    contentStyle={{
+                                        backgroundColor: 'rgba(0,0,0,0)',
+                                        textAlign: 'center'
+                                    }}
+                                    bodyStyle={{
+                                        backgroundColor: 'rgba(0,0,0,0)',
+                                        textAlign: 'center'
+                                    }}
+                                    titleStyle={{
+                                        backgroundColor: 'rgba(0,0,0,0)',
+                                        textAlign: 'center'
+                                    }}
+                                    actionsContainerStyle={{
+                                        backgroundColor: 'rgba(0,0,0,0)',
+                                        textAlign: 'center'
+                                    }}
+                                >
+                                    <CircularProgress size={150} thickness={15} color="#25AB50" />
+                                </Dialog>
+                                <Dialog
+                                    title="Enter Password"
+                                    actions={[<FlatButton
+                                                label="Cancel"
+                                                primary={false}
+                                                onClick={() => this.refreshPage()}
+                                            />, <FlatButton
+                                                label="Submit"
+                                                primary={true}
+                                                onClick={() => this.handlePWSubmit()}
+                                            />]
+                                            }
+                                    modal={true}
+                                    open={this.state.pwModalOpen}
+                                >
+                                    To fill out the form, please provide the password given to you by the BlockByBlock team.
+                                    <form className="pwForm">
+                                        <div className="input-field col s12">
+                                            <input placeholder="Password" id="password" type="password" className="password" onChange={this.passwordCallback.bind(this)} value={this.state.password} />
+                                        </div>
+                                    </form>
                                 </Dialog>
                                 <Dialog
                                     title="Missing Data!"

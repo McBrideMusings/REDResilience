@@ -207,3 +207,10 @@ div.card-image{
 .x-pad{
   padding-top: 30px;
 }
+.bodyCont{
+  background-color: transparent !important;
+}
+.contentCont > div{
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
