@@ -33,7 +33,7 @@ class App extends Component {
     return (
       <div className="app">
         <main>
-        <Header appHandler={this.appHandler}></Header>
+        <Header className="z-depth-1" appHandler={this.appHandler}></Header>
         {this.state.page[this.state.pageIndex]}
         </main>
         <Footer appHandler={this.appHandler}></Footer>

@@ -183,6 +183,7 @@ app.post("/addViolations", (req, res) =>{
           req.body.images[i] = "./client/build"+req.body.images[i];
         }
         //req.body.url = "./client/public"+req.body.url;
+        console.log(req.body.images);
         var promise = client.Upload(req.body.images, req.body.concatAddress, req.body.violationData.name, req.body.violationData.isResolved);
         promise.then(function (resolved) {
           console.log(resolved);
@@ -220,6 +221,9 @@ app.post("/addViolations", (req, res) =>{
             res.send("done");
           });
         });
+        promise.catch(function (err) {
+          console.log(err);
+        })
       }
       else{
         var ts = dateFormat(getTimestamp(), "dddd, mmmm dS, yyyy, h:MM:ss TT");

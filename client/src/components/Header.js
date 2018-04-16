@@ -8,15 +8,18 @@ class Header extends Component {
       appHandler: this.props.appHandler,
     };
   }
+  onClick = (e) => {
+    this.state.appHandler(e.target.attributes.getNamedItem('data-pageIndex').value);
+  };
   render() {
     return (
-      <div className="container">
-        <div className="row" role="navigation">
-          <div className="col s6">
-            <h3 className="valign-wrapper"><a>BlockByBlock</a></h3>
+    <nav>
+      <div className="nav-wrapper white">
+        <div className="container">
+        <a className="brand-logo green-text darken-1" data-pageindex="0" href="javascript:void(0)" onClick={this.onClick}>BlockByBlock</a>
           </div>
-        </div>
       </div>
+    </nav>
     );
   }
 }
