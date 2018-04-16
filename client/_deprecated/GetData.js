@@ -33,10 +33,6 @@ function parseJSON(response) {
   return response.json();
 }
 
-function test() {
-  return 'Buttz';
-}
-
 // Are these last two lines a react thing or JS thing? I don't know the 
 // export default keywords
 const Client = { test, search };
