@@ -21,6 +21,7 @@ const DriveUpload       = require('./driveupload');
 // config
 const maxFileSize = 10000000000;   // Might be total across all uploaded files
 const maxNumFiles = 10;
+const stagingUploadPath = "/client/build/uploads/";
 
 // setup
 var sheet;
@@ -30,6 +31,10 @@ const doc = new GoogleSpreadsheet('1KYZOVHZM7KVj0jVMx8H95jqPP3jjVC5vQUIewIRb33w'
 
 const client = new DriveUpload(creds);
 
+
+// confirm that the stagingUploadPath exists (build folder is deleted on npm run build)
+console.log(mkdirSync(stagingUploadPath));
+
 // configure storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -37,7 +42,7 @@ const storage = multer.diskStorage({
       Files will be saved in the 'uploads' directory. Make
       sure this directory already exists!
     */
-    cb(null, `${__dirname}/client/build/uploads/`);
+    cb(null, __dirname+stagingUploadPath);
   },
   filename: (req, file, cb) => {
     /*
@@ -275,5 +280,12 @@ function formatFullAddress(streetNumber,streetName,city,state,zip) {
   return streetNumber+" "+streetName+" "+city+", "+state+" "+zip;
 }
 
+function mkdirSync(dirPath) {
+  try {
+    fs.mkdirSync(__dirname+dirPath)
+  } catch (err) {
+    if (err.code !== 'EEXIST') throw err
+  }
+}
 
 

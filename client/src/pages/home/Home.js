@@ -37,7 +37,6 @@ class Home extends Component {
             <p>
               A neighborhood volunteer organization dedicated to improving west side housing <br />
               You can contact us on our <a href="https://www.facebook.com/">Facebook Neighboorhood Group</a>. 
-              <a onClick={this.checkPassword}>TestPassword</a>  
             </p>
           </div>
         </div>
