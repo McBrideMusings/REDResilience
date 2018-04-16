@@ -10,6 +10,7 @@ import {GridList, GridTile} from 'material-ui/GridList';
 import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
+import Lightbox from "react-image-lightbox";
 import axios from 'axios';
 
 class Form extends Component {
@@ -23,6 +24,8 @@ class Form extends Component {
         this.saveViolations = this.saveViolations.bind(this);
         this.initState = {
             hasSaved: false,
+            lightboxOpen: false,
+            lightboxIndex: 0,
             modalOpen: false,
             noAddressModalOpen: false,
             noViolationsModalOpen: false,
@@ -319,6 +322,14 @@ class Form extends Component {
     handleSave= () => {
         this.saveViolations();
         this.setState({modalOpen: false});
+    };
+
+    openLightBox = (i) => {
+        this.setState({lightboxIndex: i, lightboxOpen: true});
+    };
+
+    closeLightBox = () => {
+        this.setState({lightboxOpen: false});
     };
 
     resetDropdown(){
@@ -1062,7 +1073,7 @@ class Form extends Component {
                                                 { this.state.images.length > 0 ? (
                                                      this.state.images.map((element, i) =>
                                                         <div className="col s3 img-col" key={element}>
-                                                            <a href="javascript:void(0)">
+                                                            <a href="javascript:void(0)" onClick={() => this.openLightBox(i)}>
                                                                 <div className="card">
                                                                     <div className="card-image">
                                                                         <img src={this.state.images[i]} width="150px"/>
@@ -1074,6 +1085,12 @@ class Form extends Component {
                                                      )
                                                 ) : (
                                                     <h6><b>My Photos</b></h6>
+                                                )}
+                                                {this.state.lightboxOpen && (
+                                                    <Lightbox
+                                                        mainSrc={this.state.images[this.state.lightboxIndex]}
+                                                        onCloseRequest={() => this.setState({ lightboxOpen: false })}
+                                                    />
                                                 )}
                                             </div>
                                         </div>
