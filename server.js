@@ -11,12 +11,13 @@ const cors              = require('cors');
 const fs 	              = require("fs");
 const path              = require('path');
 const GoogleSpreadsheet = require('google-spreadsheet');
+const readChunk         = require('read-chunk'); // npm install read-chunk 
+const imageType         = require('image-type');
 const ExifImage         = require('exif').ExifImage;
 const dateFormat        = require('dateformat');
 //const {google}          = require('googleapis');
 //const drive             = google.drive('v3');
 const DriveUpload       = require('./driveupload');
-
 
 // config
 const maxFileSize = 10000000000;   // Might be total across all uploaded files
@@ -103,16 +104,6 @@ app.post('/upload', (req, res) => {
       // This is possibly what we want in production
       // fileNames[i] = req.files[i].destination+req.files[i].filename;
       fileNames[i] = req.files[i].filename;
-    }
-    try {
-      new ExifImage({ image : `${__dirname}/client/build/uploads/${fileNames[0]}` }, function (error, exifData) {
-        if (error)
-          console.log('Error: '+error.message);
-        else
-          console.log(exifData); // Do something with your data!
-      });
-    } catch (error) {
-      console.log('Error: ' + error.message);
     }
     res.json({files: fileNames});
   });
@@ -288,16 +279,152 @@ function setAuth(callback) {
 function setAuthData(callback) {
   dataDoc.useServiceAccountAuth(creds, callback);
 }
+
+function GetOldestPhotoTimestamp(photoRefs) {
+  let oldestTimestamp = null;
+
+  if (Array.isArray(photoRefs)) {
+    for (let index = 0; index < photoRefs.length; index++) {
+      let buffer = readChunk.sync(file, 0, 12);
+      if (imageType(buffer).ext !== "jpg") {
+        continue;
+      }
+      let indexTimestamp = GetExifTimestamp(photoRefs[index]);
+      if (indexTimestamp === -1) {
+        continue;
+      } else {
+        indexTimestamp = new Date(indexTimestamp);
+        if (oldestTimestamp === null) {
+          oldestTimestamp = indexTimestamp;
+        } else {
+          oldestTimestamp = indexTimestamp < oldestTimestamp ? indexTimestamp : oldestTimestamp;
+        }
+      }
+    }
+  } else {
+    let buffer = readChunk.sync(file, 0, 12);
+    if (imageType(buffer).ext !== "jpg") {
+      return dateFormat(getTimestamp(), "dddd, mmmm dS, yyyy, h:MM:ss TT"); 
+    }
+    
+    let photoTimestep = GetExifTimestamp(photoRefs);
+    if (indexTimestamp === -1) {
+      return dateFormat(getTimestamp(), "dddd, mmmm dS, yyyy, h:MM:ss TT"); 
+    } else {
+      indexTimestamp = new Date(photoTimestep);
+      oldestTimestamp = indexTimestamp < oldestTimestamp ? indexTimestamp : oldestTimestamp;
+    }
+  }
+
+  if (oldestTimestamp === null) {
+    return dateFormat(getTimestamp(), "dddd, mmmm dS, yyyy, h:MM:ss TT");
+  } else {
+    return dateFormat(oldestTimestamp, "dddd, mmmm dS, yyyy, h:MM:ss TT");
+  }
+}
+
+function GetExifTimestamp(photoRef) {
+  try {
+    new ExifImage({ image : photoRef }, function (error, exifData) {
+      if (error) {
+        console.log('Error: '+error.message);
+        return -1;
+      }
+      else {
+        if (typeof exifData !== "undefined" && typeof exifData.image !== "undefined" && typeof exifData.image.ModifyDate !== "undefined") {
+          return exifData.image.ModifyDate;
+        } else {
+          return -1;
+        }
+      }
+    });
+  } catch (error) {
+    console.log('Error: ' + error.message);
+    return -1;
+  }
+}
+
+function GetFirstPhotoGPS(photoRefs) {
+  let photoGPS = null;
+  if (Array.isArray(photoRefs)) {
+    for (let index = 0; index < photoRefs.length; index++) {
+      let photoGPS = GetExifGPS(photoRefs[index]);
+      if (photoGPS !== -1) {
+        return photoGPS;
+      }
+    }
+    return null;
+  } else {
+    photoGPS = GetExifGPS(photoRefs);
+    console.log(photoGPS);
+    return photoGPS !== -1 ? photoGPS : null;
+  }
+}
+
+function GetExifGPS(photoRef) {
+  try {
+    new ExifImage({ image : photoRef }, function (error, exifData) {
+      if (error) {
+        console.log('Error: '+error.message);
+        return -1;
+      }
+      else {
+        console.log("Line 372 - "+(typeof exifData));
+        if (typeof exifData !== "undefined" && typeof exifData.gps !== "undefined" && !(isEmpty(exifData.gps))) {
+          console.log("Line 374 - "+(typeof exifData));
+          if (Array.isArray(exifData.gps.GPSLatitude) && Array.isArray(exifData.gps.GPSLongitude) && typeof exifData.gps.GPSLongitudeRef !== "undefined" && typeof exifData.gps.GPSLatitudeRef !== "undefined") {
+            return {
+              lat: ConvertDMSToDD(exifData.gps.GPSLatitude[0], exifData.gps.GPSLatitude[1], exifData.gps.GPSLatitude[2], exifData.gps.GPSLatitudeRef),
+              long: ConvertDMSToDD(exifData.gps.GPSLongitude[0], exifData.gps.GPSLongitude[1], exifData.gps.GPSLongitude[2], exifData.gps.GPSLongitudeRef)
+            };
+          }
+          else {
+            return -1;
+          }
+        }
+        return -1;
+      }
+    });
+  } catch (error) {
+    console.log('Error: ' + error.message);
+    return -1;
+  }
+}
+
 function formatFullAddress(streetNumber,streetName,city,state,zip) {
   return streetNumber+" "+streetName+" "+city+", "+state+" "+zip;
+}
+
+function isEmpty(obj) {
+  for(var key in obj) {
+    if(obj.hasOwnProperty(key))
+        return false;
+  }
+  return true;
 }
 
 function mkdirSync(dirPath) {
   try {
     fs.mkdirSync(__dirname+dirPath)
   } catch (err) {
-    if (err.code !== 'EEXIST') throw err
+    if (err.code !== 'EEXIST')  {
+      return 'Error: '+err;
+    } else {
+      return 'stagingPath exists already';
+    }
   }
+  return 'stagingPath has been created';
+}
+// Converts 
+function ConvertDMSToDD(degrees, minutes, seconds, direction) {
+  var dd = degrees + minutes/60 + seconds/(60*60);
+
+  if (direction === "S" || direction === "W") {
+      dd = dd * -1;
+  } // Don't do anything for N or E
+  return dd;
 }
 
-
+console.log("Line 428 "+GetExifGPS("./IMG_0427.JPG"));
+//GetFirstPhotoGPS("./IMG_0427.JPG")
+//console.log(GetFirstPhotoGPS("./IMG_0427.JPG"));
