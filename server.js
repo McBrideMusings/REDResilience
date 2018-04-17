@@ -11,7 +11,7 @@ const cors              = require('cors');
 const fs 	              = require("fs");
 const path              = require('path');
 const GoogleSpreadsheet = require('google-spreadsheet');
-
+const ExifImage         = require('exif').ExifImage;
 const dateFormat        = require('dateformat');
 //const {google}          = require('googleapis');
 //const drive             = google.drive('v3');
@@ -104,11 +104,22 @@ app.post('/upload', (req, res) => {
       // fileNames[i] = req.files[i].destination+req.files[i].filename;
       fileNames[i] = req.files[i].filename;
     }
+    try {
+      new ExifImage({ image : `${__dirname}/client/build/uploads/${fileNames[0]}` }, function (error, exifData) {
+        if (error)
+          console.log('Error: '+error.message);
+        else
+          console.log(exifData); // Do something with your data!
+      });
+    } catch (error) {
+      console.log('Error: ' + error.message);
+    }
     res.json({files: fileNames});
   });
 });
 
 app.post('/images', function (req, res) {
+  console.log("/images");
   var imgArray = [];
   fs.readdir(`${__dirname}/public/uploads/`, (err, files) => {
     files.forEach(file => {
