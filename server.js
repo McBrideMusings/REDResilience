@@ -109,19 +109,6 @@ app.post('/upload', (req, res) => {
   });
 });
 
-app.post('/images', function (req, res) {
-  console.log("/images");
-  var imgArray = [];
-  fs.readdir(`${__dirname}/public/uploads/`, (err, files) => {
-    files.forEach(file => {
-      var str = "/public/uploads/"+file;
-      // var str = `${__dirname}/client/public/img/`+file;
-      imgArray.push(str);
-    });
-    res.send(imgArray);
-  });
-});
-
 app.post("/data", (req, res) => {
   console.log("here");
   setAuth(function(){
@@ -280,85 +267,35 @@ function setAuthData(callback) {
   dataDoc.useServiceAccountAuth(creds, callback);
 }
 
-function GetOldestPhotoTimestamp(photoRefs) {
-  let oldestTimestamp = null;
-
-  if (Array.isArray(photoRefs)) {
-    for (let index = 0; index < photoRefs.length; index++) {
-      let buffer = readChunk.sync(file, 0, 12);
-      if (imageType(buffer).ext !== "jpg") {
-        continue;
-      }
-      let indexTimestamp = GetExifTimestamp(photoRefs[index]);
-      if (indexTimestamp === -1) {
-        continue;
-      } else {
-        indexTimestamp = new Date(indexTimestamp);
-        if (oldestTimestamp === null) {
-          oldestTimestamp = indexTimestamp;
-        } else {
-          oldestTimestamp = indexTimestamp < oldestTimestamp ? indexTimestamp : oldestTimestamp;
-        }
-      }
-    }
-  } else {
-    let buffer = readChunk.sync(file, 0, 12);
-    if (imageType(buffer).ext !== "jpg") {
-      return dateFormat(getTimestamp(), "dddd, mmmm dS, yyyy, h:MM:ss TT"); 
-    }
-    
-    let photoTimestep = GetExifTimestamp(photoRefs);
-    if (indexTimestamp === -1) {
-      return dateFormat(getTimestamp(), "dddd, mmmm dS, yyyy, h:MM:ss TT"); 
-    } else {
-      indexTimestamp = new Date(photoTimestep);
-      oldestTimestamp = indexTimestamp < oldestTimestamp ? indexTimestamp : oldestTimestamp;
-    }
-  }
-
-  if (oldestTimestamp === null) {
-    return dateFormat(getTimestamp(), "dddd, mmmm dS, yyyy, h:MM:ss TT");
-  } else {
-    return dateFormat(oldestTimestamp, "dddd, mmmm dS, yyyy, h:MM:ss TT");
-  }
-}
-
-function GetExifTimestamp(photoRef) {
-  try {
-    new ExifImage({ image : photoRef }, function (error, exifData) {
-      if (error) {
-        console.log('Error: '+error.message);
-        return -1;
-      }
-      else {
-        if (typeof exifData !== "undefined" && typeof exifData.image !== "undefined" && typeof exifData.image.ModifyDate !== "undefined") {
-          return exifData.image.ModifyDate;
-        } else {
-          return -1;
-        }
-      }
-    });
-  } catch (error) {
-    console.log('Error: ' + error.message);
-    return -1;
-  }
-}
-
 function GetFirstPhotoGPS(photoRefs) {
-  let photoGPS = null;
-  if (Array.isArray(photoRefs)) {
-    for (let index = 0; index < photoRefs.length; index++) {
-      let photoGPS = GetExifGPS(photoRefs[index]);
-      if (photoGPS !== -1) {
-        return photoGPS;
+  return new Promise((resolve, reject) => {
+    let photoGPS = null;
+    if (Array.isArray(photoRefs)) {
+      var promises = [];
+      for(var index = 0; index < photoRefs.length; index++) {
+        promises.push(GetExifGPS(photoRefs[index]));
       }
+      Promise.all(promises).then((results) => {
+        for (let index = 0; index < results.length; index++) {
+          if (!(isEmpty(results[index]))) {
+            resolve(results[index]);
+          }
+        }
+        resolve({});
+      }).catch((err) => { 
+        console.log("Error: GetFirstPhotoGPS - "+err);
+        resolve({});  
+      });    
+    } else {
+      photoGPS = GetExifGPS(photoRefs).then((resolve) => {
+        isEmpty(photoGPS) ? resolve({}) : resolve(photoGPS);
+      })
+      .catch((error) => {
+        console.log("Error: "+error);
+        resolve({});
+      });
     }
-    return null;
-  } else {
-    photoGPS = GetExifGPS(photoRefs);
-    console.log(photoGPS);
-    return photoGPS !== -1 ? photoGPS : null;
-  }
+  });
 }
 
 function GetExifGPS(photoRef) {
@@ -370,9 +307,7 @@ function GetExifGPS(photoRef) {
           resolve({});
         }
         else {
-          //console.log("Line 372 - "+(typeof exifData));
           if (typeof exifData !== "undefined" && typeof exifData.gps !== "undefined" && !(isEmpty(exifData.gps))) {
-            console.log("Line 374 - "+(typeof exifData));
             if (Array.isArray(exifData.gps.GPSLatitude) && Array.isArray(exifData.gps.GPSLongitude) && typeof exifData.gps.GPSLongitudeRef !== "undefined" && typeof exifData.gps.GPSLatitudeRef !== "undefined") {
               resolve({
                 lat: ConvertDMSToDD(exifData.gps.GPSLatitude[0], exifData.gps.GPSLatitude[1], exifData.gps.GPSLatitude[2], exifData.gps.GPSLatitudeRef),
@@ -388,6 +323,86 @@ function GetExifGPS(photoRef) {
       });
     } catch (error) {
       reject('Error: ' + error.message);
+    }
+  });
+}
+
+function GetOldestPhotoTimestamp(photoRefs) {
+  return new Promise((resolve, reject) => {
+    let oldestTimestamp = null;
+
+    if (Array.isArray(photoRefs)) {
+      var promises = [];
+      for(var index = 0; index < photoRefs.length; index++) {
+        let buffer = readChunk.sync(photoRefs[index], 0, 12);
+        if (imageType(buffer).ext === "jpg") {
+          promises.push(GetExifTimestamp(photoRefs[index]));
+        }
+      }
+      Promise.all(promises).then((results) => {
+        for (let index = 0; index < results.length; index++) {
+          // Contend with Results
+          if (results[index] !== -1) {
+            try {
+              let indexTimestamp = new Date(convertExifTimeToDate(results[index]));
+              if (oldestTimestamp === null) {
+                oldestTimestamp = indexTimestamp;
+              } else {
+                oldestTimestamp = indexTimestamp < oldestTimestamp ? indexTimestamp : oldestTimestamp;
+              }
+            } catch (error) {
+              console.log("Invalid EXIF Date String")
+            }
+          }
+        }
+        if (oldestTimestamp === null) oldestTimestamp = getTimestamp();
+        resolve(dateFormat(oldestTimestamp, "dddd, mmmm dS, yyyy, h:MM:ss TT"));
+      }).catch((err) => { 
+        console.log("Error: GetOldestTimestamp - "+err);
+        resolve(dateFormat(getTimestamp(), "dddd, mmmm dS, yyyy, h:MM:ss TT")); 
+      });
+    } else {
+      let buffer = readChunk.sync(photoRefs, 0, 12);
+      if (imageType(buffer).ext !== "jpg") {
+        resolve(dateFormat(getTimestamp(), "dddd, mmmm dS, yyyy, h:MM:ss TT")); 
+      }
+      
+      GetExifTimestamp(photoRefs).then((results) => {
+        if (results === -1) {
+          resolve(dateFormat(getTimestamp(), "dddd, mmmm dS, yyyy, h:MM:ss TT")); 
+        } else {
+          let resultsDate = new Date(photoTimestep);
+          oldestTimestamp = resultsDate < oldestTimestamp ? resultsDate : oldestTimestamp;
+          resolve(dateFormat(oldestTimestamp, "dddd, mmmm dS, yyyy, h:MM:ss TT"));;
+        }
+      }).catch((err) => { 
+        console.log("Error: GetOldestTimestamp - "+err);
+        resolve(dateFormat(getTimestamp(), "dddd, mmmm dS, yyyy, h:MM:ss TT")); 
+      });
+    }
+  });
+}
+
+function GetExifTimestamp(photoRef) {
+  return new Promise((resolve, reject) => {
+    try {
+      new ExifImage({ image : photoRef }, function (error, exifData) {
+        if (error) {
+          console.log('Error: '+error.message);
+          resolve(-1);
+        }
+        else {
+          if (typeof exifData !== "undefined" && typeof exifData.image !== "undefined" && typeof exifData.image.ModifyDate !== "undefined") {
+            resolve(exifData.image.ModifyDate);
+          } else {
+            resolve(-1);
+            //reject('Error: ' + error.message);
+          }
+        }
+      });
+    } catch (error) {
+      console.log('Error: ' + error.message);
+      resolve(-1);
     }
   });
 }
@@ -425,12 +440,13 @@ function ConvertDMSToDD(degrees, minutes, seconds, direction) {
   } // Don't do anything for N or E
   return dd;
 }
-GetFirstPhotoGPS(["./IMG_0431.JPG","./IMG_1554.jpg"]).then((resolve) => {
-  console.log(resolve);
-  //return doSomethingElse(result);
-})
-.catch((error) => {
-  console.log("Error: "+error);
-});
-//GetFirstPhotoGPS("./IMG_0427.JPG")
-//console.log(GetFirstPhotoGPS("./IMG_0427.JPG"));
+
+function convertExifTimeToDate(exifTS) {
+  let str = exifTS.split(" ");
+  //get date part and replace ':' with '-'
+  let dateStr = str[0].replace(/:/g, "-");
+  //concat the strings (date and time part)
+  let properDateStr = dateStr + " " + str[1];
+  //pass to Date
+  return(new Date(properDateStr));
+}
