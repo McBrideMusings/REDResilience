@@ -362,33 +362,34 @@ function GetFirstPhotoGPS(photoRefs) {
 }
 
 function GetExifGPS(photoRef) {
-  try {
-    new ExifImage({ image : photoRef }, function (error, exifData) {
-      if (error) {
-        console.log('Error: '+error.message);
-        return -1;
-      }
-      else {
-        console.log("Line 372 - "+(typeof exifData));
-        if (typeof exifData !== "undefined" && typeof exifData.gps !== "undefined" && !(isEmpty(exifData.gps))) {
-          console.log("Line 374 - "+(typeof exifData));
-          if (Array.isArray(exifData.gps.GPSLatitude) && Array.isArray(exifData.gps.GPSLongitude) && typeof exifData.gps.GPSLongitudeRef !== "undefined" && typeof exifData.gps.GPSLatitudeRef !== "undefined") {
-            return {
-              lat: ConvertDMSToDD(exifData.gps.GPSLatitude[0], exifData.gps.GPSLatitude[1], exifData.gps.GPSLatitude[2], exifData.gps.GPSLatitudeRef),
-              long: ConvertDMSToDD(exifData.gps.GPSLongitude[0], exifData.gps.GPSLongitude[1], exifData.gps.GPSLongitude[2], exifData.gps.GPSLongitudeRef)
-            };
-          }
-          else {
-            return -1;
-          }
+  return new Promise((resolve, reject) => {
+    try {
+      new ExifImage({ image : photoRef }, function (error, exifData) {
+        if (error) {
+          console.log('Error: '+error.message);
+          resolve({});
         }
-        return -1;
-      }
-    });
-  } catch (error) {
-    console.log('Error: ' + error.message);
-    return -1;
-  }
+        else {
+          //console.log("Line 372 - "+(typeof exifData));
+          if (typeof exifData !== "undefined" && typeof exifData.gps !== "undefined" && !(isEmpty(exifData.gps))) {
+            console.log("Line 374 - "+(typeof exifData));
+            if (Array.isArray(exifData.gps.GPSLatitude) && Array.isArray(exifData.gps.GPSLongitude) && typeof exifData.gps.GPSLongitudeRef !== "undefined" && typeof exifData.gps.GPSLatitudeRef !== "undefined") {
+              resolve({
+                lat: ConvertDMSToDD(exifData.gps.GPSLatitude[0], exifData.gps.GPSLatitude[1], exifData.gps.GPSLatitude[2], exifData.gps.GPSLatitudeRef),
+                long: ConvertDMSToDD(exifData.gps.GPSLongitude[0], exifData.gps.GPSLongitude[1], exifData.gps.GPSLongitude[2], exifData.gps.GPSLongitudeRef)
+              });
+            }
+            else {
+              resolve({});
+            }
+          }
+          resolve({});
+        }
+      });
+    } catch (error) {
+      reject('Error: ' + error.message);
+    }
+  });
 }
 
 function formatFullAddress(streetNumber,streetName,city,state,zip) {
@@ -424,7 +425,12 @@ function ConvertDMSToDD(degrees, minutes, seconds, direction) {
   } // Don't do anything for N or E
   return dd;
 }
-
-console.log("Line 428 "+GetExifGPS("./IMG_0427.JPG"));
+GetFirstPhotoGPS(["./IMG_0431.JPG","./IMG_1554.jpg"]).then((resolve) => {
+  console.log(resolve);
+  //return doSomethingElse(result);
+})
+.catch((error) => {
+  console.log("Error: "+error);
+});
 //GetFirstPhotoGPS("./IMG_0427.JPG")
 //console.log(GetFirstPhotoGPS("./IMG_0427.JPG"));
