@@ -29,6 +29,7 @@ class Form extends Component {
             pwVerified: false,
             password: '',
             progressDisplay: false,
+            locDesc: '',
             lightboxOpen: false,
             lightboxIndex: 0,
             modalOpen: false,
@@ -179,6 +180,12 @@ class Form extends Component {
         this.state.violations = [];
         this.setState({
             hasSaved: false,
+            pwVerified: false,
+            password: '',
+            progressDisplay: false,
+            locDesc: '',
+            lightboxOpen: false,
+            lightboxIndex: 0,
             modalOpen: false,
             noAddressModalOpen: false,
             noViolationsModalOpen: false,
@@ -304,14 +311,14 @@ class Form extends Component {
          * Populates state.houseData with address data
          * */
         try{
-            this.setState({houseData : JSON.parse(selected.value)});
-            console.log("House Data");
-            console.log(this.state.houseData);
+            this.setState({houseData : JSON.parse(selected.value)}, () => {
+                this.setState({locDesc: ''});
+            });
         }catch(e){}
     }
 
     handleOpen = () => {
-        if(!Object.keys(this.state.houseData).length){
+        if(!Object.keys(this.state.houseData).length && this.state.locDesc == ''){
             this.setState({noAddressModalOpen: true});
         }
         else if(this.state.violations.length == 0){
@@ -444,6 +451,10 @@ class Form extends Component {
          * */
         const id = event.target.id;
         this.setState({ [event.target.id] : event.target.value}, () => this.violationCheck(id));
+        if(id === "locDesc" && Object.keys(this.state.houseData).length > 0){
+            this.setState({houseData: {}});
+            this.resetDropdown();
+        }
     }
 
     checkboxCallback(event){
@@ -686,15 +697,19 @@ class Form extends Component {
 
     saveViolations(){
         this.setState({progressDisplay: true});
-        var postData = {houseData: {}, violationData: {}, url: "", concatAddress: ""};
-        postData.houseData = this.state.houseData;
-        postData.concatAddress = this.state.houseData.streetNumber+" "+this.state.houseData.streetName;
-        postData.concatAddress = postData.concatAddress.replace(/ /g,"_");
+        let postData = {houseData: {}, violationData: {}, url: "", concatAddress: ""};
+        if(Object.keys(this.state.houseData).length){
+            postData.houseData = this.state.houseData;
+            postData.concatAddress = this.state.houseData.streetNumber+" "+this.state.houseData.streetName;
+            postData.concatAddress = postData.concatAddress.replace(/ /g,"_");
+        }
+        else if(this.state.locDesc !== ''){
+            postData.concatAddress = this.state.locDesc.replace(/ /g,"_");
+        }
         let newViolations = this.reconstructViolations();
         let propertyData = this.constructPropertyInfo();
-        var images = this.state.images;
+        let images = this.state.images;
         let myImages = this.state.images;
-
         var promises = [];
         Object.keys(newViolations[0]).forEach((key, idx) => {
             if (Object.keys(newViolations[0][key]).length){
@@ -1174,11 +1189,15 @@ class Form extends Component {
                                         <div className="row no-margin-bottom">
                                             <div className="col s12 m4">
                                                 <h6><b>Address</b></h6>
-                                                <ReactMaterialSelect ref="localSelect" label="Select An Address" resetLabel="None" defaultValue="None" onChange={this.localSelectCallback.bind(this)}>
+                                                <ReactMaterialSelect className="addressSelect" ref="localSelect" label="Select An Address" resetLabel="None" defaultValue="None" onChange={this.localSelectCallback.bind(this)}>
                                                     {this.state.test.map((element) =>
                                                         <option dataValue={JSON.stringify(element)} key={element}>{element.streetNumber} {element.streetName}</option>
                                                     )}
                                                 </ReactMaterialSelect>
+                                                <p className="no-margin"><b>OR describe the location</b></p>
+                                                <div className="input-field col s12">
+                                                    <input placeholder="Location Description" id="locDesc" type="text" className="locDesc" onChange={this.textFieldCallback.bind(this)} value={this.state.locDesc} />
+                                                </div>
                                             </div>
                                             <div className="col s12 m4">
                                                 <h6><b>Building Details</b></h6>
@@ -1729,7 +1748,7 @@ class Form extends Component {
                                     open={this.state.noAddressModalOpen}
                                     onRequestClose={this.handleAddressClose}
                                 >
-                                    Please enter an address to submit.
+                                    Please enter an address or location description to submit.
                                 </Dialog>
                                 <Dialog
                                     title="Missing Data!"

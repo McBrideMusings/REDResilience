@@ -108,18 +108,6 @@ app.post('/upload', (req, res) => {
   });
 });
 
-app.post('/images', function (req, res) {
-  var imgArray = [];
-  fs.readdir(`${__dirname}/public/uploads/`, (err, files) => {
-    files.forEach(file => {
-      var str = "/public/uploads/"+file;
-      // var str = `${__dirname}/client/public/img/`+file;
-      imgArray.push(str);
-    });
-    res.send(imgArray);
-  });
-});
-
 app.post("/data", (req, res) => {
   console.log("here");
   setAuth(function(){
@@ -192,31 +180,54 @@ app.post("/addViolations", (req, res) =>{
             imgPaths = imgPaths+" | "+resolved[i].webViewLink;
           }
           var ts = dateFormat(getTimestamp(), "dddd, mmmm dS, yyyy, h:MM:ss TT");
-          mySheet.addRow({
-            Street_Number: req.body.houseData.streetNumber,
-            Street_Name: req.body.houseData.streetName,
-            City: req.body.houseData.city,
-            State: req.body.houseData.state,
-            Zip: req.body.houseData.zip,
-            Full_Address: req.body.houseData.fullAddress,
-            Single_Dwelling: req.body.propertyData.singleDwelling,
-            Multifamily_Dwelling: req.body.propertyData.multiDwelling,
-            Apartment: req.body.propertyData.isApt,
-            Commercial: req.body.propertyData.isCommercial,
-            Property_Owner_Name: req.body.propertyData.owner,
-            Lives_There: req.body.propertyData.livesThere,
-            Not_Lives_There: req.body.propertyData.notLivesThere,
-            Timestamp: ts,
-            Code_violation: req.body.violationData.name,
-            One_to_Three_Months: req.body.violationData.monthsOne,
-            Four_to_Six_Months: req.body.violationData.monthsFour,
-            Over_Six_Months: req.body.violationData.monthsSix,
-            Location_Front: req.body.violationData.front,
-            Location_Back: req.body.violationData.back,
-            Location_Side: req.body.violationData.side,
-            Comments: req.body.violationData.comments,
-            Is_Resolved: req.body.violationData.isResolved,
-            IMG_URL: imgPaths
+          Object.keys(req.body.houseData).length ?
+              mySheet.addRow({
+                Street_Number: req.body.houseData.streetNumber,
+                Street_Name: req.body.houseData.streetName,
+                City: req.body.houseData.city,
+                State: req.body.houseData.state,
+                Zip: req.body.houseData.zip,
+                Full_Address: req.body.houseData.fullAddress,
+                Single_Dwelling: req.body.propertyData.singleDwelling,
+                Multifamily_Dwelling: req.body.propertyData.multiDwelling,
+                Apartment: req.body.propertyData.isApt,
+                Commercial: req.body.propertyData.isCommercial,
+                Property_Owner_Name: req.body.propertyData.owner,
+                Lives_There: req.body.propertyData.livesThere,
+                Not_Lives_There: req.body.propertyData.notLivesThere,
+                Timestamp: ts,
+                Code_violation: req.body.violationData.name,
+                One_to_Three_Months: req.body.violationData.monthsOne,
+                Four_to_Six_Months: req.body.violationData.monthsFour,
+                Over_Six_Months: req.body.violationData.monthsSix,
+                Location_Front: req.body.violationData.front,
+                Location_Back: req.body.violationData.back,
+                Location_Side: req.body.violationData.side,
+                Comments: req.body.violationData.comments,
+                Is_Resolved: req.body.violationData.isResolved,
+                IMG_URL: imgPaths })
+           :
+              mySheet.addRow({
+                Custom: req.body.concatAddress,
+                Single_Dwelling: req.body.propertyData.singleDwelling,
+                Multifamily_Dwelling: req.body.propertyData.multiDwelling,
+                Apartment: req.body.propertyData.isApt,
+                Commercial: req.body.propertyData.isCommercial,
+                Property_Owner_Name: req.body.propertyData.owner,
+                Lives_There: req.body.propertyData.livesThere,
+                Not_Lives_There: req.body.propertyData.notLivesThere,
+                Timestamp: ts,
+                Code_violation: req.body.violationData.name,
+                One_to_Three_Months: req.body.violationData.monthsOne,
+                Four_to_Six_Months: req.body.violationData.monthsFour,
+                Over_Six_Months: req.body.violationData.monthsSix,
+                Location_Front: req.body.violationData.front,
+                Location_Back: req.body.violationData.back,
+                Location_Side: req.body.violationData.side,
+                Comments: req.body.violationData.comments,
+                Is_Resolved: req.body.violationData.isResolved,
+                IMG_URL: imgPaths
+
           }, function () {
             console.log("done");
             res.send("done");
@@ -228,31 +239,53 @@ app.post("/addViolations", (req, res) =>{
       }
       else{
         var ts = dateFormat(getTimestamp(), "dddd, mmmm dS, yyyy, h:MM:ss TT");
-        mySheet.addRow({
-          Street_Number: req.body.houseData.streetNumber,
-          Street_Name: req.body.houseData.streetName,
-          City: req.body.houseData.city,
-          State: req.body.houseData.state,
-          Zip: req.body.houseData.zip,
-          Full_Address: req.body.houseData.fullAddress,
-          Single_Dwelling: req.body.propertyData.singleDwelling,
-          Multifamily_Dwelling: req.body.propertyData.multiDwelling,
-          Apartment: req.body.propertyData.isApt,
-          Commercial: req.body.propertyData.isCommercial,
-          Property_Owner_Name: req.body.propertyData.owner,
-          Lives_There: req.body.propertyData.livesThere,
-          Not_Lives_There: req.body.propertyData.notLivesThere,
-          Timestamp: ts,
-          Code_violation: req.body.violationData.name,
-          One_to_Three_Months: req.body.violationData.monthsOne,
-          Four_to_Six_Months: req.body.violationData.monthsFour,
-          Over_Six_Months: req.body.violationData.monthsSix,
-          Location_Front: req.body.violationData.front,
-          Location_Back: req.body.violationData.back,
-          Location_Side: req.body.violationData.side,
-          Comments: req.body.violationData.comments,
-          Is_Resolved: req.body.violationData.isResolved,
-          IMG_URL: imgPaths
+        Object.keys(req.body.houseData).length ?
+            mySheet.addRow({
+              Street_Number: req.body.houseData.streetNumber,
+              Street_Name: req.body.houseData.streetName,
+              City: req.body.houseData.city,
+              State: req.body.houseData.state,
+              Zip: req.body.houseData.zip,
+              Full_Address: req.body.houseData.fullAddress,
+              Single_Dwelling: req.body.propertyData.singleDwelling,
+              Multifamily_Dwelling: req.body.propertyData.multiDwelling,
+              Apartment: req.body.propertyData.isApt,
+              Commercial: req.body.propertyData.isCommercial,
+              Property_Owner_Name: req.body.propertyData.owner,
+              Lives_There: req.body.propertyData.livesThere,
+              Not_Lives_There: req.body.propertyData.notLivesThere,
+              Timestamp: ts,
+              Code_violation: req.body.violationData.name,
+              One_to_Three_Months: req.body.violationData.monthsOne,
+              Four_to_Six_Months: req.body.violationData.monthsFour,
+              Over_Six_Months: req.body.violationData.monthsSix,
+              Location_Front: req.body.violationData.front,
+              Location_Back: req.body.violationData.back,
+              Location_Side: req.body.violationData.side,
+              Comments: req.body.violationData.comments,
+              Is_Resolved: req.body.violationData.isResolved,
+              IMG_URL: imgPaths })
+            :
+            mySheet.addRow({
+              Custom: req.body.concatAddress,
+              Single_Dwelling: req.body.propertyData.singleDwelling,
+              Multifamily_Dwelling: req.body.propertyData.multiDwelling,
+              Apartment: req.body.propertyData.isApt,
+              Commercial: req.body.propertyData.isCommercial,
+              Property_Owner_Name: req.body.propertyData.owner,
+              Lives_There: req.body.propertyData.livesThere,
+              Not_Lives_There: req.body.propertyData.notLivesThere,
+              Timestamp: ts,
+              Code_violation: req.body.violationData.name,
+              One_to_Three_Months: req.body.violationData.monthsOne,
+              Four_to_Six_Months: req.body.violationData.monthsFour,
+              Over_Six_Months: req.body.violationData.monthsSix,
+              Location_Front: req.body.violationData.front,
+              Location_Back: req.body.violationData.back,
+              Location_Side: req.body.violationData.side,
+              Comments: req.body.violationData.comments,
+              Is_Resolved: req.body.violationData.isResolved,
+              IMG_URL: imgPaths
         }, function () {
           console.log("done");
           res.send("done");
