@@ -70,7 +70,7 @@ app.use(helmet())
 app.use(require('sanitize').middleware);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(require('sanitize').middleware);
 
 // GET 
 app.get('*', (req, res)=>{
@@ -80,8 +80,8 @@ app.get('*', (req, res)=>{
 
 // POST
 app.post('/password', function (req, res) {
-  console.log(req.body.password);
-  if (req.body.password === process.env.PASSWORD) {
+  const pw = req.bodyString('password');
+  if (pw === process.env.PASSWORD) {
     res.json({ result:"OK" });
   } else {
     res.json({ result:"BAD" });
