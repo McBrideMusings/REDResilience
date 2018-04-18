@@ -163,7 +163,7 @@ class Form extends Component {
         .then(data => {
             console.log(data);
             this.setState({test: data});
-            if(localStorage.getItem("hasPW")){
+            if(sessionStorage.getItem("hasPW")){
                this.setState({pwVerified: true, pwModalOpen: false});
             }
             else{
@@ -368,7 +368,7 @@ class Form extends Component {
                     pwModalOpen: false,
                     password: ''
                 });
-                localStorage.setItem("hasPW", true);
+                sessionStorage.setItem("hasPW", true);
             }
             else{
                 alert("Incorrect Password");
