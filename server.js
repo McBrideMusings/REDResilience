@@ -67,6 +67,7 @@ const upload = multer({
 const app = express();
 app.use(express.static( `${__dirname}/client/build/` ) );
 app.use(helmet())
+app.use(require('sanitize').middleware);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -88,6 +89,7 @@ app.post('/password', function (req, res) {
 });
 
 app.post('/upload', (req, res) => {
+  // Sanitize
   upload.array("userPhoto", maxNumFiles)(req,res,function(err) {
     /*
       We now have a new req.file object here. At this point the file has been saved
@@ -130,6 +132,7 @@ app.post("/data", (req, res) => {
             const cell = rows[index];
             metaData[index] = {};
             metaData[index].id = index;
+            metaData[index].custom = cell.custom;
             metaData[index].streetNumber = cell.streetnumber;
             metaData[index].streetName = cell.streetname;
             metaData[index].city = cell.city;

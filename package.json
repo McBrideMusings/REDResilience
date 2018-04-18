@@ -24,6 +24,7 @@
     "react-image-lightbox": "^4.6.0",
     "react-recaptcha": "^2.3.7",
     "read-chunk": "^2.1.0",
+    "sanitize": "^2.1.0",
     "server-destroy": "^1.0.1",
     "socket.io": "^2.0.0",
     "uuid": "^3.2.1"
