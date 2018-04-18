@@ -1,5 +1,12 @@
+/**
+ * Created by Pierce.
+ */
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import ReactMaterialSelect from 'react-material-select';
+import 'react-material-select/lib/css/reactMaterialSelect.css';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
 
 class Home extends Component {
   constructor(props) {
@@ -9,34 +16,58 @@ class Home extends Component {
     };
   }
 
-  checkPassword = () => {
-    fetch('/password', {
-      method: 'POST',
-      headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-          password: "abc123"
-      })
-    }).then(response => response.json())
-    .then(body => { 
-      console.log(body);
-    })
-    .catch(error => {
-      console.log(error);
-    });
-  }
-
   render() {
+    const styles = {
+      button: {
+          margin: 12
+      },
+      exampleImageInput: {
+          cursor: 'pointer',
+          position: 'absolute',
+          top: 0,
+          bottom: 0,
+          right: 0,
+          left: 0,
+          width: '100%',
+          opacity: 0
+      },
+      root: {
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'space-around'
+      },
+      gridList: {
+          display: 'flex',
+          flexWrap: 'nowrap',
+          overflowX: 'auto'
+      }
+    };
     return (
       <div className="container">
         <div className="row">
-          <div className="col">
-            <h5>Hello, we're Block by Block</h5>
+          <div className="col m12 l6">
+            <h5>This is the Block by Block Initiative</h5>
             <p>
               A neighborhood volunteer organization dedicated to improving west side housing <br />
-              You can contact us on our <a href="https://www.facebook.com/">Facebook Neighboorhood Group</a>. 
+              We're dedicated. 
+            </p>
+            <MuiThemeProvider>
+              <RaisedButton
+                label="Download Code violation Form"
+                backgroundColor="#25AB50"
+                labelColor="white"
+                labelPosition="before"
+                className="green darken-1 white-text"
+                containerElement="label"
+              >
+              </RaisedButton>
+            </MuiThemeProvider>
+          </div>
+          <div className="col m12 l6">
+            <h5>This is the Block by Block Initiative</h5>
+            <p>
+              A neighborhood volunteer organization dedicated to improving west side housing <br />
+              We're dedicated. 
             </p>
           </div>
         </div>

@@ -26,7 +26,7 @@ class Footer extends Component {
         </div>
         <div className="footer-copyright">
           <div className="container">
-            © 2018 BlockByBlock
+            © 2018 Block by Block Initiative
           </div>
         </div>
       </footer>

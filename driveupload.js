@@ -1,3 +1,6 @@
+/**
+ * Created by Pierce.
+ */
 'use strict';
 require('dotenv').config();
 // libraries
