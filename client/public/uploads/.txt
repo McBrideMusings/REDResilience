@@ -1,0 +1,1 @@
+Here's the staging folder for photos before they're sent off to Google Sheets

@@ -7,6 +7,7 @@ import 'react-material-select/lib/css/reactMaterialSelect.css';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
+import PaperForm from '../../static/BbB_Form.pdf'
 
 class Home extends Component {
   constructor(props) {
@@ -44,8 +45,18 @@ class Home extends Component {
     };
     return (
       <div className="container">
-        <div className="row">
+        <div className="section row">
           <div className="col m12 l6">
+            <h5>This is the Block by Block Initiative</h5>
+            <p className="grey-text">
+              A neighborhood volunteer organization dedicated to improving west side housing
+            </p>
+            <ul>
+              <li><a className="black-text" href="#!">1. </a></li>
+              <li><a className="black-text" href="#!">Link 2</a></li>
+              <li><a className="black-text" href="#!">Link 3</a></li>
+              <li><a className="black-text" href="#!">Link 4</a></li>
+            </ul>
             <h5>This is the Block by Block Initiative</h5>
             <p>
               A neighborhood volunteer organization dedicated to improving west side housing <br />
@@ -64,11 +75,9 @@ class Home extends Component {
             </MuiThemeProvider>
           </div>
           <div className="col m12 l6">
-            <h5>This is the Block by Block Initiative</h5>
-            <p>
-              A neighborhood volunteer organization dedicated to improving west side housing <br />
-              We're dedicated. 
-            </p>
+            <div class="video-container">
+              <iframe src="https://www.youtube-nocookie.com/embed/_hH7vZF15SY?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            </div>
           </div>
         </div>
       </div>
