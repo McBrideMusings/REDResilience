@@ -113,7 +113,6 @@ app.post('/upload', (req, res) => {
 
 // Gets MetaData from Google Drive
 app.post("/data", (req, res) => {
-  console.log("here");
   setAuth(function(){
     console.log("authenticated");
     doc.getInfo(function(err, data) {
@@ -123,7 +122,6 @@ app.post("/data", (req, res) => {
       } else {
         let sheetList = {};
         let mySheet = data.worksheets.find(x => x.title === "MetaData");
-        console.log("here");
         mySheet.getRows({
           offset: 1
         }, function( err, rows ) {
@@ -454,6 +452,26 @@ function GetExifTimestamp(photoRef) {
     }
   });
 }
+
+function addMetadata(customAddress) {
+  return new Promise((resolve, reject) => {
+    setAuth(function() {
+      doc.getInfo(function(err, data) {
+        if (data === undefined) {
+          console.log(err);
+          resolve("Error");
+        } else {
+          let mySheet = data.worksheets.find(x => x.title === "MetaData");
+          mySheet.addRow({
+            Custom: customAddress,
+          })
+          resolve("Ok");
+        }
+      });
+    });
+  });
+}
+
 
 function formatFullAddress(streetNumber,streetName,city,state,zip) {
   return streetNumber+" "+streetName+" "+city+", "+state+" "+zip;
