@@ -20,15 +20,15 @@ const dateFormat        = require('dateformat');
 const DriveUpload       = require('./driveupload');
 
 // config
-const maxFileSize = 10000000000;   // Might be total across all uploaded files
+const maxFileSize = 10000000000;   // total in bytes of all uploaded folders in batch
 const maxNumFiles = 10;
-const stagingUploadPath = "/client/build/uploads/";
+const stagingUploadPath = "/client/build/uploads/"; // Photos are uploaded to the server first, then Drive
 
 // setup
 var sheet;
-const creds = require('./master-creds.json');
+const creds = require('./master-creds.json'); // This is a pre-formatted JSON auth file from Google
 const data = require(__dirname + "/data.json");
-const doc = new GoogleSpreadsheet('1KYZOVHZM7KVj0jVMx8H95jqPP3jjVC5vQUIewIRb33w');
+const doc = new GoogleSpreadsheet(process.env.DRIVE_SPREADSHEETID);
 
 const client = new DriveUpload(creds);
 
@@ -111,12 +111,12 @@ app.post('/upload', (req, res) => {
   });
 });
 
+// Gets MetaData from Google Drive
 app.post("/data", (req, res) => {
   console.log("here");
   setAuth(function(){
     console.log("authenticated");
     doc.getInfo(function(err, data) {
-      console.log("also here");
       if (data === undefined) {
         console.log(err);
         res.send(err);
@@ -300,6 +300,7 @@ app.post("/addViolations", (req, res) =>{
 
 app.listen(port, () => console.log(`Server listening on port ${port}`));
 
+// Gets current timestamp (system time)
 function getTimestamp(){
   var localTime = new Date(); //get your local time
   var utcTime = localTime.getUTCHours(); // find UTC hours
@@ -311,10 +312,8 @@ function getTimestamp(){
 function setAuth(callback) {
   doc.useServiceAccountAuth(creds, callback);
 }
-function setAuthData(callback) {
-  dataDoc.useServiceAccountAuth(creds, callback);
-}
 
+// Gets the EXIF GPS coordinates of the first photo in an array, or the passed photo, or passes an empty object back
 function GetFirstPhotoGPS(photoRefs) {
   return new Promise((resolve, reject) => {
     let photoGPS = null;
@@ -332,7 +331,7 @@ function GetFirstPhotoGPS(photoRefs) {
         resolve({});
       }).catch((err) => { 
         console.log("Error: GetFirstPhotoGPS - "+err);
-        resolve({});  
+        resolve({});  // Always resolves, even upon an error
       });    
     } else {
       photoGPS = GetExifGPS(photoRefs).then((resolve) => {
@@ -375,6 +374,7 @@ function GetExifGPS(photoRef) {
   });
 }
 
+// Gets the oldest EXIF timestamp from an array of photos or the photo, or returns the current system time
 function GetOldestPhotoTimestamp(photoRefs) {
   return new Promise((resolve, reject) => {
     let oldestTimestamp = null;
@@ -459,6 +459,7 @@ function formatFullAddress(streetNumber,streetName,city,state,zip) {
   return streetNumber+" "+streetName+" "+city+", "+state+" "+zip;
 }
 
+// Checks if an object is empty example = {}
 function isEmpty(obj) {
   for(var key in obj) {
     if(obj.hasOwnProperty(key))
@@ -467,6 +468,7 @@ function isEmpty(obj) {
   return true;
 }
 
+// Checks if a folder at dirPath exists, and if it doesn't create it
 function mkdirSync(dirPath) {
   try {
     fs.mkdirSync(__dirname+dirPath)
@@ -479,7 +481,7 @@ function mkdirSync(dirPath) {
   }
   return 'stagingPath has been created';
 }
-// Converts 
+// Converts GPS in degress, minutes and seconds to decimal
 function ConvertDMSToDD(degrees, minutes, seconds, direction) {
   var dd = degrees + minutes/60 + seconds/(60*60);
 
@@ -489,6 +491,7 @@ function ConvertDMSToDD(degrees, minutes, seconds, direction) {
   return dd;
 }
 
+// Convets EXIF formatted timestamp to data object
 function convertExifTimeToDate(exifTS) {
   let str = exifTS.split(" ");
   //get date part and replace ':' with '-'

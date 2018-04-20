@@ -1,8 +1,8 @@
 {
-  "name": "block-by-block-app",
+  "name": "atlred-housingcode-server",
   "version": "1.0.0",
   "description": "Web interface that talks to Google Sheets API",
-  "main": "app.js",
+  "main": "server.js",
   "dependencies": {
     "body-parser": "^1.15.2",
     "concurrently": "^3.5.1",
@@ -32,7 +32,7 @@
   "scripts": {
     "start": "concurrently \"nodemon server.js\" \"cd client &&  npm start\""
   },
-  "author": "Brendan Cecere",
+  "author": "Brendan Cecere, Pierce McBride",
   "license": "ISC",
   "devDependencies": {
     "concurrently": "^3.5.1",

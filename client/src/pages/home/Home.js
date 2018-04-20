@@ -17,67 +17,71 @@ class Home extends Component {
     };
   }
 
+  onClick = (e) => {
+    console.log(e.target);
+    this.state.appHandler(e.target.attributes.getNamedItem('data-pageIndex').value);
+  };
+
   render() {
     const styles = {
       button: {
           margin: 12
-      },
-      exampleImageInput: {
-          cursor: 'pointer',
-          position: 'absolute',
-          top: 0,
-          bottom: 0,
-          right: 0,
-          left: 0,
-          width: '100%',
-          opacity: 0
       },
       root: {
           display: 'flex',
           flexWrap: 'wrap',
           justifyContent: 'space-around'
       },
-      gridList: {
+      flexList: {
           display: 'flex',
-          flexWrap: 'nowrap',
-          overflowX: 'auto'
+          overflowX: 'auto',
+          flexDirection: 'column',
+          justifyContent: 'space-between'
       }
     };
     return (
       <div className="container">
         <div className="section row">
-          <div className="col m12 l6">
-            <h5>This is the Block by Block Initiative</h5>
-            <p className="grey-text">
-              A neighborhood volunteer organization dedicated to improving west side housing
-            </p>
-            <ul>
-              <li><a className="black-text" href="#!">1. </a></li>
-              <li><a className="black-text" href="#!">Link 2</a></li>
-              <li><a className="black-text" href="#!">Link 3</a></li>
-              <li><a className="black-text" href="#!">Link 4</a></li>
-            </ul>
-            <h5>This is the Block by Block Initiative</h5>
-            <p>
-              A neighborhood volunteer organization dedicated to improving west side housing <br />
-              We're dedicated. 
-            </p>
-            <MuiThemeProvider>
-              <RaisedButton
-                label="Download Code violation Form"
-                backgroundColor="#25AB50"
-                labelColor="white"
-                labelPosition="before"
-                className="green darken-1 white-text"
-                containerElement="label"
-              >
-              </RaisedButton>
-            </MuiThemeProvider>
-          </div>
-          <div className="col m12 l6">
+          <div className="col m12 l8">
             <div class="video-container">
               <iframe src="https://www.youtube-nocookie.com/embed/_hH7vZF15SY?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             </div>
+          </div>
+          <div className="col m12 l4 flex flex-column">
+            <h5>We're working to improve Atlanta's westside</h5>
+            <p className="grey-text">
+              Block by Block is a neighborhood volunteer organization working to improve Atlanta westside housing through the tracking and reporting of housing violations. 
+              We're active primarily in the English Avenue and Vine City neighborhoods with plans to continue this work to other Atlanta neighborhoods 
+            </p>
+            <section className="flex flex-column">
+              <MuiThemeProvider> 
+                <RaisedButton
+                  label="Download Code violation Form"
+                  backgroundColor="#25AB50"
+                  labelColor="white"
+                  labelPosition="before"
+                  className="green darken-1 white-text"
+                  containerElement="label"
+                  href="../../static/BbB_Form.pdf"
+                  target="_blank"
+                >
+                </RaisedButton>
+              </MuiThemeProvider>
+              <MuiThemeProvider> 
+                <RaisedButton
+                  href="javascript:void(0)"
+                  label="Add New Code Violation"
+                  backgroundColor="#25AB50"
+                  labelColor="white"
+                  labelPosition="before"
+                  className="green darken-1 white-text x-margin"
+                  containerElement="label"
+                  data-pageindex="1"
+                  onClick={this.onClick}
+                >
+                </RaisedButton>
+              </MuiThemeProvider>
+            </section>
           </div>
         </div>
       </div>

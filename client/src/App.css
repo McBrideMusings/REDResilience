@@ -90,6 +90,15 @@ a {
 .no-margin-top{
   margin-top: 0;
 }
+.no-pad{
+  padding: 0;
+}
+.no-pad-bottom{
+  padding-bottom: 0;
+}
+.no-pad-top{
+  padding-top: 0;
+}
 h5.heading{
   line-height: 34px;
 }
@@ -207,6 +216,9 @@ div.card-image{
 .x-pad{
   padding-top: 30px;
 }
+.x-margin {
+  margin-top: 30px;
+}
 .bodyCont{
   background-color: transparent !important;
 }
@@ -220,4 +232,7 @@ div.card-image{
 }
 .rms-wrapper{
   height: 50px;
+}
+.maxWidth50 {
+  max-width: 50%;
 }
