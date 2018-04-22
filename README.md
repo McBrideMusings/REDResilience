@@ -41,8 +41,8 @@ The .env file contains the environment variables, which can be different for dif
 
 ```
 PORT=3000
-PASSWORD="12345"
-DRIVE_PHOTOFOLDERID="1SZCKBKIBuApDf-BlDQ3maeYZUvjWh1ZUpVBr6BPL9PY"
+PASSWORD='ChangeMe'
+DRIVE_PHOTOFOLDERID='1SZCKBKIBuApDf-BlDQ3maeYZUvjWh1ZUpVBr6BPL9PY'
 DRIVE_SPREADSHEETID='1EQ2bl80mbuFpf-1j-9NTS5AvGvN7GwBjtpECrT3FN94'
 ```
 
@@ -87,7 +87,9 @@ Finally, you're done! Return to the root folder and try running the app using np
 npm start
 ```
 
-npm start runs the server using nodemon (which restarts the server automatically) and the react app using concurrently. If both installed properly, a react app should start and open in your default browser and a server should pop up in your log
+npm start runs the server using nodemon (which restarts the server automatically) and the react app using concurrently. 
+
+If both installed properly, a react app should start and open in your default browser and a server should pop up in your log
 
 ## Deployment
 
@@ -116,6 +118,11 @@ Once a build is complete, and you've configured your web server to support your 
 ## Contributing
 
 At this time we are not accepting contributors
+
+## Known Issues
+
+- **When a new address is used or created, if a user selects more than one code violation the system will push each into a duplicate folder on drive.**
+  We're not sure what the cause is, but it's related to the way Upload() and the data submission path work together.
 
 ## Backlog/Future Work
 
