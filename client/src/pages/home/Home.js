@@ -54,33 +54,10 @@ class Home extends Component {
               We're active primarily in the English Avenue and Vine City neighborhoods with plans to continue this work to other Atlanta neighborhoods 
             </p>
             <section className="flex flex-column">
-              <MuiThemeProvider> 
-                <RaisedButton
-                  label="Download Code violation Form"
-                  backgroundColor="#25AB50"
-                  labelColor="white"
-                  labelPosition="before"
-                  className="green darken-1 white-text"
-                  containerElement="label"
-                  href="../../static/BbB_Form.pdf"
-                  target="_blank"
-                >
-                </RaisedButton>
-              </MuiThemeProvider>
-              <MuiThemeProvider> 
-                <RaisedButton
-                  href="javascript:void(0)"
-                  label="Add New Code Violation"
-                  backgroundColor="#25AB50"
-                  labelColor="white"
-                  labelPosition="before"
-                  className="green darken-1 white-text x-margin"
-                  containerElement="label"
-                  data-pageindex="1"
-                  onClick={this.onClick}
-                >
-                </RaisedButton>
-              </MuiThemeProvider>
+              <br></br>
+              <a className="btn btn-large white black-text" href="../../static/BbB_Form.pdf" target="_blank">Download Code Violation Form</a>
+              <br></br>
+              <a href="javascript:void(0)" className="btn btn-large green white-text" data-pageindex="1" onClick={this.onClick}>Add New Code Violation</a>
             </section>
           </div>
         </div>

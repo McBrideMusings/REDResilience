@@ -4,7 +4,7 @@ require('dotenv').config()
 const port              = process.env.PORT || 3000;
 const express           = require("express");
 const bodyParser        = require('body-parser');
-const helmet            = require('helmet')
+const helmet            = require('helmet');
 const multer            = require('multer');
 const uuidv4            = require('uuid/v4');
 const cors              = require('cors');
@@ -146,7 +146,6 @@ app.post("/data", (req, res) => {
 });
 
 app.post("/deleteImg", (req, res) => {
-  console.log(req.body.path);
   var s = `${__dirname}/client/build/${req.body.path}`;
   fs.unlink(s);
   res.send("done");
@@ -173,67 +172,90 @@ app.post("/addViolations", (req, res) =>{
         for(var i=0; i < req.body.images.length; i++){
           req.body.images[i] = "./client/build"+req.body.images[i];
         }
-        //req.body.url = "./client/public"+req.body.url;
         console.log(req.body.images);
         var promise = client.Upload(req.body.images, req.body.concatAddress, req.body.violationData.name, req.body.violationData.isResolved);
         promise.then(function (resolved) {
-          console.log(resolved);
           for(var i=0; i < resolved.length; i++){
             imgPaths = imgPaths+" | "+resolved[i].webViewLink;
           }
-          var ts = dateFormat(getTimestamp(), "dddd, mmmm dS, yyyy, h:MM:ss TT");
-          Object.keys(req.body.houseData).length ?
-              mySheet.addRow({
-                Street_Number: req.body.houseData.streetNumber,
-                Street_Name: req.body.houseData.streetName,
-                City: req.body.houseData.city,
-                State: req.body.houseData.state,
-                Zip: req.body.houseData.zip,
-                Full_Address: req.body.houseData.fullAddress,
-                Single_Dwelling: req.body.propertyData.singleDwelling,
-                Multifamily_Dwelling: req.body.propertyData.multiDwelling,
-                Apartment: req.body.propertyData.isApt,
-                Commercial: req.body.propertyData.isCommercial,
-                Property_Owner_Name: req.body.propertyData.owner,
-                Lives_There: req.body.propertyData.livesThere,
-                Not_Lives_There: req.body.propertyData.notLivesThere,
-                Timestamp: ts,
-                Code_violation: req.body.violationData.name,
-                One_to_Three_Months: req.body.violationData.monthsOne,
-                Four_to_Six_Months: req.body.violationData.monthsFour,
-                Over_Six_Months: req.body.violationData.monthsSix,
-                Location_Front: req.body.violationData.front,
-                Location_Back: req.body.violationData.back,
-                Location_Side: req.body.violationData.side,
-                Comments: req.body.violationData.comments,
-                Is_Resolved: req.body.violationData.isResolved,
-                IMG_URL: imgPaths })
-           :
-              mySheet.addRow({
-                Custom: req.body.concatAddress,
-                Single_Dwelling: req.body.propertyData.singleDwelling,
-                Multifamily_Dwelling: req.body.propertyData.multiDwelling,
-                Apartment: req.body.propertyData.isApt,
-                Commercial: req.body.propertyData.isCommercial,
-                Property_Owner_Name: req.body.propertyData.owner,
-                Lives_There: req.body.propertyData.livesThere,
-                Not_Lives_There: req.body.propertyData.notLivesThere,
-                Timestamp: ts,
-                Code_violation: req.body.violationData.name,
-                One_to_Three_Months: req.body.violationData.monthsOne,
-                Four_to_Six_Months: req.body.violationData.monthsFour,
-                Over_Six_Months: req.body.violationData.monthsSix,
-                Location_Front: req.body.violationData.front,
-                Location_Back: req.body.violationData.back,
-                Location_Side: req.body.violationData.side,
-                Comments: req.body.violationData.comments,
-                Is_Resolved: req.body.violationData.isResolved,
-                IMG_URL: imgPaths
-
-          }, function () {
-            console.log("done");
-            res.send("done");
+          let timeStampPromise = GetOldestPhotoTimestamp(req.body.images);
+          timeStampPromise.then(function (resolved) {
+             console.log(resolved);
+             let ts = resolved;
+             let gpsPromise =  GetFirstPhotoGPS(req.body.images);
+             gpsPromise.then(function (resolved) {
+                 let gps = {lat: '', long: ''};
+                 gps.lat = (resolved.lat !== undefined) ? resolved.lat : '';
+                 gps.long = (resolved.long !== undefined) ? resolved.long : '';
+                 Object.keys(req.body.houseData).length ?
+                     mySheet.addRow({
+                         Street_Number: req.body.houseData.streetNumber,
+                         Street_Name: req.body.houseData.streetName,
+                         City: req.body.houseData.city,
+                         State: req.body.houseData.state,
+                         Zip: req.body.houseData.zip,
+                         Full_Address: req.body.houseData.fullAddress,
+                         Lat: gps.lat,
+                         Long: gps.lat,
+                         Single_Dwelling: req.body.propertyData.singleDwelling,
+                         Multifamily_Dwelling: req.body.propertyData.multiDwelling,
+                         Apartment: req.body.propertyData.isApt,
+                         Commercial: req.body.propertyData.isCommercial,
+                         Property_Owner_Name: req.body.propertyData.owner,
+                         Lives_There: req.body.propertyData.livesThere,
+                         Not_Lives_There: req.body.propertyData.notLivesThere,
+                         Timestamp: ts,
+                         Code_violation: req.body.violationData.name,
+                         One_to_Three_Months: req.body.violationData.monthsOne,
+                         Four_to_Six_Months: req.body.violationData.monthsFour,
+                         Over_Six_Months: req.body.violationData.monthsSix,
+                         Location_Front: req.body.violationData.front,
+                         Location_Back: req.body.violationData.back,
+                         Location_Side: req.body.violationData.side,
+                         Comments: req.body.violationData.comments,
+                         Is_Resolved: req.body.violationData.isResolved,
+                         IMG_URL: imgPaths
+                        }, function () {
+                             console.log("done");
+                             res.send("done");
+                         }
+                     )
+                     :
+                     mySheet.addRow({
+                         Custom: req.body.concatAddress,
+                         Lat: gps.lat,
+                         Long: gps.lat,
+                         Single_Dwelling: req.body.propertyData.singleDwelling,
+                         Multifamily_Dwelling: req.body.propertyData.multiDwelling,
+                         Apartment: req.body.propertyData.isApt,
+                         Commercial: req.body.propertyData.isCommercial,
+                         Property_Owner_Name: req.body.propertyData.owner,
+                         Lives_There: req.body.propertyData.livesThere,
+                         Not_Lives_There: req.body.propertyData.notLivesThere,
+                         Timestamp: ts,
+                         Code_violation: req.body.violationData.name,
+                         One_to_Three_Months: req.body.violationData.monthsOne,
+                         Four_to_Six_Months: req.body.violationData.monthsFour,
+                         Over_Six_Months: req.body.violationData.monthsSix,
+                         Location_Front: req.body.violationData.front,
+                         Location_Back: req.body.violationData.back,
+                         Location_Side: req.body.violationData.side,
+                         Comments: req.body.violationData.comments,
+                         Is_Resolved: req.body.violationData.isResolved,
+                         IMG_URL: imgPaths
+                     }, function () {
+                         console.log("done");
+                         addMetadata(req.body.concatAddress);
+                         res.send("done");
+                     });
+             });
+              gpsPromise.catch(function (err) {
+                  console.log(err);
+              })
           });
+            timeStampPromise.catch(function (err) {
+                console.log(err);
+            })
         });
         promise.catch(function (err) {
           console.log(err);
@@ -266,7 +288,11 @@ app.post("/addViolations", (req, res) =>{
               Location_Side: req.body.violationData.side,
               Comments: req.body.violationData.comments,
               Is_Resolved: req.body.violationData.isResolved,
-              IMG_URL: imgPaths })
+              IMG_URL: imgPaths
+            }, function () {
+                console.log("done");
+                res.send("done");
+            })
             :
             mySheet.addRow({
               Custom: req.body.concatAddress,
@@ -288,10 +314,11 @@ app.post("/addViolations", (req, res) =>{
               Comments: req.body.violationData.comments,
               Is_Resolved: req.body.violationData.isResolved,
               IMG_URL: imgPaths
-        }, function () {
-          console.log("done");
-          res.send("done");
-        });
+            }, function () {
+              console.log("done");
+              addMetadata(req.body.concatAddress);
+              res.send("done");
+            });
       }
     } );
 });
@@ -464,7 +491,9 @@ function addMetadata(customAddress) {
           let mySheet = data.worksheets.find(x => x.title === "MetaData");
           mySheet.addRow({
             Custom: customAddress,
-          })
+          },function () {
+              console.log("Custom Address added to MetaData");
+          });
           resolve("Ok");
         }
       });

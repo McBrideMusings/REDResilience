@@ -2,11 +2,9 @@
  * Created by Brendan on 4/9/2018.
  */
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom'
 import ReactMaterialSelect from 'react-material-select'
 import 'react-material-select/lib/css/reactMaterialSelect.css'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import {GridList, GridTile} from 'material-ui/GridList';
 import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
@@ -151,11 +149,13 @@ class Form extends Component {
         };
         this.state = this.initState;
     }
-    // state = {
-    //
-    // };
 
     componentDidMount() {
+        /*
+        * Retrieves address data from Spreadsheet to populate dropdown
+        * Checks sessionStorage var to see if user has already typed in correct PW during this session
+        * If they have, don't show the PW modal
+        * */
         fetch('/data', {
             method: 'POST'
         })
@@ -177,6 +177,10 @@ class Form extends Component {
     }
 
     resetForm = () => {
+        /*
+        * Resets all form states if user clicks "Create Another Code Violation"
+        * The setState() obj should always mirror the one in the constructor
+        * */
         this.state.violations = [];
         this.setState({
             hasSaved: false,
@@ -735,9 +739,7 @@ class Form extends Component {
         .then(() => {
             this.setState({hasSaved: true, progressDisplay: false});
             this.deleteAllUploads(myImages);
-        }).catch((err) => {
-            console.log(err);
-        });
+        })
     }
 
     reconstructViolations(){
