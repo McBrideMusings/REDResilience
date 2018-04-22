@@ -322,6 +322,12 @@ class Form extends Component {
     }
 
     handleOpen = () => {
+        /*
+        * Listens to "Save All Data" button and checks state values to see if requires data is missing
+        * Check 1: House dropdown selected OR custom address text exists
+        * Check 2: At least 1 violation has been selected
+        * Else: Display "Are You Sure?" modal
+        * */
         if(!Object.keys(this.state.houseData).length && this.state.locDesc == ''){
             this.setState({noAddressModalOpen: true});
         }
@@ -335,14 +341,23 @@ class Form extends Component {
     };
 
     handleClose = () => {
+        /*
+        * Hides 'Are you sure?' modal
+        * */
         this.setState({modalOpen: false});
     };
 
     handleAddressClose = () => {
+        /*
+         * Hides 'Missing Address' modal
+         * */
         this.setState({noAddressModalOpen: false});
     };
 
     handleViolationsClose = () => {
+        /*
+         * Hides 'Missing Violations' modal
+         * */
         this.setState({noViolationsModalOpen: false});
     };
 
@@ -352,6 +367,11 @@ class Form extends Component {
     };
 
     handlePWSubmit = () =>{
+        /*
+        * Sends user's password to server for verification
+        * If OK: hides modal, sets sessionStorage var
+        * Else: pop alert and do nothing
+        * */
         const pw = this.state.password;
         this.setState({password: ''});
         fetch('/password', {
@@ -397,6 +417,10 @@ class Form extends Component {
     }
 
     deleteImage(img){
+        /*
+        * DEPRECATED
+        * Deletes a single image from the uploads folder
+        * */
         var tempData = this.state.images;
         fetch('/deleteImg', {
             method: 'POST',
@@ -414,6 +438,9 @@ class Form extends Component {
     }
 
     deleteAllUploads(images){
+        /*
+        * After user submits a completed form and pictures are uploaded to drive, we delete their images in the local /uploads folder
+        * */
         console.log(images);
         fetch('/deleteAllImg', {
             method: 'POST',
@@ -433,7 +460,6 @@ class Form extends Component {
          * */
         const id = event.target.id;
         this.setState({ [event.target.id] : !this.state[event.target.id] }, () => this.violationCheck(id));
-
     }
 
     commentCallback(event){
@@ -445,6 +471,9 @@ class Form extends Component {
     }
 
     passwordCallback(event){
+        /*
+        * Updates state.password as user types it in to text field
+        * */
         this.setState({ password : event.target.value});
     }
 
@@ -484,20 +513,20 @@ class Form extends Component {
             this.violationCheck(c);
         }
         else{
-
-            console.log(this.state.violations);
             var index = this.state.violations.indexOf(v);
             this.state[c] = false;
             this.state.violations.splice(index, 1);
             this.violationCheck(c);
             this.violationResetCheck(v, c);
-
         }
-
-        console.log(this.state.violations);
     }
 
     violationCheck(c){
+        /*
+        * Checks the parent violation box (e.g. "Open/Vacant") if user checks a child (e.g. 1-3 months) beforehand
+        * Will only check parent if it is not already "checked"
+        * If checked, violation is pushed to array as if the user checked it themselves
+        * */
         if(c.includes("open") && !this.state.openChecked && (this.state[c] == true || this.state[c].length > 0)){
             this.setState({openChecked: true });
             this.state.violations.push("Open/Vacant");
@@ -545,7 +574,9 @@ class Form extends Component {
     }
 
     violationResetCheck(v, c){
-
+        /*
+        * If user un-checks parent checkbox on a violation row, all child checkboxes (and text field) are cleared
+        * */
         if(c == "openChecked"){
             this.setState({
                 openChecked: false,
@@ -700,14 +731,25 @@ class Form extends Component {
     }
 
     saveViolations(){
+        /*
+        * Called when user saves/uploads all form data
+        * Server-dependent objects are constructed and sent in the POST body
+        * */
         this.setState({progressDisplay: true});
         let postData = {houseData: {}, violationData: {}, url: "", concatAddress: ""};
         if(Object.keys(this.state.houseData).length){
+            /*
+            * Constructs a concat address string for Drive image labeling on the serverside
+            * Removes all spaces and replaces them with '_'
+            * */
             postData.houseData = this.state.houseData;
             postData.concatAddress = this.state.houseData.streetNumber+" "+this.state.houseData.streetName;
             postData.concatAddress = postData.concatAddress.replace(/ /g,"_");
         }
         else if(this.state.locDesc !== ''){
+            /*
+            * Handles case for Custom address description instead of dropdown
+            * */
             postData.concatAddress = this.state.locDesc.replace(/ /g,"_");
         }
         let newViolations = this.reconstructViolations();
@@ -716,7 +758,14 @@ class Form extends Component {
         let myImages = this.state.images;
         var promises = [];
         Object.keys(newViolations[0]).forEach((key, idx) => {
+            /*
+             * Send 1 POST request per violation
+             * */
             if (Object.keys(newViolations[0][key]).length){
+                /*
+                 * Only send a request if a violation obj is not empty (thus indicating checkboxes were selected and violation information exists)
+                 * For example: { open: {}, overgrowth { monthsOne: true, isResolved: true}, ... } -- a request would not be sent for 'open' since the obj is empty. A request would be sent for 'overgrowth' since 'monthsOne' & 'isResolved' are true...due to the fact the user selected those checkboxes on the Overgrowth row
+                 * */
                 promises.push(
                     fetch('/addViolations', {
                         method: 'POST',
@@ -735,6 +784,11 @@ class Form extends Component {
                 );
             }
         });
+        /*
+        * Only resolve after all violation promises are finished
+        * Display confirmation page
+        * Delete all images in the /uploads folder
+        * */
         Promise.all(promises)
         .then(() => {
             this.setState({hasSaved: true, progressDisplay: false});
@@ -743,6 +797,16 @@ class Form extends Component {
     }
 
     reconstructViolations(){
+        /*
+        * Violation data is not yet consolidated and only exists as state bools/strings (for comments)
+        * A new object is created with sub-objects each representing 1 possible violation type
+        * Based on form input, values are added to each sub-object
+        * For example, if a user only selects "Open/Vacant" and "1-3 months" on the form, this function will return:
+        * {open: { monthsOne: true }, overgrowth: {}, squatters: {}, leaking: {}, water: {}, boarded: {}, rodent: {}, flooded: {}, trash: {}, junkVehicle: {}, other: {}}
+        * The saveViolation() logic will know to only send 1 violation to the server since 'open' is the only sub-object that is not empty
+        *
+        * There is probably a better way to do this...
+        * */
         var newViolations = [];
         var obj = {open: {}, overgrowth: {}, squatters: {}, leaking: {}, water: {}, boarded: {}, rodent: {}, flooded: {}, trash: {}, junkVehicle: {}, other: {}};
         var v = this.state.violations;
@@ -1007,6 +1071,9 @@ class Form extends Component {
     }
 
     constructPropertyInfo(){
+        /*
+        * returns a consolidated object containing the Property Info form input
+        * */
         var obj = {};
         if(this.state.singleDwelling) obj.singleDwelling = true;
         if(this.state.multiDwelling) obj.multiDwelling = true;
@@ -1019,6 +1086,11 @@ class Form extends Component {
     }
     
     onChange = (e) => {
+        /*
+        * Called when user is done selecting photos the file uploader.
+        * Manually gets the file references from the input field and images get placed in the /uploads folder
+        * Images are then displayed on the form
+        * */
         this.setState({
             files: e.target.files
         });
