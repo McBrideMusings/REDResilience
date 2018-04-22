@@ -40,7 +40,7 @@ nano .env
 The .env file contains the environment variables, which can be different for different developers and the deployed environment.
 
 ```
-PORT=3001
+PORT=3000
 PASSWORD="12345"
 DRIVE_PHOTOFOLDERID="1SZCKBKIBuApDf-BlDQ3maeYZUvjWh1ZUpVBr6BPL9PY"
 DRIVE_SPREADSHEETID='1EQ2bl80mbuFpf-1j-9NTS5AvGvN7GwBjtpECrT3FN94'
@@ -67,6 +67,7 @@ You'll need to
 1. Create a new project
 2. Navigate to "Dashboard"
    1. Enable the Google Drive API
+   2. Enable the Google Sheets API
 3. Navigate to "Credentials" 
    1. Select "Create Credentials"
    2. Select "Service Account Key"

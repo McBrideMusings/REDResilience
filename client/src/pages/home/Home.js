@@ -44,7 +44,7 @@ class Home extends Component {
         <div className="section row">
           <div className="col m12 l8">
             <div class="video-container">
-              <iframe src="https://www.youtube-nocookie.com/embed/_hH7vZF15SY?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+              <iframe src="https://www.youtube-nocookie.com/embed/ZxK3cfMuoxI?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             </div>
           </div>
           <div className="col m12 l4 flex flex-column">
