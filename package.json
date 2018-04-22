@@ -1,0 +1,41 @@
+{
+  "name": "atlred-housingcode-server",
+  "version": "1.0.0",
+  "description": "Web interface that talks to Google Sheets API",
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "concurrently": "^3.5.1",
+    "cors": "^2.8.4",
+    "dateformat": "^3.0.3",
+    "dotenv": "^5.0.1",
+    "exif": "^0.6.0",
+    "express": "^4.14.0",
+    "express-fileupload": "^0.4.0",
+    "fs": "0.0.1-security",
+    "google-spreadsheet": "^2.0.0",
+    "googleapis": "^28.0.1",
+    "helmet": "^3.12.0",
+    "image-type": "^3.0.0",
+    "lokijs": "^1.5.3",
+    "multer": "^1.3.0",
+    "opn": "^5.3.0",
+    "prop-types": "^15.6.1",
+    "react-image-lightbox": "^4.6.0",
+    "react-recaptcha": "^2.3.7",
+    "read-chunk": "^2.1.0",
+    "sanitize": "^2.1.0",
+    "server-destroy": "^1.0.1",
+    "socket.io": "^2.0.0",
+    "uuid": "^3.2.1"
+  },
+  "scripts": {
+    "start": "concurrently \"nodemon server.js\" \"cd client &&  npm start\""
+  },
+  "author": "Brendan Cecere, Pierce McBride",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^3.5.1",
+    "nodemon": "^1.17.1"
+  }
+}
