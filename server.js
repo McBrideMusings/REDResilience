@@ -28,7 +28,7 @@ const stagingUploadPath = "/client/build/uploads/"; // Photos are uploaded to th
 var sheet;
 const creds = require('./master-creds.json'); // This is a pre-formatted JSON auth file from Google
 const data = require(__dirname + "/data.json");
-const doc = new GoogleSpreadsheet(process.env.DRIVE_SPREADSHEETID);
+const doc = new GoogleSpreadsheet(process.env.DRIVE_SPREADSHEETID || '1KYZOVHZM7KVj0jVMx8H95jqPP3jjVC5vQUIewIRb33w');
 
 const client = new DriveUpload(creds);
 
@@ -38,14 +38,14 @@ console.log(mkdirSync(stagingUploadPath));
 
 // configure storage
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
+  destination: (req, file, callback) => {
     /*
       Files will be saved in the 'uploads' directory. Make
       sure this directory already exists!
     */
-    cb(null, __dirname+stagingUploadPath);
+    callback(null, __dirname+stagingUploadPath);
   },
-  filename: (req, file, cb) => {
+  filename: (req, file, callback) => {
     /*
       uuidv4() will generate a random ID that we'll use for the
       new filename. We use path.extname() to get
@@ -55,7 +55,7 @@ const storage = multer.diskStorage({
       req.file.pathname in the router handler.
     */
     const newFilename = `${uuidv4()}${path.extname(file.originalname)}`;
-    cb(null, newFilename);
+    callback(null, newFilename);
   }
 });
 // create the multer instance that will be used to upload/save the file
