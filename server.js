@@ -161,32 +161,38 @@ app.post("/deleteAllImg", (req, res) => {
 
 app.post("/addViolations", (req, res) =>{
     doc.getInfo(function (err, info) {
-      console.log(req.body);
       var imgPaths = "";
       let mySheet = info.worksheets.find(x => x.title === "RawData");
-
+      //client.Upload needs a defined isResolved param. It comes in as undefined if the user doesn't check it on the form
       if(req.body.violationData.isResolved == undefined){
         req.body.violationData.isResolved = false;
       }
+      //Checks if user has uploaded images so we know to call client.Upload(), etc
       if(req.body.images.length){
+        //add the correct directory path to image file paths for the server
         for(var i=0; i < req.body.images.length; i++){
           req.body.images[i] = "./client/build"+req.body.images[i];
         }
-        console.log(req.body.images);
+
+        //Waits for Drive img URLS to come back so we can include them in the addRows() request
         var promise = client.Upload(req.body.images, req.body.concatAddress, req.body.violationData.name, req.body.violationData.isResolved);
         promise.then(function (resolved) {
+          //Individual drive URLs are separated by '|'
           for(var i=0; i < resolved.length; i++){
             imgPaths = imgPaths+" | "+resolved[i].webViewLink;
           }
+          //Waits for image timestamp to be included in addRows()
           let timeStampPromise = GetOldestPhotoTimestamp(req.body.images);
           timeStampPromise.then(function (resolved) {
              console.log(resolved);
              let ts = resolved;
+             //Waits for possible GPS coordinates of image(s) to be included in request
              let gpsPromise =  GetFirstPhotoGPS(req.body.images);
              gpsPromise.then(function (resolved) {
                  let gps = {lat: '', long: ''};
                  gps.lat = (resolved.lat !== undefined) ? resolved.lat : '';
                  gps.long = (resolved.long !== undefined) ? resolved.long : '';
+                 //Create request if Address Dropdown was used on form
                  Object.keys(req.body.houseData).length ?
                      mySheet.addRow({
                          Street_Number: req.body.houseData.streetNumber,
@@ -222,6 +228,7 @@ app.post("/addViolations", (req, res) =>{
                      )
                      :
                      mySheet.addRow({
+                         //Create request if Custom Location/Address field was used on form
                          Custom: req.body.concatAddress,
                          Lat: gps.lat,
                          Long: gps.lat,
@@ -262,6 +269,7 @@ app.post("/addViolations", (req, res) =>{
         })
       }
       else{
+        //Request if images were NOT uploaded in the form
         var ts = dateFormat(getTimestamp(), "dddd, mmmm dS, yyyy, h:MM:ss TT");
         Object.keys(req.body.houseData).length ?
             mySheet.addRow({
