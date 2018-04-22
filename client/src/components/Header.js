@@ -16,8 +16,8 @@ class Header extends Component {
     <nav>
       <div className="nav-wrapper white">
         <div className="container">
-        <a className="brand-logo green-text darken-1" data-pageindex="0" href="javascript:void(0)" onClick={this.onClick}>BlockByBlock</a>
-          </div>
+          <a className="brand-logo green-text darken-1" data-pageindex="0" href="javascript:void(0)" onClick={this.onClick}>Block by Block Initiative</a>
+        </div>
       </div>
     </nav>
     );

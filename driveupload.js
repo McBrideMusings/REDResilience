@@ -1,3 +1,6 @@
+/**
+ * Created by Pierce
+ */
 'use strict';
 require('dotenv').config();
 // libraries
@@ -11,8 +14,8 @@ const readChunk       = require('read-chunk');
 const imageType       = require('image-type');
 const drive           = google.drive('v3');
 const sheets          = google.sheets('v4');
-const rootFolderId    = '1lB53NoYKh26pQUi1YqFY2MtwKYe7gsEA' || process.env.DRIVE_PHOTOFOLDERID; // The folder ID for the root T4 folder
-const scopes          = ['https://www.googleapis.com/auth/spreadsheets','https://www.googleapis.com/auth/drive'];
+const rootFolderId    = process.env.DRIVE_PHOTOFOLDERID; // The root Photos Folder ID set in the env
+const scopes          = ['https://www.googleapis.com/auth/spreadsheets','https://www.googleapis.com/auth/drive']; // Sets the apis the google client can use
 
 class DriveUpload {
   constructor (creds, callback) {
@@ -20,8 +23,9 @@ class DriveUpload {
       if(callback) callback("No credentials provided!");
     }
     this.creds = creds;
-    // configure a JWT auth client
-    this.jwtClient = new google.auth.JWT (
+    // This sets up a client auth, so form users don't need to login
+    // And we don't need to setup OAuth2
+    this.jwtClient = new google.auth.JWT ( 
       creds.client_email,
       null,
       creds.private_key,
@@ -42,7 +46,9 @@ class DriveUpload {
     return new Promise((resolve, reject) => {
       var date = new Date();
       let name = date.getFullYear()+'-' + (date.getMonth()+1) + '-'+date.getDate() + "_" + violation;
-      drive.files.list({
+      // First, we get a list of the folders in the root Photos folder
+      // We look for a folder that's name the same as address or make a new folde if none is found
+      drive.files.list({ 
         q: `mimeType = 'application/vnd.google-apps.folder' and '${rootFolderId}' in parents`,
         auth: this.jwtClient
       })
@@ -56,7 +62,7 @@ class DriveUpload {
             break;
           }
         }
-        if (folderID === null) { // No existing photos of this house
+        if (folderID === null) { // No existing folder matching address name
           this.CreateNewFolder(address, rootFolderId)
           .then((newFolderID) => {
             return Promise.all([
@@ -65,7 +71,8 @@ class DriveUpload {
             ]); 
           })
           .then((results) => { resolve(results[1]); })
-          .catch((err) => { reject(Error("CreateFolder- "+err)); });
+          // In general, I think there are better ways to handle errors in promise chains
+          .catch((err) => { reject(Error("CreateFolder- "+err)); }); 
         } else {
           this.ProcessFiles(files,address,name,folderID)
           .then((results) => { resolve(results); })
@@ -85,7 +92,7 @@ class DriveUpload {
       promises.push(this.AddFileToFolder(files,fileName,folderID));
     }
     return new Promise((resolve, reject) => {
-      Promise.all(promises)
+      Promise.all(promises) // Extremely useful pattern for aggregating async operations
       .then((results) => { resolve(results); })
       .catch((err) => { reject(Error("From ProcessFiles: "+err)); });
     });
